@@ -48,9 +48,17 @@ type FormData = {
   linkedin: string;
   personalWebsite: string;
   additionalLinks: string;
-  longAnswer: string;
+  firstLongAnswer: string;
+  secondLongAnswer: string;
   other: string;
   underrepresented: string;
+  gender: string;
+  pronouns: string;
+  ethnicity: string;
+  sexuality: string;
+  mlhCodeOfConduct: boolean;
+  mlhPrivacyPolicy: boolean;
+  mlhEmails: boolean;
 };
 
 const RegistrationForm: React.FC = () => {
@@ -130,19 +138,23 @@ const RegistrationForm: React.FC = () => {
           </div>
 
           <div className="col-span-1 md:col-span-2">
-            <label
-              className="block mb-2 text-xl font-bold"
-              htmlFor="phoneNumber"
-            >
-              Phone Number *
-            </label>
-            <input
-              id="phoneNumber"
-              type="text"
-              {...register("phoneNumber", { required: true })}
-              className="w-full p-2 border border-gray-700 rounded-lg text-black"
-              placeholder="123-456-7890"
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12">
+              <div className="col-span-1">
+                <label
+                  className="block mb-2 text-xl font-bold"
+                  htmlFor="phoneNumber"
+                >
+                  Phone Number *
+                </label>
+                <input
+                  id="phoneNumber"
+                  type="text"
+                  {...register("phoneNumber", { required: true })}
+                  className="w-full p-2 border border-gray-700 rounded-lg text-black"
+                  placeholder="123-456-7890"
+                />
+              </div>
+            </div>
           </div>
 
           <div className="col-span-1">
@@ -267,19 +279,23 @@ const RegistrationForm: React.FC = () => {
           </div>
 
           <div className="col-span-1 md:col-span-2">
-            <label
-              className="block mb-2 text-xl font-semibold"
-              htmlFor="address"
-            >
-              Address
-            </label>
-            <input
-              id="address"
-              type="text"
-              {...register("address")}
-              className="w-full p-2 border border-gray-700 rounded-lg text-black"
-              placeholder="Enter address"
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12">
+              <div className="col-span-1">
+                <label
+                  className="block mb-2 text-xl font-semibold"
+                  htmlFor="address"
+                >
+                  Address
+                </label>
+                <input
+                  id="address"
+                  type="text"
+                  {...register("address")}
+                  className="w-full p-2 border border-gray-700 rounded-lg text-black"
+                  placeholder="Enter address"
+                />
+              </div>
+            </div>
           </div>
 
           <div className="col-span-1">
@@ -419,13 +435,13 @@ const RegistrationForm: React.FC = () => {
           <div className="col-span-1">
             <label
               className="block mb-2 text-xl font-semibold"
-              htmlFor="longAnswer"
+              htmlFor="firstLongAnswer"
             >
               Why are you running
             </label>
             <textarea
-              id="long answer 1"
-              {...register("longAnswer")}
+              id="firstLongAnswer"
+              {...register("firstLongAnswer")}
               className="w-full p-2 border border-gray-700 rounded-lg text-black h-48"
               placeholder="Type your answer"
             />
@@ -433,13 +449,13 @@ const RegistrationForm: React.FC = () => {
           <div className="col-span-1">
             <label
               className="block mb-2 text-xl font-semibold"
-              htmlFor="longAnswer"
+              htmlFor="secondLongAnswer"
             >
               How are you running
             </label>
             <textarea
-              id="long answer 2"
-              {...register("longAnswer")}
+              id="secondLongAnswer"
+              {...register("secondLongAnswer")}
               className="w-full p-2 border border-gray-700 rounded-lg text-black h-48"
               placeholder="Type your answer"
             />
@@ -454,7 +470,7 @@ const RegistrationForm: React.FC = () => {
           The answers to these questions will not affect your application in any
           way
         </h1>
-        <div className="grid grid-cols-3 gap-x-12 gap-y-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-12 gap-y-10">
           <div className="col-span-2">
             <label
               className="block mb-2 text-xl font-semibold"
@@ -483,7 +499,7 @@ const RegistrationForm: React.FC = () => {
             </label>
             <select
               id="gender"
-              {...register("underrepresented", { required: true })}
+              {...register("gender", { required: true })}
               className="custom-select w-full p-2 border border-gray-700 rounded-lg text-black"
             >
               <option value=""></option>
@@ -497,13 +513,13 @@ const RegistrationForm: React.FC = () => {
           <div className="col-span-2">
             <label
               className="block mb-2 text-xl font-semibold"
-              htmlFor="dietaryRestrictions"
+              htmlFor="pronouns"
             >
               Pronouns
             </label>
             <select
-              id="underrepresented"
-              {...register("underrepresented", { required: true })}
+              id="pronouns"
+              {...register("pronouns", { required: true })}
               className="custom-select w-full p-2 border border-gray-700 rounded-lg text-black"
             >
               <option value=""></option>
@@ -519,13 +535,13 @@ const RegistrationForm: React.FC = () => {
           <div className="col-span-2">
             <label
               className="block mb-2 text-xl font-semibold"
-              htmlFor="dietaryRestrictions"
+              htmlFor="ethnicity"
             >
               Race/Ethnicity
             </label>
             <select
-              id="underrepresented"
-              {...register("underrepresented", { required: true })}
+              id="ethnicity"
+              {...register("ethnicity", { required: true })}
               className="custom-select w-full p-2 border border-gray-700 rounded-lg text-black"
             >
               <option value=""></option>
@@ -535,13 +551,13 @@ const RegistrationForm: React.FC = () => {
           <div className="col-span-2">
             <label
               className="block mb-2 text-xl font-semibold"
-              htmlFor="dietaryRestrictions"
+              htmlFor="sexuality"
             >
               Do you consider yourself to be any of the following?
             </label>
             <select
-              id="underrepresented"
-              {...register("underrepresented", { required: true })}
+              id="sexuality"
+              {...register("sexuality", { required: true })}
               className="custom-select w-full p-2 border border-gray-700 rounded-lg text-black"
             >
               <option value=""></option>
@@ -553,7 +569,79 @@ const RegistrationForm: React.FC = () => {
             </select>
           </div>
         </div>
-        <hr className="border-white pb-6" />
+        <hr className="border-white pb-6 mt-10" />
+        <h1 className="text-white text-xl font-bold pb-10">
+          We are currently in the process of partnering with MLH. The following
+          3 checkboxes are for this partnership. If we do not end up partnering
+          with MLH, your information will not be shared
+        </h1>
+        <div className="grid grid-cols-1 gap-x-12 gap-y-10 text-white text-xl">
+          <div className="flex items-start">
+            <input
+              id="mlhCodeOfConduct"
+              type="checkbox"
+              {...register("mlhCodeOfConduct", { required: true })}
+              className="mr-3 mt-1 w-8 h-8"
+            />
+            <label htmlFor="mlhCodeOfConduct">
+              I have read and agree to the MLH Code of Conduct. (
+              <a
+                href="https://github.com/MLH/mlh-policies/blob/main/code-of-conduct.md"
+                className="underline"
+              >
+                https://github.com/MLH/mlh-policies/blob/main/code-of-conduct.md
+              </a>
+              ). *
+            </label>
+          </div>
+          <div className="flex items-start">
+            <input
+              id="mlhPrivacyPolicy"
+              type="checkbox"
+              {...register("mlhPrivacyPolicy", { required: true })}
+              className="mr-3 mt-1 w-8 h-8"
+            />
+            <label htmlFor="mlhPrivacyPolicy">
+              I authorize you to share my application/registration information
+              with Major League Hacking for event administration, ranking, and
+              MLH administration in-line with the MLH Privacy Policy (
+              <a
+                href="https://github.com/MLH/mlh-policies/blob/main/privacy-policy.md"
+                className="underline"
+              >
+                https://github.com/MLH/mlh-policies/blob/main/privacy-policy.md
+              </a>
+              ). I further agree to the terms of both the MLH Contest Terms and
+              Conditions (
+              <a
+                href="https://github.com/MLH/mlh-policies/blob/main/contest-terms.md"
+                className="underline"
+              >
+                https://github.com/MLH/mlh-policies/blob/main/contest-terms.md
+              </a>
+              ) and the MLH Privacy Policy (
+              <a
+                href="https://github.com/MLH/mlh-policies/blob/main/privacy-policy.md"
+                className="underline"
+              >
+                https://github.com/MLH/mlh-policies/blob/main/privacy-policy.md
+              </a>
+              ). *
+            </label>
+          </div>
+          <div className="flex items-start">
+            <input
+              id="mlhEmails"
+              type="checkbox"
+              {...register("mlhEmails", { required: false })}
+              className="mr-3 mt-1 w-8 h-8"
+            />
+            <label htmlFor="mlhEmails">
+              I authorize MLH to send me occasional emails about relevant
+              events, career opportunities, and community announcements.
+            </label>
+          </div>
+        </div>
         <button
           type="submit"
           className="w-full py-2 bg-purple-600 hover:bg-purple-800 rounded-lg text-white mt-10"
