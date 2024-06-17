@@ -3,32 +3,167 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 
-const ethnicities = [
-  "Asian Indian",
-  "Black or African",
-  "Chinese",
-  "Filipino",
-  "Guamanian or Chamorro",
-  "Hispanic / Latino / Spanish Origin",
-  "Japanese",
-  "Korean",
-  "Middle Eastern",
-  "Native American or Alaskan Native",
-  "Native Hawaiian",
-  "Samoan",
-  "Vietnamese",
-  "White",
-  "Other Asian (Thai, Cambodian, etc)",
-  "Other Pacific Islander",
-  "Other (Please Specify)",
-  "Prefer Not to Answer",
-];
+const generateOptions = (items: string[]) => {
+  return items.map((item, index) => (
+    <option key={index} value={item}>
+      {item}
+    </option>
+  ));
+};
 
-const ethnicityOptions = ethnicities.map((ethnicity, index) => (
-  <option key={index} value={ethnicity}>
-    {ethnicity}
-  </option>
-));
+const options = {
+  ethnicities: [
+    "Asian Indian",
+    "Black or African",
+    "Chinese",
+    "Filipino",
+    "Guamanian or Chamorro",
+    "Hispanic / Latino / Spanish Origin",
+    "Japanese",
+    "Korean",
+    "Middle Eastern",
+    "Native American or Alaskan Native",
+    "Native Hawaiian",
+    "Samoan",
+    "Vietnamese",
+    "White",
+    "Other Asian (Thai, Cambodian, etc)",
+    "Other Pacific Islander",
+    "Other (Please Specify)",
+    "Prefer Not to Answer",
+  ],
+  schools: ["School 1", "School 2"],
+  levelsOfStudy: [
+    "High School",
+    "Undergraduate University (2 year - community college or similar)",
+    "Undergraduate University (3+ year)",
+    "Graduate University (Masters, Professional, Doctoral, etc)",
+    "Code School / Bootcamp",
+    "Other Vocational / Trade Program or Apprenticeship",
+    "Post Doctorate",
+    "Other",
+    "Not a student",
+    "Prefer not to answer",
+  ],
+  fieldsOfStudy: [
+    "Computer science, computer engineering, or software engineering",
+    "Another engineering discipline (such as civil, electrical, mechanical, etc.)",
+    "Information systems, information technology, or system administration",
+    "A natural science (such as biology, chemistry, physics, etc.)",
+    "Mathematics or statistics",
+    "Business discipline (such as accounting, finance, marketing, etc.)",
+    "Humanities discipline (such as literature, history, philosophy, etc.)",
+    "Social science (such as anthropology, psychology, political science, etc.)",
+    "Fine arts or performing arts (such as graphic design, music, studio art, etc.)",
+    "Health science (such as nursing, pharmacy, radiology, etc.)",
+    "Undecided / No Declared Major",
+  ],
+  countries: ["USA", "Canada"],
+  dietaryRestrictions: [
+    "None",
+    "Vegetarian",
+    "Vegan",
+    "Celiac Disease",
+    "Kosher",
+    "Halal",
+  ],
+  tShirtSizes: ["Small", "Medium", "Large"],
+  genders: [
+    "Man",
+    "Woman",
+    "Non-Binary",
+    "Prefer to self-describe",
+    "Prefer Not to Answer",
+  ],
+  pronouns: [
+    "She/Her",
+    "He/Him",
+    "They/Them",
+    "She/They",
+    "He/They",
+    "Prefer Not to Answer",
+    "Other",
+  ],
+  sexualities: [
+    "Heterosexual or straight",
+    "Gay or lesbian",
+    "Bisexual",
+    "Different identity",
+    "Prefer Not to Answer",
+  ],
+};
+
+const getAgeOptions = () => {
+  return Array.from({ length: 27 }, (_, i) => i + 14).map((age) => (
+    <option key={age} value={age}>
+      {age}
+    </option>
+  ));
+};
+
+const InputField = ({ id, label, registerOptions, placeholder, type = "text" }) => (
+  <div className="col-span-1">
+    <label className="block mb-2 text-xl font-semibold" htmlFor={id}>
+      {label}
+    </label>
+    <input
+      id={id}
+      type={type}
+      {...registerOptions}
+      className="w-full p-2 border border-gray-700 rounded-lg text-black"
+      placeholder={placeholder}
+    />
+  </div>
+);
+
+const SelectField = ({ id, label, registerOptions, options, className }) => (
+  <div className={className}>
+    <label className="block mb-2 text-xl font-semibold" htmlFor={id}>
+      {label}
+    </label>
+    <select
+      id={id}
+      {...registerOptions}
+      className="custom-select w-full p-2 border border-gray-700 rounded-lg text-black"
+    >
+      <option value=""></option>
+      {generateOptions(options)}
+    </select>
+  </div>
+);
+
+const TextAreaField = ({ id, label, registerOptions, placeholder }) => (
+  <div className="col-span-1">
+    <label className="block mb-2 text-xl font-semibold" htmlFor={id}>
+      {label}
+    </label>
+    <textarea
+      id={id}
+      {...registerOptions}
+      className="w-full p-2 border border-gray-700 rounded-lg text-black h-48"
+      placeholder={placeholder}
+    />
+  </div>
+);
+
+const ComplexInputField = ({ id, label, registerOptions, placeholder, type = "text" }) => (
+  <div className="col-span-1 md:col-span-2">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12">
+      <div className="col-span-1">
+        <label className="block mb-2 text-xl font-bold" htmlFor={id}>
+          {label}
+        </label>
+        <input
+          id={id}
+          type={type}
+          {...registerOptions}
+          className="w-full p-2 border border-gray-700 rounded-lg text-black"
+          placeholder={placeholder}
+        />
+      </div>
+    </div>
+  </div>
+);
 
 type FormData = {
   firstName: string;
@@ -74,284 +209,92 @@ const RegistrationForm: React.FC = () => {
       <hr className="border-white pb-6" />
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-x-12 gap-y-14">
-          <div className="col-span-1">
-            <label
-              className="block mb-2 text-xl font-semibold"
-              htmlFor="firstName"
-            >
-              First Name *
-            </label>
-            <input
-              id="firstName"
-              type="text"
-              {...register("firstName", { required: true })}
-              className="w-full p-2 border border-gray-700 rounded-lg text-black"
-              placeholder="John"
-            />
-          </div>
-
-          <div className="col-span-1">
-            <label
-              className="block mb-2 text-xl font-semibold"
-              htmlFor="lastName"
-            >
-              Last Name *
-            </label>
-            <input
-              id="lastName"
-              type="text"
-              {...register("lastName", { required: true })}
-              className="w-full p-2 border border-gray-700 rounded-lg text-black"
-              placeholder="Doe"
-            />
-          </div>
-
-          <div className="col-span-1">
-            <label className="block mb-2 text-xl font-bold" htmlFor="age">
-              Age *
-            </label>
-            <select
-              id="age"
-              {...register("age", { required: true })}
-              className="custom-select w-1/2 p-2 border border-gray-700 rounded-lg text-black"
-            >
-              <option value=""></option>
-              {Array.from({ length: 27 }, (_, i) => i + 14).map((age) => (
-                <option key={age} value={age}>
-                  {age}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="col-span-1">
-            <label className="block mb-2 text-xl font-semibold" htmlFor="email">
-              Email *
-            </label>
-            <input
-              id="email"
-              type="email"
-              {...register("email", { required: true })}
-              className="w-full p-2 border border-gray-700 rounded-lg text-black"
-              placeholder="Enter email"
-            />
-          </div>
-
-          <div className="col-span-1 md:col-span-2">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12">
-              <div className="col-span-1">
-                <label
-                  className="block mb-2 text-xl font-bold"
-                  htmlFor="phoneNumber"
-                >
-                  Phone Number *
-                </label>
-                <input
-                  id="phoneNumber"
-                  type="text"
-                  {...register("phoneNumber", { required: true })}
-                  className="w-full p-2 border border-gray-700 rounded-lg text-black"
-                  placeholder="123-456-7890"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="col-span-1">
-            <label
-              className="block mb-2 text-xl font-semibold"
-              htmlFor="school"
-            >
-              School *
-            </label>
-            <select
-              id="school"
-              {...register("school", { required: true })}
-              className="custom-select w-full p-2 border border-gray-700 rounded-lg text-black"
-            >
-              <option value=""></option>
-              <option value="School 1">School 1</option>
-              <option value="School 2">School 2</option>
-            </select>
-          </div>
-
-          <div className="col-span-1">
-            <label
-              className="block mb-2 text-xl font-bold"
-              htmlFor="levelOfStudy"
-            >
-              Level of Study *
-            </label>
-            <select
-              id="levelOfStudy"
-              {...register("levelOfStudy", { required: true })}
-              className="custom-select w-full p-2 border border-gray-700 rounded-lg text-black"
-            >
-              <option value=""></option>
-              <option value="High School">Secondary/High School</option>
-              <option value="Undergraduate">
-                Undergraduate University (2 year - community college or similar)
-              </option>
-              <option value="Undergraduate">
-                Undergraduate University (3+ year)
-              </option>
-              <option value="Graduate">
-                Graduate University (Masters, Professional, Doctoral, etc)
-              </option>
-              <option value="Code School">Code School / Bootcamp</option>
-              <option value="Apprentices">
-                Other Vocational / Trade Program or Apprenticeship
-              </option>
-              <option value="Post Doctorate">Post Doctorate</option>
-              <option value="Other">Other</option>
-              <option value="Not a student">I'm currently not a student</option>
-              <option value="">Prefer not to answer</option>
-            </select>
-          </div>
-
-          <div className="col-span-1">
-            <label
-              className="block mb-2 text-xl font-semibold"
-              htmlFor="fieldOfStudy"
-            >
-              Field of Study
-            </label>
-            <select
-              id="fieldOfStudy"
-              {...register("fieldOfStudy")}
-              className="custom-select w-full p-2 border border-gray-700 rounded-lg text-black"
-            >
-              <option value=""></option>
-              <option value="Computer Science">
-                Computer science, computer engineering, or software engineering{" "}
-              </option>
-              <option value="Engineering">
-                Another engineering discipline (such as civil, electrical,
-                mechanical, etc.){" "}
-              </option>
-              <option value="Information Systems">
-                Information systems, information technology, or system
-                administration{" "}
-              </option>
-              <option value="Natural science">
-                A natural science (such as biology, chemistry, physics, etc.){" "}
-              </option>
-              <option value="Mathematics">Mathematics or statistics</option>
-              <option value="Business discipline">
-                Business discipline (such as accounting, finance, marketing,
-                etc.){" "}
-              </option>
-              <option value="Humanities discipline">
-                Humanities discipline (such as literature, history, philosophy,
-                etc.){" "}
-              </option>
-              <option value="Social science">
-                Social science (such as anthropology, psychology, political
-                science, etc.)
-              </option>
-              <option value="Fine arts">
-                Fine arts or performing arts (such as graphic design, music,
-                studio art, etc.){" "}
-              </option>
-              <option value="Health Science">
-                Health science (such as nursing, pharmacy, radiology, etc.){" "}
-              </option>
-              <option value="Undecided">Undecided / No Declared Major </option>
-            </select>
-          </div>
-
-          <div className="col-span-1">
-            <label
-              className="block mb-2 text-xl font-semibold"
-              htmlFor="countryOfResidence"
-            >
-              Country of Residence *
-            </label>
-            <select
-              id="countryOfResidence"
-              {...register("countryOfResidence", { required: true })}
-              className="custom-select w-full p-2 border border-gray-700 rounded-lg text-black"
-            >
-              <option value=""></option>
-              <option value="USA">USA</option>
-              <option value="Canada">Canada</option>
-            </select>
-          </div>
-
-          <div className="col-span-1 md:col-span-2">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12">
-              <div className="col-span-1">
-                <label
-                  className="block mb-2 text-xl font-semibold"
-                  htmlFor="address"
-                >
-                  Address
-                </label>
-                <input
-                  id="address"
-                  type="text"
-                  {...register("address")}
-                  className="w-full p-2 border border-gray-700 rounded-lg text-black"
-                  placeholder="Enter address"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="col-span-1">
-            <label
-              className="block mb-2 text-xl font-semibold"
-              htmlFor="dietaryRestrictions"
-            >
-              Dietary Restrictions *
-            </label>
-            <select
-              id="dietaryRestrictions"
-              {...register("dietaryRestrictions", { required: true })}
-              className="custom-select w-full p-2 border border-gray-700 rounded-lg text-black"
-            >
-              <option value=""></option>
-              <option value="None">None</option>
-              <option value="Vegetarian">Vegetarian</option>
-              <option value="Vegan">Vegan</option>
-              <option value="Celiac Diseas">Celiac Disease</option>
-              <option value="Kosher">Kosher</option>
-              <option value="Halal">Halal</option>
-            </select>
-          </div>
-
-          <div className="col-span-1">
-            <label className="block mb-2 text-xl font-semibold" htmlFor="other">
-              Other
-            </label>
-            <input
-              id="other"
-              type="text"
-              {...register("other")}
-              className="w-full p-2 border border-gray-700 rounded-lg text-black"
-              placeholder="Other..."
-            />
-          </div>
-
-          <div className="col-span-1">
-            <label
-              className="block mb-2 text-xl font-semibold"
-              htmlFor="tShirtSize"
-            >
-              T-shirt Size *
-            </label>
-            <select
-              id="tShirtSize"
-              {...register("tShirtSize", { required: true })}
-              className="custom-select w-full p-2 border border-gray-700 rounded-lg text-black"
-            >
-              <option value=""></option>
-              <option value="Small">Small</option>
-              <option value="Medium">Medium</option>
-              <option value="Large">Large</option>
-            </select>
-          </div>
-
+          <InputField
+            id="firstName"
+            label="First Name *"
+            registerOptions={register("firstName", { required: true })}
+            placeholder="John"
+          />
+          <InputField
+            id="lastName"
+            label="Last Name *"
+            registerOptions={register("lastName", { required: true })}
+            placeholder="Doe"
+          />
+          <SelectField
+            id="age"
+            label="Age *"
+            registerOptions={register("age", { required: true })}
+            options={getAgeOptions()}
+            className="col-span-1"
+          />
+          <InputField
+            id="email"
+            label="Email *"
+            registerOptions={register("email", { required: true })}
+            placeholder="Enter email"
+            type="email"
+          />
+          <ComplexInputField
+            id="phoneNumber"
+            label="Phone Number *"
+            registerOptions={register("phoneNumber", { required: true })}
+            placeholder="123-456-7890"
+          />
+          <SelectField
+            id="school"
+            label="School *"
+            registerOptions={register("school", { required: true })}
+            options={options.schools}
+            className="col-span-1"
+          />
+          <SelectField
+            id="levelOfStudy"
+            label="Level of Study *"
+            registerOptions={register("levelOfStudy", { required: true })}
+            options={options.levelsOfStudy}
+            className="col-span-1"
+          />
+          <SelectField
+            id="fieldOfStudy"
+            label="Field of Study"
+            registerOptions={register("fieldOfStudy")}
+            options={options.fieldsOfStudy}
+            className="col-span-1"
+          />
+          <SelectField
+            id="countryOfResidence"
+            label="Country of Residence *"
+            registerOptions={register("countryOfResidence", { required: true })}
+            options={options.countries}
+            className="col-span-1"
+          />
+          <ComplexInputField
+            id="address"
+            label="Address"
+            registerOptions={register("address")}
+            placeholder="Enter address"
+          />
+          <SelectField
+            id="dietaryRestrictions"
+            label="Dietary Restrictions *"
+            registerOptions={register("dietaryRestrictions", { required: true })}
+            options={options.dietaryRestrictions}
+            className="col-span-1"
+          />
+          <InputField
+            id="other"
+            label="Other"
+            registerOptions={register("other")}
+            placeholder="Other..."
+          />
+          <SelectField
+            id="tShirtSize"
+            label="T-shirt Size *"
+            registerOptions={register("tShirtSize", { required: true })}
+            options={options.tShirtSizes}
+            className="col-span-1"
+          />
           <div className="col-span-1">
             <label
               className="block mb-2 text-xl font-semibold"
@@ -366,100 +309,48 @@ const RegistrationForm: React.FC = () => {
               className="custom-upload w-full p-2 border border-gray-700 rounded-lg text-black"
             />
           </div>
-
-          <div className="col-span-1">
-            <label
-              className="block mb-2 text-xl font-semibold"
-              htmlFor="githubProfile"
-            >
-              GitHub Profile
-            </label>
-            <input
-              id="githubProfile"
-              type="text"
-              {...register("githubProfile")}
-              className="w-full p-2 border border-gray-700 rounded-lg text-black"
-            />
-          </div>
-
-          <div className="col-span-1">
-            <label
-              className="block mb-2 text-xl font-semibold"
-              htmlFor="linkedin"
-            >
-              LinkedIn
-            </label>
-            <input
-              id="linkedin"
-              type="text"
-              {...register("linkedin")}
-              className="w-full p-2 border border-gray-700 rounded-lg text-black"
-            />
-          </div>
-
-          <div className="col-span-1">
-            <label
-              className="block mb-2 text-xl font-semibold"
-              htmlFor="personalWebsite"
-            >
-              Personal Website
-            </label>
-            <input
-              id="personalWebsite"
-              type="text"
-              {...register("personalWebsite")}
-              className="w-full p-2 border border-gray-700 rounded-lg text-black"
-            />
-          </div>
-
-          <div className="col-span-1">
-            <label
-              className="block mb-2 text-xl font-semibold"
-              htmlFor="additionalLinks"
-            >
-              Additional Links
-            </label>
-            <input
-              id="additionalLinks"
-              type="text"
-              {...register("additionalLinks")}
-              className="w-full p-2 border border-gray-700 rounded-lg text-black"
-            />
-          </div>
+          <InputField
+            id="githubProfile"
+            label="GitHub Profile"
+            registerOptions={register("githubProfile")}
+            placeholder=""
+          />
+          <InputField
+            id="linkedin"
+            label="LinkedIn"
+            registerOptions={register("linkedin")}
+            placeholder=""
+          />
+          <InputField
+            id="personalWebsite"
+            label="Personal Website"
+            registerOptions={register("personalWebsite")}
+            placeholder=""
+          />
+          <InputField
+            id="additionalLinks"
+            label="Additional Links"
+            registerOptions={register("additionalLinks")}
+            placeholder=""
+          />
         </div>
         <h1 className="text-white text-4xl font-bold mb-6 mt-24">
           Long Answer Questions
         </h1>
         <hr className="border-white pb-6" />
         <div className="grid grid-cols-1 gap-x-12 gap-y-10">
-          <div className="col-span-1">
-            <label
-              className="block mb-2 text-xl font-semibold"
-              htmlFor="firstLongAnswer"
-            >
-              Why are you running
-            </label>
-            <textarea
-              id="firstLongAnswer"
-              {...register("firstLongAnswer")}
-              className="w-full p-2 border border-gray-700 rounded-lg text-black h-48"
-              placeholder="Type your answer"
-            />
-          </div>
-          <div className="col-span-1">
-            <label
-              className="block mb-2 text-xl font-semibold"
-              htmlFor="secondLongAnswer"
-            >
-              How are you running
-            </label>
-            <textarea
-              id="secondLongAnswer"
-              {...register("secondLongAnswer")}
-              className="w-full p-2 border border-gray-700 rounded-lg text-black h-48"
-              placeholder="Type your answer"
-            />
-          </div>
+          <TextAreaField
+            id="firstLongAnswer"
+            label="Why are you running"
+            registerOptions={register("firstLongAnswer")}
+            placeholder="Type your answer"
+          />
+          <TextAreaField
+            id="secondLongAnswer"
+            label="How are you running"
+            registerOptions={register("secondLongAnswer")}
+            placeholder="Type your answer"
+          />
         </div>
 
         <h1 className="text-white text-4xl font-bold mb-6 mt-10">
@@ -471,103 +362,41 @@ const RegistrationForm: React.FC = () => {
           way
         </h1>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-x-12 gap-y-10">
-          <div className="col-span-2">
-            <label
-              className="block mb-2 text-xl font-semibold"
-              htmlFor="underrepresented"
-            >
-              Do you identify as part of an underrepresented group in the
-              technology industry?
-            </label>
-            <select
-              id="underrepresented"
-              {...register("underrepresented", { required: true })}
-              className="custom-select w-full p-2 border border-gray-700 rounded-lg text-black"
-            >
-              <option value=""></option>
-              <option value="Yes">Yes</option>
-              <option value="No">No</option>
-              <option value="Unsure">Unsure</option>
-            </select>
-          </div>
-          <div className="col-span-2">
-            <label
-              className="block mb-2 text-xl font-semibold"
-              htmlFor="dietaryRestrictions"
-            >
-              Gender
-            </label>
-            <select
-              id="gender"
-              {...register("gender", { required: true })}
-              className="custom-select w-full p-2 border border-gray-700 rounded-lg text-black"
-            >
-              <option value=""></option>
-              <option value="Man">Man</option>
-              <option value="Woman">Woman</option>
-              <option value="Non-Binary">Non-Binary</option>
-              <option value="Self describe">Prefer to self-describe</option>
-              <option value="No answer">Prefer Not to Answer</option>
-            </select>
-          </div>
-          <div className="col-span-2">
-            <label
-              className="block mb-2 text-xl font-semibold"
-              htmlFor="pronouns"
-            >
-              Pronouns
-            </label>
-            <select
-              id="pronouns"
-              {...register("pronouns", { required: true })}
-              className="custom-select w-full p-2 border border-gray-700 rounded-lg text-black"
-            >
-              <option value=""></option>
-              <option value="She/Her">She/Her</option>
-              <option value="He/Him">He/Him</option>
-              <option value="They/Them">They/Them</option>
-              <option value="She/They">She/They</option>
-              <option value="He/They">He/They</option>
-              <option value="No Answer">Prefer Not to Answer</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-          <div className="col-span-2">
-            <label
-              className="block mb-2 text-xl font-semibold"
-              htmlFor="ethnicity"
-            >
-              Race/Ethnicity
-            </label>
-            <select
-              id="ethnicity"
-              {...register("ethnicity", { required: true })}
-              className="custom-select w-full p-2 border border-gray-700 rounded-lg text-black"
-            >
-              <option value=""></option>
-              {ethnicityOptions}
-            </select>
-          </div>
-          <div className="col-span-2">
-            <label
-              className="block mb-2 text-xl font-semibold"
-              htmlFor="sexuality"
-            >
-              Do you consider yourself to be any of the following?
-            </label>
-            <select
-              id="sexuality"
-              {...register("sexuality", { required: true })}
-              className="custom-select w-full p-2 border border-gray-700 rounded-lg text-black"
-            >
-              <option value=""></option>
-              <option value="Heterosexual">Heterosexual or straight</option>
-              <option value="Gay/Lesbian">Gay or lesbian</option>
-              <option value="Bisexual">Bisexual</option>
-              <option value="Different Identity">Different identity</option>
-              <option value="No Answer">Prefer Not to Answer</option>
-            </select>
-          </div>
+          <SelectField
+            id="underrepresented"
+            label="Do you identify as part of an underrepresented group in the technology industry?"
+            registerOptions={register("underrepresented", { required: true })}
+            options={["Yes", "No", "Unsure"]}
+            className="col-span-2"
+          />
+          <SelectField
+            id="gender"
+            label="Gender"
+            registerOptions={register("gender", { required: true })}
+            options={options.genders}
+            className="col-span-2"
+          />
+          <SelectField
+            id="pronouns"
+            label="Pronouns"
+            registerOptions={register("pronouns", { required: true })}
+            options={options.pronouns}
+            className="col-span-2"
+          />
+          <SelectField
+            id="ethnicity"
+            label="Race/Ethnicity"
+            registerOptions={register("ethnicity", { required: true })}
+            options={options.ethnicities}
+            className="col-span-2"
+          />
+          <SelectField
+            id="sexuality"
+            label="Do you consider yourself to be any of the following?"
+            registerOptions={register("sexuality", { required: true })}
+            options={options.sexualities}
+            className="col-span-2"
+          />
         </div>
         <hr className="border-white pb-6 mt-10" />
         <h1 className="text-white text-xl font-bold pb-10">
@@ -599,7 +428,7 @@ const RegistrationForm: React.FC = () => {
               id="mlhPrivacyPolicy"
               type="checkbox"
               {...register("mlhPrivacyPolicy", { required: true })}
-              className="mr-3 mt-1 w-8 h-8"
+              className="mr-3 mt-1 w-32 h-8"
             />
             <label htmlFor="mlhPrivacyPolicy">
               I authorize you to share my application/registration information
