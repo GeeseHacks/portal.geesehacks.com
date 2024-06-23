@@ -1,0 +1,111 @@
+openapi: 3.0.0
+info:
+  title: Registration Portal API
+  version: 1.0.0
+  description: API Documentation for the Registration Portal
+servers:
+  - url: http://localhost:3000
+paths:
+  /api/users/{id}:
+    get:
+      summary: Get a user by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/users'
+  /api/users:
+    post:
+      summary: Create a new user with fields in the users table
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/users'
+      responses:
+        '201':
+          description: User created
+
+  /api/application-responses/{id}:
+    get:
+      summary: Get an application response by user ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Application response details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/application_responses'
+  /api/application-responses:
+    post:
+      summary: Create a new application response in the application_responses table
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/application_responses'
+      responses:
+        '201':
+          description: Application response created
+
+components:
+  schemas:
+    users:
+      type: object
+      properties:
+        id:
+          type: integer
+        firstname:
+          type: string
+        lastname:
+          type: string
+        age:
+          type: integer
+          minimum: 0
+        email:
+          type: string
+        phone_number:
+          type: string
+        school:
+          type: string
+        level_of_study:
+          type: string
+        field_of_study:
+          type: string
+        country_of_residence:
+          type: string
+        address:
+          type: string
+        dietary_restrictions:
+          type: string
+        github:
+          type: string
+        linkedin:
+          type: string
+        personal_website:
+          type: string
+    application_responses:
+      type: object
+      properties:
+        userid:
+          type: integer
+        q1:
+          type: string
+        q2:
+          type: string
+        q3:
+          type: string
