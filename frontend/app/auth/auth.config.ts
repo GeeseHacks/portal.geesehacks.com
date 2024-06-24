@@ -4,7 +4,7 @@ import DiscordProvider from 'next-auth/providers/discord';
 
 export const authConfig: NextAuthConfig = {
   pages: {
-    signIn: '/login',
+    signIn: '/app/login/page',
   },
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
