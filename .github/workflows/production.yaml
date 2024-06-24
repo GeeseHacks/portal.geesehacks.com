@@ -30,7 +30,10 @@ jobs:
         run: vercel pull --yes --environment=production --token=$VERCEL_TOKEN
       
       - name: Build Project Artifacts
-        run: vercel build --prod --token=$VERCEL_TOKEN
+        run: |
+          npm install
+          npx prisma generate
+          vercel build --prod --token=$VERCEL_TOKEN
 
       - name: Deploy Project Artifacts
         id: deploy
