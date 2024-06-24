@@ -34,7 +34,9 @@ const InputField: React.FC<InputFieldProps> = ({
       id={id}
       type={type}
       {...registerOptions}
-      className="w-full p-2 border border-gray-700 rounded-lg text-black"
+      className={`w-full p-2 border ${
+        error ? "border-red-500 border-2" : "border-gray-700"
+      } rounded-lg text-black`}
       placeholder={placeholder}
     />
     {error && <p className="text-red-500 text-s italic">{error}</p>}
@@ -65,7 +67,9 @@ const SelectField: React.FC<SelectFieldProps> = ({
     <select
       id={id}
       {...registerOptions}
-      className="custom-select w-full p-2 border border-gray-700 rounded-lg text-black"
+      className={`custom-select w-full p-2 border ${
+        error ? "border-red-500 border-2" : "border-gray-700"
+      } rounded-lg text-black`}
     >
       <option value=""></option>
       {options.map((option, index) => (
@@ -103,7 +107,9 @@ const TextAreaField: React.FC<TextAreaFieldProps> = ({
     <textarea
       id={id}
       {...registerOptions}
-      className="w-full p-2 border border-gray-700 rounded-lg text-black h-48"
+      className={`w-full p-2 border ${
+        error ? "border-red-500 border-2" : "border-gray-700"
+      } rounded-lg text-black h-48`}
       placeholder={placeholder}
     />
     {error && <p className="text-red-500 text-s italic">{error}</p>}
@@ -150,7 +156,9 @@ const formSchema = z.object({
   firstName: z.string().min(1, { message: "First name is required" }),
   lastName: z.string().min(1, { message: "Last name is required" }),
   email: z.string().email({ message: "Invalid email address" }),
-  phoneNumber: z.string().min(1, { message: "Phone number is required" }),
+  phoneNumber: z.string().regex(/^\d{3}-\d{3}-\d{4}$/, {
+    message: "Phone number must be in the format xxx-xxx-xxxx",
+  }),
   school: z.string().min(1, { message: "School is required" }),
   levelOfStudy: z.string().min(1, { message: "Level of study is required" }),
   countryOfResidence: z.string().min(1, { message: "Country is required" }),
@@ -163,7 +171,7 @@ const formSchema = z.object({
   ),
   address: z.string().optional(),
   fieldOfStudy: z.string().optional(),
-  tShirtSize: z.string({ message: "T-shirt size is required" }),
+  tShirtSize: z.string().min(1, { message: "T-shirt size is required" }),
   resume: z.any().optional(),
   githubProfile: z.string().optional(),
   linkedin: z.string().optional(),
@@ -217,9 +225,11 @@ const RegistrationForm: React.FC = () => {
   const onSubmit: SubmitHandler<formSchemaType> = async (data) => {
     console.log("form submitted!");
     console.log(data);
+    const tempId = Date.now() % 1000;
+    console.log(tempId);
     try {
       const userData = await axios.post("/api/users", {
-        id: 7,
+        id: tempId,
         firstname: data.firstName,
         lastname: data.lastName,
         age: data.age,
@@ -405,21 +415,21 @@ const RegistrationForm: React.FC = () => {
         <div className="grid grid-cols-1 gap-x-12 gap-y-10">
           <TextAreaField
             id="q1"
-            label="Why are you running"
+            label="Why are you running *"
             registerOptions={register("q1")}
             placeholder="Type your answer"
             error={errors.q1?.message}
           />
           <TextAreaField
             id="q2"
-            label="How are you running"
+            label="How are you running *"
             registerOptions={register("q2")}
             placeholder="Type your answer"
             error={errors.q2?.message}
           />
           <TextAreaField
             id="q3"
-            label="Where are you running"
+            label="Where are you running *"
             registerOptions={register("q3")}
             placeholder="Type your answer"
             error={errors.q3?.message}
