@@ -2,94 +2,10 @@
 
 import React from "react";
 import { useForm } from "react-hook-form";
-
-
-
-const options = {
-  ethnicities: [
-    "Asian Indian",
-    "Black or African",
-    "Chinese",
-    "Filipino",
-    "Guamanian or Chamorro",
-    "Hispanic / Latino / Spanish Origin",
-    "Japanese",
-    "Korean",
-    "Middle Eastern",
-    "Native American or Alaskan Native",
-    "Native Hawaiian",
-    "Samoan",
-    "Vietnamese",
-    "White",
-    "Other Asian (Thai, Cambodian, etc)",
-    "Other Pacific Islander",
-    "Other (Please Specify)",
-    "Prefer Not to Answer",
-  ],
-  schools: ["School 1", "School 2"],
-  levelsOfStudy: [
-    "High School",
-    "Undergraduate University (2 year - community college or similar)",
-    "Undergraduate University (3+ year)",
-    "Graduate University (Masters, Professional, Doctoral, etc)",
-    "Code School / Bootcamp",
-    "Other Vocational / Trade Program or Apprenticeship",
-    "Post Doctorate",
-    "Other",
-    "Not a student",
-    "Prefer not to answer",
-  ],
-  fieldsOfStudy: [
-    "Computer science, computer engineering, or software engineering",
-    "Another engineering discipline (such as civil, electrical, mechanical, etc.)",
-    "Information systems, information technology, or system administration",
-    "A natural science (such as biology, chemistry, physics, etc.)",
-    "Mathematics or statistics",
-    "Business discipline (such as accounting, finance, marketing, etc.)",
-    "Humanities discipline (such as literature, history, philosophy, etc.)",
-    "Social science (such as anthropology, psychology, political science, etc.)",
-    "Fine arts or performing arts (such as graphic design, music, studio art, etc.)",
-    "Health science (such as nursing, pharmacy, radiology, etc.)",
-    "Undecided / No Declared Major",
-  ],
-  countries: ["USA", "Canada"],
-  dietaryRestrictions: [
-    "None",
-    "Vegetarian",
-    "Vegan",
-    "Celiac Disease",
-    "Kosher",
-    "Halal",
-  ],
-  tShirtSizes: ["Small", "Medium", "Large"],
-  genders: [
-    "Man",
-    "Woman",
-    "Non-Binary",
-    "Prefer to self-describe",
-    "Prefer Not to Answer",
-  ],
-  pronouns: [
-    "She/Her",
-    "He/Him",
-    "They/Them",
-    "She/They",
-    "He/They",
-    "Prefer Not to Answer",
-    "Other",
-  ],
-  sexualities: [
-    "Heterosexual or straight",
-    "Gay or lesbian",
-    "Bisexual",
-    "Different identity",
-    "Prefer Not to Answer",
-  ],
-};
-
-const getAgeOptions = () => {
-  return Array.from({ length: 27 }, (_, i) => i + 14).map((age) => age.toString());
-};
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { options } from "./formAssets/formAssets";
+import { getAgeOptions } from "./formAssets/formAssets";
 
 interface InputFieldProps {
   id: string;
@@ -99,7 +15,13 @@ interface InputFieldProps {
   type?: string;
 }
 
-const InputField: React.FC<InputFieldProps> = ({ id, label, registerOptions, placeholder, type = "text" }) => (
+const InputField: React.FC<InputFieldProps> = ({
+  id,
+  label,
+  registerOptions,
+  placeholder,
+  type = "text",
+}) => (
   <div className="col-span-1">
     <label className="block mb-2 text-xl font-semibold" htmlFor={id}>
       {label}
@@ -122,7 +44,13 @@ interface SelectFieldProps {
   className?: string;
 }
 
-const SelectField: React.FC<SelectFieldProps> = ({ id, label, registerOptions, options, className }) => (
+const SelectField: React.FC<SelectFieldProps> = ({
+  id,
+  label,
+  registerOptions,
+  options,
+  className,
+}) => (
   <div className={className}>
     <label className="block mb-2 text-xl font-semibold" htmlFor={id}>
       {label}
@@ -149,7 +77,12 @@ interface TextAreaFieldProps {
   placeholder: string;
 }
 
-const TextAreaField: React.FC<TextAreaFieldProps>  = ({ id, label, registerOptions, placeholder }) => (
+const TextAreaField: React.FC<TextAreaFieldProps> = ({
+  id,
+  label,
+  registerOptions,
+  placeholder,
+}) => (
   <div className="col-span-1">
     <label className="block mb-2 text-xl font-semibold" htmlFor={id}>
       {label}
@@ -172,7 +105,13 @@ interface ComplexInputFieldProps {
   error?: { message: string };
 }
 
-const ComplexInputField: React.FC<ComplexInputFieldProps>  = ({ id, label, registerOptions, placeholder, type = "text" }) => (
+const ComplexInputField: React.FC<ComplexInputFieldProps> = ({
+  id,
+  label,
+  registerOptions,
+  placeholder,
+  type = "text",
+}) => (
   <div className="col-span-1 md:col-span-2">
     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12">
       <div className="col-span-1">
@@ -191,42 +130,55 @@ const ComplexInputField: React.FC<ComplexInputFieldProps>  = ({ id, label, regis
   </div>
 );
 
-interface FormData {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phoneNumber: string;
-  school: string;
-  levelOfStudy: string;
-  countryOfResidence: string;
-  dietaryRestrictions: string;
-  age: string;
-  address: string;
-  fieldOfStudy: string;
-  tShirtSize: string;
-  resume: FileList;
-  githubProfile: string;
-  linkedin: string;
-  personalWebsite: string;
-  additionalLinks: string;
-  firstLongAnswer: string;
-  secondLongAnswer: string;
-  other: string;
-  underrepresented: string;
-  gender: string;
-  pronouns: string;
-  ethnicity: string;
-  sexuality: string;
-  mlhCodeOfConduct: boolean;
-  mlhPrivacyPolicy: boolean;
-  mlhEmails: boolean;
-};
+const formSchema = z.object({
+  firstName: z.string({ message: "First name is required" }),
+  lastName: z.string({ message: "Last name is required" }),
+  email: z.string().email({ message: "Invalid email address" }),
+  phoneNumber: z.string({ message: "Phone number is required" }),
+  school: z.string({ message: "School is required" }),
+  levelOfStudy: z.string({ message: "Level of study is required" }),
+  countryOfResidence: z.string({ message: "Country is required" }),
+  dietaryRestrictions: z.string({ message: "Dietary restriction is required" }),
+  age: z.number({ message: "Age is required" }),
+  address: z.string().optional(),
+  fieldOfStudy: z.string().optional(),
+  tShirtSize: z.string({ message: "T-shirt size is required" }),
+  resume: z.any().optional(),
+  githubProfile: z.string().optional(),
+  linkedin: z.string().optional(),
+  personalWebsite: z.string().optional(),
+  additionalLinks: z.string().optional(),
+  firstLongAnswer: z.string().optional(),
+  secondLongAnswer: z.string().optional(),
+  other: z.string().optional(),
+  underrepresented: z.string().optional(),
+  gender: z.string().optional(),
+  pronouns: z.string().optional(),
+  ethnicity: z.string().optional(),
+  sexuality: z.string().optional(),
+  mlhCodeOfConduct: z.boolean().refine((val) => val === true, {
+    message: "You must agree to the MLH Code of Conduct",
+  }),
+  mlhPrivacyPolicy: z.boolean().refine((val) => val === true, {
+    message: "You must agree to the MLH Privacy Policy",
+  }),
+  mlhEmails: z.boolean().optional(),
+});
+
+type formSchemaType = z.infer<typeof formSchema>;
 
 const RegistrationForm: React.FC = () => {
-  const { register, handleSubmit } = useForm<FormData>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<formSchemaType>({
+    resolver: zodResolver(formSchema),
+  });
 
-  const onSubmit = (data: FormData) => {
-    console.log(data);
+  const onSubmit = (data: formSchemaType) => {
+    console.log("Form submitted!");
+    console.log(formSchema.safeParse(data));
   };
 
   return (
@@ -238,46 +190,49 @@ const RegistrationForm: React.FC = () => {
           <InputField
             id="firstName"
             label="First Name *"
-            registerOptions={register("firstName", { required: true })}
+            registerOptions={register("firstName")}
             placeholder="John"
           />
+          {errors.firstName && (
+            <p className="text-red">{errors.firstName.message}</p>
+          )}
           <InputField
             id="lastName"
             label="Last Name *"
-            registerOptions={register("lastName", { required: true })}
+            registerOptions={register("lastName")}
             placeholder="Doe"
           />
           <SelectField
             id="age"
             label="Age *"
-            registerOptions={register("age", { required: true })}
+            registerOptions={register("age")}
             options={getAgeOptions()}
             className="col-span-1"
           />
           <InputField
             id="email"
             label="Email *"
-            registerOptions={register("email", { required: true })}
+            registerOptions={register("email")}
             placeholder="Enter email"
             type="email"
           />
           <ComplexInputField
             id="phoneNumber"
             label="Phone Number *"
-            registerOptions={register("phoneNumber", { required: true })}
+            registerOptions={register("phoneNumber")}
             placeholder="123-456-7890"
           />
           <SelectField
             id="school"
             label="School *"
-            registerOptions={register("school", { required: true })}
+            registerOptions={register("school")}
             options={options.schools}
             className="col-span-1"
           />
           <SelectField
             id="levelOfStudy"
             label="Level of Study *"
-            registerOptions={register("levelOfStudy", { required: true })}
+            registerOptions={register("levelOfStudy")}
             options={options.levelsOfStudy}
             className="col-span-1"
           />
@@ -291,7 +246,7 @@ const RegistrationForm: React.FC = () => {
           <SelectField
             id="countryOfResidence"
             label="Country of Residence *"
-            registerOptions={register("countryOfResidence", { required: true })}
+            registerOptions={register("countryOfResidence")}
             options={options.countries}
             className="col-span-1"
           />
@@ -304,7 +259,9 @@ const RegistrationForm: React.FC = () => {
           <SelectField
             id="dietaryRestrictions"
             label="Dietary Restrictions *"
-            registerOptions={register("dietaryRestrictions", { required: true })}
+            registerOptions={register("dietaryRestrictions", {
+              required: true,
+            })}
             options={options.dietaryRestrictions}
             className="col-span-1"
           />
@@ -317,7 +274,7 @@ const RegistrationForm: React.FC = () => {
           <SelectField
             id="tShirtSize"
             label="T-shirt Size *"
-            registerOptions={register("tShirtSize", { required: true })}
+            registerOptions={register("tShirtSize")}
             options={options.tShirtSizes}
             className="col-span-1"
           />
@@ -391,35 +348,35 @@ const RegistrationForm: React.FC = () => {
           <SelectField
             id="underrepresented"
             label="Do you identify as part of an underrepresented group in the technology industry?"
-            registerOptions={register("underrepresented", { required: true })}
+            registerOptions={register("underrepresented")}
             options={["Yes", "No", "Unsure"]}
             className="col-span-2"
           />
           <SelectField
             id="gender"
             label="Gender"
-            registerOptions={register("gender", { required: true })}
+            registerOptions={register("gender")}
             options={options.genders}
             className="col-span-2"
           />
           <SelectField
             id="pronouns"
             label="Pronouns"
-            registerOptions={register("pronouns", { required: true })}
+            registerOptions={register("pronouns")}
             options={options.pronouns}
             className="col-span-2"
           />
           <SelectField
             id="ethnicity"
             label="Race/Ethnicity"
-            registerOptions={register("ethnicity", { required: true })}
+            registerOptions={register("ethnicity")}
             options={options.ethnicities}
             className="col-span-2"
           />
           <SelectField
             id="sexuality"
             label="Do you consider yourself to be any of the following?"
-            registerOptions={register("sexuality", { required: true })}
+            registerOptions={register("sexuality")}
             options={options.sexualities}
             className="col-span-2"
           />
