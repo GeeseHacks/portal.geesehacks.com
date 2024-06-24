@@ -39,7 +39,7 @@ jobs:
         working-directory: ./frontend
 
       - name: Build Project Artifacts
-        run: vercel build --token=$VERCEL_TOKEN
+        run: vercel build --prod --token=$VERCEL_TOKEN
         working-directory: ./frontend
 
       - name: Deploy Project Artifacts
