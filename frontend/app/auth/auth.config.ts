@@ -1,6 +1,8 @@
 import type { NextAuthConfig } from 'next-auth';
+import GoogleProvider from 'next-auth/providers/google';
+import DiscordProvider from 'next-auth/providers/discord';
 
-export const authConfig = {
+export const authConfig: NextAuthConfig = {
   pages: {
     signIn: '/login',
   },
@@ -17,5 +19,15 @@ export const authConfig = {
       return true;
     },
   },
-  providers: [], // Add providers with an empty array for now
-} satisfies NextAuthConfig;
+  providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
+    DiscordProvider({
+      clientId: process.env.DISCORD_CLIENT_ID,
+      clientSecret: process.env.DISCORD_CLIENT_SECRET,
+    }),
+  ],
+  secret: process.env.AUTH_SECRET,
+};
