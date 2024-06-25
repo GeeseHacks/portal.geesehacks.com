@@ -1,20 +1,32 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import {authenticate} from "@/app/lib/actions"
 import Link from "next/link";
 import { signIn } from "next-auth/react";
+import { useFormState, useFormStatus } from "react-dom";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isButtonActive, setIsButtonActive] = useState(false);
 
+  // ======= login status =======
+  const {pending} = useFormStatus();
+  const [errorMessage, dispatch] = useFormState(() => authenticate(email, password), undefined);
+  const [isButtonActive, setIsButtonActive] = useState(false);
+  // ============================
+
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (pending) {
+      e.preventDefault();
+    }
+  }
   useEffect(() => {
     setIsButtonActive(email !== "" && password !== "");
   }, [email, password]);
 
   return (
     <div className="flex h-screen">
-      <div className="bg-gray-900 text-white flex flex-col justify-center items-start w-full sm:w-1/2 min-w-[300px] px-8 sm:px-12 lg:px-24 xl:px-48">
+      <div className="bg-gray-900 text-white flex flex-col justify-center items-start w-full sm:w-1/2 min-w-[300px] px-8 sm:px-12 lg:px-24 xl:px-40 2xl:px-[13%]">
         <h2 className="mt-2 mb-2 text-left text-4xl font-bold">Welcome</h2>
         <p className="mb-6 mt-3 text-left">Log in to GeeseHacks!</p>
         <div className="flex flex-col gap-4 w-full mb-6">
@@ -46,7 +58,7 @@ const Login: React.FC = () => {
           <span>OR</span>
           <div className="border-t border-gray-600 flex-grow ml-2"></div>
         </div>
-        <form className="flex flex-col gap-4 w-full">
+        <form className="flex flex-col gap-4 w-full" action={dispatch}>
           <label htmlFor="email" className="text-gray-400 ">
             Email
           </label>
@@ -80,6 +92,10 @@ const Login: React.FC = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
           <button
+            // ======= Handle form submit ========
+            onClick={handleClick}
+            aria-disabled={pending}
+            // ===================================
             type="submit"
             className={`py-2 rounded-md mt-4 ${
               isButtonActive
@@ -91,6 +107,11 @@ const Login: React.FC = () => {
             Log in
           </button>
         </form>
+        {/* Display Error Message if encountered error */}
+        {errorMessage && (
+          <p className="text-red-500 text-sm mt-4">{errorMessage}</p>
+        )}
+        
         <div className="flex w-full">
           <p className="mt-4 text-gray-400 text-center text-sm w-full">
             Don't have an account?{" "}
