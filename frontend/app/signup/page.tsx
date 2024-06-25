@@ -17,7 +17,7 @@ const SignUp: React.FC = () => {
 
   return (
     <div className="flex h-screen">
-      <div className="bg-gray-900 text-white flex flex-col justify-center items-start w-full sm:w-1/2 min-w-[300px] px-8 sm:px-12 lg:px-24 xl:px-48">
+      <div className="bg-gray-900 text-white flex flex-col justify-center items-start w-full sm:w-1/2 min-w-[300px] px-8 sm:px-12 lg:px-24 xl:px-40 2xl:px-[13%]">
         <h2 className="mt-2 mb-2 text-left text-4xl font-bold">Welcome</h2>
         <p className="mb-6 mt-3 text-left">
           Make an account with us to continue!
