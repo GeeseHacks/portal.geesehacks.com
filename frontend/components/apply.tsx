@@ -8,6 +8,9 @@ import { options } from "./formAssets/formAssets";
 import { getAgeOptions } from "./formAssets/formAssets";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
+import { fetchCSV } from "./formAssets/csvUtils";
+import { useState } from "react";
+import { useEffect } from "react";
 
 interface InputFieldProps {
   id: string;
@@ -213,6 +216,22 @@ const formSchema = z.object({
 type formSchemaType = z.infer<typeof formSchema>;
 
 const RegistrationForm: React.FC = () => {
+  const [countryOptions, setCountryOptions] = useState<string[]>([]);
+  const [schoolOptions, setSchoolOptions] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchOptions = async () => {
+      const countries = await fetchCSV("/countries.csv");
+      const schools = await fetchCSV("/schools.csv");
+      setCountryOptions(countries);
+      setSchoolOptions(schools);
+    };
+
+    console.log(schoolOptions)
+
+    fetchOptions();
+  }, []);
+  
   const {
     register,
     handleSubmit,
@@ -307,7 +326,7 @@ const RegistrationForm: React.FC = () => {
             id="school"
             label="School *"
             registerOptions={register("school")}
-            options={options.schools}
+            options={schoolOptions}
             className="col-span-1"
             error={errors.school?.message}
           />
@@ -331,7 +350,7 @@ const RegistrationForm: React.FC = () => {
             id="countryOfResidence"
             label="Country of Residence *"
             registerOptions={register("countryOfResidence")}
-            options={options.countries}
+            options={countryOptions}
             className="col-span-1"
             error={errors.countryOfResidence?.message}
           />
