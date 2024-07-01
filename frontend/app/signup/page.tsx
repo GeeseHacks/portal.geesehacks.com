@@ -24,7 +24,7 @@ const SignUp: React.FC = () => {
         </p>
         <div className="flex flex-col gap-4 w-full mb-6">
           <button
-            onClick={() => signIn("google")}
+            onClick={() => signIn("google", {callbackUrl: "http://localhost:3000/apply"})}
             className="bg-white text-black py-2 rounded-md flex items-center justify-center gap-2"
           >
             <img
