@@ -51,7 +51,6 @@ interface SelectFieldProps {
   id: string;
   label: string;
   control: any;
-  //registerOptions: UseFormRegisterReturn;
   options: any[];
   className?: string;
   error?: string;
@@ -81,7 +80,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
             error ? "border-red-500 border-2" : "border-gray-700"
           }`}
           classNamePrefix="react-select"
-          
+          placeholder=""
         />
       )}
     />
@@ -110,6 +109,13 @@ const customStyles = {
     color: 'black',
   }),
   input: (provided: any) => ({
+    ...provided,
+    color: 'black',
+  }),
+  indicatorSeparator: () => ({
+    display: 'none',
+  }),
+  dropdownIndicator: (provided: any) => ({
     ...provided,
     color: 'black',
   }),
