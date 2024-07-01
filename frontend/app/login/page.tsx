@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import {authenticate} from "@/app/lib/actions"
+import { authenticate } from '@/app/lib/actions';
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useFormState, useFormStatus } from "react-dom";
@@ -58,6 +58,7 @@ const Login: React.FC = () => {
           <span>OR</span>
           <div className="border-t border-gray-600 flex-grow ml-2"></div>
         </div>
+        {/* <form className="flex flex-col gap-4 w-full" action={dispatch}> */}
         <form className="flex flex-col gap-4 w-full" action={dispatch}>
           <label htmlFor="email" className="text-gray-400 ">
             Email
@@ -108,9 +109,9 @@ const Login: React.FC = () => {
           </button>
         </form>
         {/* Display Error Message if encountered error */}
-        {errorMessage && (
+        {/* {errorMessage && (
           <p className="text-red-500 text-sm mt-4">{errorMessage}</p>
-        )}
+        )} */}
         
         <div className="flex w-full">
           <p className="mt-4 text-gray-400 text-center text-sm w-full">
