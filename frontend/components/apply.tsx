@@ -1,13 +1,17 @@
 "use client";
 
 import React from "react";
-import { SubmitHandler, useForm, UseFormRegisterReturn } from "react-hook-form";
+import { SubmitHandler, useForm, UseFormRegisterReturn, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { options } from "./formAssets/formAssets";
 import { getAgeOptions } from "./formAssets/formAssets";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
+import { fetchCSV } from "./formAssets/csvUtils";
+import { useState } from "react";
+import { useEffect } from "react";
+import Select from 'react-select'
 
 interface InputFieldProps {
   id: string;
@@ -36,7 +40,7 @@ const InputField: React.FC<InputFieldProps> = ({
       {...registerOptions}
       className={`w-full p-2 border ${
         error ? "border-red-500 border-2" : "border-gray-700"
-      } rounded-lg text-black`}
+      } rounded-lg text-black focus:outline-none`}
       placeholder={placeholder}
     />
     {error && <p className="text-red-500 text-s italic">{error}</p>}
@@ -46,7 +50,7 @@ const InputField: React.FC<InputFieldProps> = ({
 interface SelectFieldProps {
   id: string;
   label: string;
-  registerOptions: UseFormRegisterReturn;
+  control: any;
   options: any[];
   className?: string;
   error?: string;
@@ -55,7 +59,7 @@ interface SelectFieldProps {
 const SelectField: React.FC<SelectFieldProps> = ({
   id,
   label,
-  registerOptions,
+  control,
   options,
   className,
   error,
@@ -64,26 +68,58 @@ const SelectField: React.FC<SelectFieldProps> = ({
     <label className="block mb-2 text-xl font-semibold" htmlFor={id}>
       {label}
     </label>
-    <select
-      id={id}
-      {...registerOptions}
-      className={`custom-select w-full p-2 border ${
-        error ? "border-red-500 border-2" : "border-gray-700"
-      } rounded-lg text-black`}
-    >
-      <option value=""></option>
-      {options.map((option, index) => (
-        <option
-          key={index}
-          value={typeof option === "string" ? option : option.value}
-        >
-          {typeof option === "string" ? option : option.label}
-        </option>
-      ))}
-    </select>
+    <Controller
+      name={id}
+      control={control}
+      render={({ field }) => (
+        <Select
+          {...field}
+          options={options}
+          styles={customStyles}
+          className={`text-black ${
+            error ? "border-red-500 border-2" : "border-gray-700"
+          }`}
+          classNamePrefix="react-select"
+          placeholder=""
+        />
+      )}
+    />
     {error && <p className="text-red-500 text-s italic">{error}</p>}
   </div>
 );
+
+const customStyles = {
+  control: (provided: any, state: { isFocused: any; }) => ({
+    ...provided,
+    width: '100%',
+    padding: '0.13rem',
+    borderRadius: '0.5rem',
+    borderColor: state.isFocused ? '#374151' : '#374151',
+    '&:hover': {
+      borderColor: state.isFocused ? '#374151' : '#374151',
+    },
+    boxShadow: 'none'
+  }),
+  placeholder: (provided: any) => ({
+    ...provided,
+    color: '#9ca3af',
+  }),
+  singleValue: (provided: any) => ({
+    ...provided,
+    color: 'black',
+  }),
+  input: (provided: any) => ({
+    ...provided,
+    color: 'black',
+  }),
+  indicatorSeparator: () => ({
+    display: 'none',
+  }),
+  dropdownIndicator: (provided: any) => ({
+    ...provided,
+    color: 'black',
+  }),
+};
 
 interface TextAreaFieldProps {
   id: string;
@@ -109,7 +145,7 @@ const TextAreaField: React.FC<TextAreaFieldProps> = ({
       {...registerOptions}
       className={`w-full p-2 border ${
         error ? "border-red-500 border-2" : "border-gray-700"
-      } rounded-lg text-black h-48`}
+      } rounded-lg text-black h-48 focus:outline-none`}
       placeholder={placeholder}
     />
     {error && <p className="text-red-500 text-s italic">{error}</p>}
@@ -143,7 +179,7 @@ const ComplexInputField: React.FC<ComplexInputFieldProps> = ({
           id={id}
           type={type}
           {...registerOptions}
-          className="w-full p-2 border border-gray-700 rounded-lg text-black"
+          className="w-full p-2 border border-gray-700 rounded-lg text-black focus:outline-none"
           placeholder={placeholder}
         />
         {error && <p className="text-red-500 text-s italic">{error}</p>}
@@ -213,7 +249,22 @@ const formSchema = z.object({
 type formSchemaType = z.infer<typeof formSchema>;
 
 const RegistrationForm: React.FC = () => {
+  const [countryOptions, setCountryOptions] = useState<{ label: string; value: string }[]>([]);
+  const [schoolOptions, setSchoolOptions] = useState<{ label: string; value: string }[]>([]);
+
+  useEffect(() => {
+    const fetchOptions = async () => {
+      const countries = await fetchCSV("/countries.csv");
+      const schools = await fetchCSV("/schools.csv");
+      setCountryOptions(countries.map((country) => ({ label: country, value: country })));
+      setSchoolOptions(schools.map((school) => ({ label: school, value: school })));
+    };
+
+    fetchOptions();
+  }, []);
+
   const {
+    control,
     register,
     handleSubmit,
     formState: { errors },
@@ -283,7 +334,7 @@ const RegistrationForm: React.FC = () => {
           <SelectField
             id="age"
             label="Age *"
-            registerOptions={register("age")}
+            control={control}
             options={getAgeOptions().map((age) => ({ label: age, value: age }))}
             className="col-span-1"
             error={errors.age?.message}
@@ -306,32 +357,32 @@ const RegistrationForm: React.FC = () => {
           <SelectField
             id="school"
             label="School *"
-            registerOptions={register("school")}
-            options={options.schools}
+            control={control}
+            options={schoolOptions}
             className="col-span-1"
             error={errors.school?.message}
           />
           <SelectField
             id="levelOfStudy"
             label="Level of Study *"
-            registerOptions={register("levelOfStudy")}
-            options={options.levelsOfStudy}
+            control={control}
+            options={options.levelsOfStudy.map((option) => ({ label: option, value: option }))}
             className="col-span-1"
             error={errors.levelOfStudy?.message}
           />
           <SelectField
             id="fieldOfStudy"
             label="Field of Study"
-            registerOptions={register("fieldOfStudy")}
-            options={options.fieldsOfStudy}
+            control={control}
+            options={options.fieldsOfStudy.map((option) => ({ label: option, value: option }))}
             className="col-span-1"
             error={errors.fieldOfStudy?.message}
           />
           <SelectField
             id="countryOfResidence"
             label="Country of Residence *"
-            registerOptions={register("countryOfResidence")}
-            options={options.countries}
+            control={control}
+            options={countryOptions}
             className="col-span-1"
             error={errors.countryOfResidence?.message}
           />
@@ -345,8 +396,8 @@ const RegistrationForm: React.FC = () => {
           <SelectField
             id="dietaryRestrictions"
             label="Dietary Restrictions *"
-            registerOptions={register("dietaryRestrictions")}
-            options={options.dietaryRestrictions}
+            control={control}
+            options={options.dietaryRestrictions.map((option) => ({ label: option, value: option }))}
             className="col-span-1"
             error={errors.dietaryRestrictions?.message}
           />
@@ -360,8 +411,8 @@ const RegistrationForm: React.FC = () => {
           <SelectField
             id="tShirtSize"
             label="T-shirt Size *"
-            registerOptions={register("tShirtSize")}
-            options={options.tShirtSizes}
+            control={control}
+            options={options.tShirtSizes.map((option) => ({ label: option, value: option }))}
             className="col-span-1"
             error={errors.tShirtSize?.message}
           />
@@ -448,40 +499,40 @@ const RegistrationForm: React.FC = () => {
           <SelectField
             id="underrepresented"
             label="Do you identify as part of an underrepresented group in the technology industry?"
-            registerOptions={register("underrepresented")}
-            options={["Yes", "No", "Unsure"]}
+            control={control}
+            options={options.underrepresented.map((option) => ({ label: option, value: option }))}
             className="col-span-2"
             error={errors.underrepresented?.message}
           />
           <SelectField
             id="gender"
             label="Gender"
-            registerOptions={register("gender")}
-            options={options.genders}
+            control={control}
+            options={options.genders.map((option) => ({ label: option, value: option }))}
             className="col-span-2"
             error={errors.gender?.message}
           />
           <SelectField
             id="pronouns"
             label="Pronouns"
-            registerOptions={register("pronouns")}
-            options={options.pronouns}
+            control={control}
+            options={options.pronouns.map((option) => ({ label: option, value: option }))}
             className="col-span-2"
             error={errors.pronouns?.message}
           />
           <SelectField
             id="ethnicity"
             label="Race/Ethnicity"
-            registerOptions={register("ethnicity")}
-            options={options.ethnicities}
+            control={control}
+            options={options.ethnicities.map((option) => ({ label: option, value: option }))}
             className="col-span-2"
             error={errors.ethnicity?.message}
           />
           <SelectField
             id="sexuality"
             label="Do you consider yourself to be any of the following?"
-            registerOptions={register("sexuality")}
-            options={options.sexualities}
+            control={control}
+            options={options.sexualities.map((option) => ({ label: option, value: option }))}
             className="col-span-2"
             error={errors.sexuality?.message}
           />
