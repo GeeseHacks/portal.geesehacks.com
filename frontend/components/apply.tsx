@@ -8,6 +8,8 @@ import { options } from "./formAssets/formAssets";
 import { getAgeOptions } from "./formAssets/formAssets";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
+import { signOutAction } from './utils/signoutAction';
+
 
 interface InputFieldProps {
   id: string;
@@ -262,6 +264,14 @@ const RegistrationForm: React.FC = () => {
 
   return (
     <div className="max-w-5xl mx-auto p-8 text-white">
+      
+      {/* Signout button */}
+      <form action={signOutAction}>
+        <button className="flex h-12 items-center justify-center gap-2 rounded-md bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 p-3 text-sm font-medium text-white shadow-lg transition duration-200 ease-in-out hover:bg-gradient-to-r hover:from-purple-500 hover:via-pink-600 hover:to-red-600 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
+          Sign Out
+        </button>
+      </form>
+
       <h1 className="text-white text-4xl font-bold mb-6">Hacker Information</h1>
       <hr className="border-white pb-6" />
       <form onSubmit={handleSubmit(onSubmit)}>
