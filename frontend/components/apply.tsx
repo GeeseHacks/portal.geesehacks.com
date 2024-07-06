@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { SubmitHandler, useForm, UseFormRegisterReturn } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,7 +8,8 @@ import { options } from "./formAssets/formAssets";
 import { getAgeOptions } from "./formAssets/formAssets";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
-import { signOutAction } from './utils/signoutAction';
+import { signOutAction } from './utils/signOutAction';
+import { useSession } from 'next-auth/react'
 
 
 interface InputFieldProps {
@@ -215,6 +216,8 @@ const formSchema = z.object({
 type formSchemaType = z.infer<typeof formSchema>;
 
 const RegistrationForm: React.FC = () => {
+  const { data: session } = useSession()
+
   const {
     register,
     handleSubmit,
@@ -262,6 +265,7 @@ const RegistrationForm: React.FC = () => {
     }
   };
 
+  
   return (
     <div className="max-w-5xl mx-auto p-8 text-white">
       
@@ -271,7 +275,10 @@ const RegistrationForm: React.FC = () => {
           Sign Out
         </button>
       </form>
-
+      <button onClick={() => {console.log(session)}}>Get Usser</button>
+      <div>
+        {session && <h1>{JSON.stringify(session.user)}</h1>}
+      </div>
       <h1 className="text-white text-4xl font-bold mb-6">Hacker Information</h1>
       <hr className="border-white pb-6" />
       <form onSubmit={handleSubmit(onSubmit)}>
