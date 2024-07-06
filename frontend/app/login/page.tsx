@@ -4,22 +4,42 @@ import { authenticate } from '@/app/lib/actions';
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useFormState, useFormStatus } from "react-dom";
+import { validatePassword } from '@/lib/passwordUtils';
+import { validateEmail } from '@/lib/emailUtils';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
+  const [emailError, setEmailError] = useState<string>("");
 
   // ======= login status =======
-  const {pending} = useFormStatus();
+  const { pending } = useFormStatus();
   const [errorMessage, dispatch] = useFormState(() => authenticate(email, password), undefined);
   const [isButtonActive, setIsButtonActive] = useState(false);
   // ============================
 
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     if (pending) {
       e.preventDefault();
+      return;
     }
-  }
+
+    const emailValidationError = validateEmail(email);
+    const passwordValidationErrors = validatePassword(password);
+
+    if (emailValidationError || passwordValidationErrors.length > 0) {
+      setEmailError(emailValidationError);
+      setPasswordErrors(passwordValidationErrors);
+      e.preventDefault();  // Prevent form submission
+    } else {
+      setEmailError("");
+      setPasswordErrors([]);
+      // Call authenticate here if there are no errors
+      await authenticate(email, password);
+    }
+  };
+
   useEffect(() => {
     setIsButtonActive(email !== "" && password !== "");
   }, [email, password]);
@@ -58,8 +78,7 @@ const Login: React.FC = () => {
           <span>OR</span>
           <div className="border-t border-gray-600 flex-grow ml-2"></div>
         </div>
-        {/* <form className="flex flex-col gap-4 w-full" action={dispatch}> */}
-        <form className="flex flex-col gap-4 w-full" action={dispatch}>
+        <form className="flex flex-col gap-4 w-full" onSubmit={(e) => e.preventDefault()}>
           <label htmlFor="email" className="text-gray-400 ">
             Email
           </label>
@@ -73,6 +92,9 @@ const Login: React.FC = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
+          {emailError && (
+            <p className="text-red-500 text-sm mt-2">{emailError}</p>
+          )}
           <label
             htmlFor="password"
             className="text-gray-400 flex justify-between items-center"
@@ -92,6 +114,13 @@ const Login: React.FC = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+          {passwordErrors.length > 0 && (
+            <ul className="text-red-500 text-sm mt-2 list-disc list-inside">
+              {passwordErrors.map((error, index) => (
+                <li key={index}>{error}</li>
+              ))}
+            </ul>
+          )}
           <button
             // ======= Handle form submit ========
             onClick={handleClick}
@@ -109,9 +138,9 @@ const Login: React.FC = () => {
           </button>
         </form>
         {/* Display Error Message if encountered error */}
-        {/* {errorMessage && (
+        {errorMessage && (
           <p className="text-red-500 text-sm mt-4">{errorMessage}</p>
-        )} */}
+        )}
         
         <div className="flex w-full">
           <p className="mt-4 text-gray-400 text-center text-sm w-full">
