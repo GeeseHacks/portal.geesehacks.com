@@ -14,7 +14,6 @@ async function getUser(email: string): Promise<AuthUser | null> {
     const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/users/${email}`);
     return response.data;
   } catch (error) {
-    // console.error('Failed to fetch user:', error);
     return null;
   }
 }
