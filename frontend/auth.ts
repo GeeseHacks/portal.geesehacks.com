@@ -21,37 +21,36 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     Credentials({
       async authorize(credentials) {
-        return null;
-        // const parsedCredentials = z
-        //   .object({ email: z.string().email(), password: z.string().min(6) })
-        //   .safeParse(credentials);
+        const parsedCredentials = z
+          .object({ email: z.string().email(), password: z.string().min(6) })
+          .safeParse(credentials);
 
-        // if (!parsedCredentials.success) {
-        //   console.log('Invalid credentials format');
-        //   return null;
-        // }
+        if (!parsedCredentials.success) {
+          console.log('Invalid credentials format');
+          return null;
+        }
 
-        // const { email, password } = parsedCredentials.data;
+        const { email, password } = parsedCredentials.data;
 
-        // try {
-        //   const user = await getUser(email);
+        try {
+          const user = await getUser(email);
 
-        //   if (!user) {
-        //     console.log('User not found');
-        //     return null;
-        //   }
+          if (!user) {
+            console.log('User not found');
+            return null;
+          }
 
-        //   const passwordsMatch = await bcrypt.compare(password, user.password);
+          const passwordsMatch = await bcrypt.compare(password, user.password);
 
-        //   if (passwordsMatch) {
-        //     return user;
-        //   } else {
-        //     console.log('Invalid password');
-        //     return null;
-        //   }
-        // } catch (error) {
-        //   return null;
-        // }
+          if (passwordsMatch) {
+            return user;
+          } else {
+            console.log('Invalid password');
+            return null;
+          }
+        } catch (error) {
+          return null;
+        }
       },
     }),
   ],
