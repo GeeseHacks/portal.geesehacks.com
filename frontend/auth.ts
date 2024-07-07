@@ -5,14 +5,14 @@ import { z } from 'zod';
 import type { AuthUser } from '@/app/lib/definitions';
 import bcrypt from 'bcrypt';
 import axios from 'axios';
- 
-async function getUser(email: string): Promise<AuthUser | undefined> {
+
+async function getUser(email: string): Promise<AuthUser | null> {
   try {
     const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/users/${email}`);
     return response.data;
   } catch (error) {
-    console.error('Failed to fetch user:', error);
-    throw new Error('Failed to fetch user.');
+    // console.error('Failed to fetch user:', error);
+    return null;
   }
 }
 
@@ -21,23 +21,37 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     Credentials({
       async authorize(credentials) {
-        const parsedCredentials = z
-          .object({ email: z.string().email(), password: z.string().min(6) })
-          .safeParse(credentials);
+        return null;
+        // const parsedCredentials = z
+        //   .object({ email: z.string().email(), password: z.string().min(6) })
+        //   .safeParse(credentials);
 
-          if (parsedCredentials.success) {
-            const { email, password } = parsedCredentials.data;
+        // if (!parsedCredentials.success) {
+        //   console.log('Invalid credentials format');
+        //   return null;
+        // }
 
-            const user = await getUser(email);
+        // const { email, password } = parsedCredentials.data;
 
-            if (!user) return null;
-            const passwordsMatch = await bcrypt.compare(password, user.password);
-   
-            if (passwordsMatch) return user;
-          }
-   
-          console.log('Invalid credentials');
-          return null;
+        // try {
+        //   const user = await getUser(email);
+
+        //   if (!user) {
+        //     console.log('User not found');
+        //     return null;
+        //   }
+
+        //   const passwordsMatch = await bcrypt.compare(password, user.password);
+
+        //   if (passwordsMatch) {
+        //     return user;
+        //   } else {
+        //     console.log('Invalid password');
+        //     return null;
+        //   }
+        // } catch (error) {
+        //   return null;
+        // }
       },
     }),
   ],

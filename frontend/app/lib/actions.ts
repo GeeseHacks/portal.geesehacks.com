@@ -9,12 +9,7 @@ export async function authenticate(email: string, password: string) {
     await signIn('credentials', {email: email, password: password});
   } catch (error) {
     if (error instanceof AuthError) {
-      switch (error.type) {
-        case 'CredentialsSignin':
-          return 'Invalid credentials.';
-        default:
-          return 'Something went wrong.';
-      }
+      return 'Invalid username or password';
     }
     throw error;
   }

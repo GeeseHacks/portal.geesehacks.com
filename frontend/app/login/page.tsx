@@ -20,6 +20,7 @@ const Login: React.FC = () => {
   // ============================
 
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    
     if (pending) {
       e.preventDefault();
       return;
@@ -78,7 +79,7 @@ const Login: React.FC = () => {
           <span>OR</span>
           <div className="border-t border-gray-600 flex-grow ml-2"></div>
         </div>
-        <form className="flex flex-col gap-4 w-full" onSubmit={(e) => e.preventDefault()}>
+        <form className="flex flex-col gap-4 w-full" action={dispatch}>
           <label htmlFor="email" className="text-gray-400 ">
             Email
           </label>
