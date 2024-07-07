@@ -19,6 +19,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.52.0",
+    "react-hot-toast": "^2.4.1",
     "swagger-ui-express": "^5.0.1",
     "uuid": "^10.0.0",
     "yamljs": "^0.3.0",
