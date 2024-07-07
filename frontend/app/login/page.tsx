@@ -3,30 +3,21 @@ import React, { useState, useEffect } from "react";
 import { authenticate } from '@/app/lib/actions';
 import Link from "next/link";
 import { signIn } from "next-auth/react";
-import { useFormState, useFormStatus } from "react-dom";
 import { validatePassword } from '@/lib/passwordUtils';
 import { validateEmail } from '@/lib/emailUtils';
 import { signInActionGoogle } from "@/components/utils/signInActionGoogle";
 import { signInActionDiscord } from "@/components/utils/signInActionDiscord";
+import toast, { Toaster } from 'react-hot-toast';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
   const [emailError, setEmailError] = useState<string>("");
-
-  // ======= login status =======
-  const { pending } = useFormStatus();
-  const [errorMessage, dispatch] = useFormState(() => authenticate(email, password), undefined);
   const [isButtonActive, setIsButtonActive] = useState(false);
-  // ============================
 
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    
-    if (pending) {
-      e.preventDefault();
-      return;
-    }
+    e.preventDefault();
 
     const emailValidationError = validateEmail(email);
     const passwordValidationErrors = validatePassword(password);
@@ -34,12 +25,24 @@ const Login: React.FC = () => {
     if (emailValidationError || passwordValidationErrors.length > 0) {
       setEmailError(emailValidationError);
       setPasswordErrors(passwordValidationErrors);
-      e.preventDefault();  // Prevent form submission
     } else {
       setEmailError("");
       setPasswordErrors([]);
-      // Call authenticate here if there are no errors
-      await authenticate(email, password);
+
+      const promise = authenticate(email, password);
+
+      toast.promise(promise, {
+        loading: 'Logging in...',
+        success: 'Logged in successfully!',
+        error: (err) => err.message || 'Failed to log in',
+      })
+      .then(data => {
+        console.log('Success:', data);
+        // Redirect or other success actions
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
     }
   };
 
@@ -79,7 +82,7 @@ const Login: React.FC = () => {
           <span>OR</span>
           <div className="border-t border-gray-600 flex-grow ml-2"></div>
         </div>
-        <form className="flex flex-col gap-4 w-full" action={dispatch}>
+        <form className="flex flex-col gap-4 w-full" noValidate>
           <label htmlFor="email" className="text-gray-400 ">
             Email
           </label>
@@ -125,7 +128,7 @@ const Login: React.FC = () => {
           <button
             // ======= Handle form submit ========
             onClick={handleClick}
-            aria-disabled={pending}
+            aria-disabled={isButtonActive ? "false" : "true"}
             // ===================================
             type="submit"
             className={`py-2 rounded-md mt-4 ${
@@ -138,11 +141,6 @@ const Login: React.FC = () => {
             Log in
           </button>
         </form>
-        {/* Display Error Message if encountered error */}
-        {errorMessage && (
-          <p className="text-red-500 text-sm mt-4">{errorMessage}</p>
-        )}
-        
         <div className="flex w-full">
           <p className="mt-4 text-gray-400 text-center text-sm w-full">
             Don't have an account?{" "}
@@ -156,6 +154,7 @@ const Login: React.FC = () => {
         className="bg-cover bg-center w-0 sm:w-1/2"
         style={{ backgroundImage: "url('/static/images/background.png')" }}
       ></div>
+      <Toaster />
     </div>
   );
 };
