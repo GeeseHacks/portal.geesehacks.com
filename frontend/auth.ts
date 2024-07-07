@@ -1,12 +1,13 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { authConfig } from './auth.config';
-import { z } from 'zod';
 import type { AuthUser } from '@/app/lib/definitions';
 import bcrypt from 'bcrypt';
 import axios from 'axios';
-import Google from "next-auth/providers/google"
-import Discord from "next-auth/providers/discord"
+import Google from "next-auth/providers/google";
+import Discord from "next-auth/providers/discord";
+import { validateEmail } from '@/lib/emailUtils';
+import { validatePassword } from '@/lib/passwordUtils';
 
 async function getUser(email: string): Promise<AuthUser | null> {
   try {
@@ -20,19 +21,25 @@ async function getUser(email: string): Promise<AuthUser | null> {
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
-  providers: [ Google, Discord,
+  providers: [
+    Google,
+    Discord,
     Credentials({
-      async authorize(credentials) {
-        const parsedCredentials = z
-          .object({ email: z.string().email(), password: z.string().min(6) })
-          .safeParse(credentials);
+      async authorize(credentials: Record<string, any>) {
+        const { email, password } = credentials as { email: string, password: string };
 
-        if (!parsedCredentials.success) {
-          console.log('Invalid credentials format');
+        const emailError = validateEmail(email);
+        const passwordErrors = validatePassword(password);
+
+        if (emailError) {
+          console.log('Invalid email format:', emailError);
           return null;
         }
 
-        const { email, password } = parsedCredentials.data;
+        if (passwordErrors.length > 0) {
+          console.log('Invalid password format:', passwordErrors.join(', '));
+          return null;
+        }
 
         try {
           const user = await getUser(email);
