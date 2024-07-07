@@ -20,12 +20,12 @@ const Login: React.FC = () => {
   // ============================
 
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    
     if (pending) {
       e.preventDefault();
       return;
     }
 
+    // These return the error messages. An empty string means no error.
     const emailValidationError = validateEmail(email);
     const passwordValidationErrors = validatePassword(password);
 
