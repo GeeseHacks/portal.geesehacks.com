@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
+import { signInActionGoogle } from "@/components/utils/signInActionGoogle";
+import { signInActionDiscord } from "@/components/utils/signInActionDiscord";
 
 const SignUp: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -23,28 +25,26 @@ const SignUp: React.FC = () => {
           Make an account with us to continue!
         </p>
         <div className="flex flex-col gap-4 w-full mb-6">
-          <button
-            onClick={() => signIn("google", {callbackUrl: "http://localhost:3000/apply"})}
-            className="bg-white text-black py-2 rounded-md flex items-center justify-center gap-2"
-          >
-            <img
-              src="/static/icons/google-icon.png"
-              alt="Google"
-              className="h-6 w-6"
-            />
-            Sign Up with Google
-          </button>
-          <button
-            onClick={() => signIn("discord")}
-            className="bg-white text-black py-2 rounded-md flex items-center justify-center gap-2"
-          >
-            <img
-              src="/static/icons/discord-icon.png"
-              alt="Discord"
-              className="h-6 w-7"
-            />
-            Sign Up with Discord
-          </button>
+          <form className="bg-white text-black py-2 rounded-md flex items-center justify-center gap-2" action={signInActionGoogle}>
+            <button className="flex gap-2">
+              <img
+                src="/static/icons/google-icon.png"
+                alt="Google"
+                className="h-6 w-6"
+              />
+              Sign Up with Google
+            </button>
+          </form>
+          <form className="bg-white text-black py-2 rounded-md flex items-center justify-center gap-2" action={signInActionDiscord}>
+            <button className="flex gap-2">
+              <img
+                src="/static/icons/discord-icon.png"
+                alt="Google"
+                className="h-6 w-7"
+              />
+              Sign Up with Discord
+            </button>
+          </form>
         </div>
         <div className="flex items-center w-full mb-4">
           <div className="border-t border-gray-600 flex-grow mr-2"></div>
