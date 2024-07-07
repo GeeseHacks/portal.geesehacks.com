@@ -6,6 +6,8 @@ import { signIn } from "next-auth/react";
 import { useFormState, useFormStatus } from "react-dom";
 import { validatePassword } from '@/lib/passwordUtils';
 import { validateEmail } from '@/lib/emailUtils';
+import { signInActionGoogle } from "@/components/utils/signInActionGoogle";
+import { signInActionDiscord } from "@/components/utils/signInActionDiscord";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -51,28 +53,26 @@ const Login: React.FC = () => {
         <h2 className="mt-2 mb-2 text-left text-4xl font-bold">Welcome</h2>
         <p className="mb-6 mt-3 text-left">Log in to GeeseHacks!</p>
         <div className="flex flex-col gap-4 w-full mb-6">
-          <button
-            onClick={() => signIn("google")}
-            className="bg-white text-black py-2 rounded-md flex items-center justify-center gap-2"
-          >
-            <img
-              src="/static/icons/google-icon.png"
-              alt="Google"
-              className="h-6 w-6"
-            />
-            Log in with Google
-          </button>
-          <button
-            onClick={() => signIn("discord")}
-            className="bg-white text-black py-2 rounded-md flex items-center justify-center gap-2"
-          >
-            <img
-              src="/static/icons/discord-icon.png"
-              alt="Discord"
-              className="h-6 w-7"
-            />
-            Log in with Discord
-          </button>
+          <form className="bg-white text-black py-2 rounded-md flex items-center justify-center gap-2" action={signInActionGoogle}>
+            <button className="flex gap-2">
+              <img
+                src="/static/icons/google-icon.png"
+                alt="Google"
+                className="h-6 w-6"
+              />
+              Log in with Google
+            </button>
+          </form>
+          <form className="bg-white text-black py-2 rounded-md flex items-center justify-center gap-2" action={signInActionDiscord}>
+            <button className="flex gap-2">
+              <img
+                src="/static/icons/discord-icon.png"
+                alt="Google"
+                className="h-6 w-7"
+              />
+              Log in with Discord
+            </button>
+          </form>
         </div>
         <div className="flex items-center w-full mb-4">
           <div className="border-t border-gray-600 flex-grow mr-2"></div>

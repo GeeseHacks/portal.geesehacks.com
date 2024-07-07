@@ -5,6 +5,8 @@ import { z } from 'zod';
 import type { AuthUser } from '@/app/lib/definitions';
 import bcrypt from 'bcrypt';
 import axios from 'axios';
+import Google from "next-auth/providers/google"
+import Discord from "next-auth/providers/discord"
 
 async function getUser(email: string): Promise<AuthUser | null> {
   try {
@@ -18,7 +20,7 @@ async function getUser(email: string): Promise<AuthUser | null> {
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
-  providers: [
+  providers: [ Google, Discord,
     Credentials({
       async authorize(credentials) {
         const parsedCredentials = z
