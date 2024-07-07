@@ -1,5 +1,5 @@
 import type { NextAuthConfig } from 'next-auth';
- 
+
 export const authConfig = {
   pages: {
     signIn: '/login',
@@ -16,8 +16,15 @@ export const authConfig = {
       }
       return true;
     },
-    jwt({ token, user }) {
-      if (user) {
+    jwt({ token, user, account, profile }) {
+      if (profile && account?.provider === 'google') {
+        token.id = profile.sub;
+      }
+      else if (profile && account?.provider === 'discord') {
+        token.id = profile.sub;
+      }
+
+      else if (user) {
         token.id = user.id;
       }
       console.log("User:", user);
