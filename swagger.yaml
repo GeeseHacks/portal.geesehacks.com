@@ -13,17 +13,20 @@ tags:
   - name: application-responses
     description: Application responses related endpoints
 paths:
-  /api/auth/users/{email}:
-    get:
+  /api/auth/users:
+    post:
       tags:
         - auth
-      summary: Get a user's login details (password)
-      parameters:
-        - name: email
-          in: path
-          required: true
-          schema:
-            type: string
+      summary: Get a user's login details
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: test@example.com
       responses:
         '200':
           description: Login details
@@ -31,7 +34,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/users_auth'
-  /api/auth/users:
+  /api/auth/signup:
     post:
       tags:
         - auth
