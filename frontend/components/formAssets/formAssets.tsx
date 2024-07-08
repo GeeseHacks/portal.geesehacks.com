@@ -19,7 +19,6 @@ export const options = {
     "Other (Please Specify)",
     "Prefer Not to Answer",
   ],
-  schools: ["School 1", "School 2"],
   levelsOfStudy: [
     "High School",
     "Undergraduate University (2 year - community college or similar)",

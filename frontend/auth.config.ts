@@ -1,5 +1,5 @@
 import type { NextAuthConfig } from 'next-auth';
- 
+
 export const authConfig = {
   pages: {
     signIn: '/login',
@@ -15,6 +15,24 @@ export const authConfig = {
         return Response.redirect(new URL('/apply', nextUrl));
       }
       return true;
+    },
+    jwt({ token, user, account, profile }) {
+      if (profile && account?.provider === 'google') {
+        token.id = profile.sub;
+      }
+      else if (profile && account?.provider === 'discord') {
+        token.id = profile.sub;
+      }
+
+      else if (user) {
+        token.id = user.id;
+      }
+      console.log("User:", user);
+      return token;
+    },
+    session({ session, token }) {
+      session.user.id = token.id as string
+      return session
     },
   },
   providers: [], // Add providers with an empty array for now
