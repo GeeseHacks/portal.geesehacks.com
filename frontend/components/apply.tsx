@@ -1,7 +1,12 @@
 "use client";
 
 import React from "react";
-import { SubmitHandler, useForm, UseFormRegisterReturn, Controller } from "react-hook-form";
+import {
+  SubmitHandler,
+  useForm,
+  UseFormRegisterReturn,
+  Controller,
+} from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { options } from "./formAssets/formAssets";
@@ -11,7 +16,10 @@ import { v4 as uuidv4 } from "uuid";
 import { fetchCSV } from "./formAssets/csvUtils";
 import { useState } from "react";
 import { useEffect } from "react";
-import Select from 'react-select'
+import Select from "react-select";
+import PhoneInputWithCountry from "react-phone-number-input/react-hook-form";
+import { isValidPhoneNumber } from "react-phone-number-input/input";
+import "react-phone-number-input/style.css";
 
 interface InputFieldProps {
   id: string;
@@ -89,35 +97,35 @@ const SelectField: React.FC<SelectFieldProps> = ({
 );
 
 const customStyles = {
-  control: (provided: any, state: { isFocused: any; }) => ({
+  control: (provided: any, state: { isFocused: any }) => ({
     ...provided,
-    width: '100%',
-    padding: '0.13rem',
-    borderRadius: '0.5rem',
-    borderColor: state.isFocused ? '#374151' : '#374151',
-    '&:hover': {
-      borderColor: state.isFocused ? '#374151' : '#374151',
+    width: "100%",
+    padding: "0.13rem",
+    borderRadius: "0.5rem",
+    borderColor: state.isFocused ? "#374151" : "#374151",
+    "&:hover": {
+      borderColor: state.isFocused ? "#374151" : "#374151",
     },
-    boxShadow: 'none'
+    boxShadow: "none",
   }),
   placeholder: (provided: any) => ({
     ...provided,
-    color: '#9ca3af',
+    color: "#9ca3af",
   }),
   singleValue: (provided: any) => ({
     ...provided,
-    color: 'black',
+    color: "black",
   }),
   input: (provided: any) => ({
     ...provided,
-    color: 'black',
+    color: "black",
   }),
   indicatorSeparator: () => ({
-    display: 'none',
+    display: "none",
   }),
   dropdownIndicator: (provided: any) => ({
     ...provided,
-    color: 'black',
+    color: "black",
   }),
 };
 
@@ -192,9 +200,7 @@ const formSchema = z.object({
   firstName: z.string().min(1, { message: "First name is required" }),
   lastName: z.string().min(1, { message: "Last name is required" }),
   email: z.string().email({ message: "Invalid email address" }),
-  phoneNumber: z.string().regex(/^\d{3}-\d{3}-\d{4}$/, {
-    message: "Phone number must be in the format xxx-xxx-xxxx",
-  }),
+  phoneNumber: z.string().refine(isValidPhoneNumber, "Invalid phone number"),
   school: z.string().min(1, { message: "School is required" }),
   levelOfStudy: z.string().min(1, { message: "Level of study is required" }),
   countryOfResidence: z.string().min(1, { message: "Country is required" }),
@@ -249,15 +255,23 @@ const formSchema = z.object({
 type formSchemaType = z.infer<typeof formSchema>;
 
 const RegistrationForm: React.FC = () => {
-  const [countryOptions, setCountryOptions] = useState<{ label: string; value: string }[]>([]);
-  const [schoolOptions, setSchoolOptions] = useState<{ label: string; value: string }[]>([]);
+  const [countryOptions, setCountryOptions] = useState<
+    { label: string; value: string }[]
+  >([]);
+  const [schoolOptions, setSchoolOptions] = useState<
+    { label: string; value: string }[]
+  >([]);
 
   useEffect(() => {
     const fetchOptions = async () => {
       const countries = await fetchCSV("/countries.csv");
       const schools = await fetchCSV("/schools.csv");
-      setCountryOptions(countries.map((country) => ({ label: country, value: country })));
-      setSchoolOptions(schools.map((school) => ({ label: school, value: school })));
+      setCountryOptions(
+        countries.map((country) => ({ label: country, value: country }))
+      );
+      setSchoolOptions(
+        schools.map((school) => ({ label: school, value: school }))
+      );
     };
 
     fetchOptions();
@@ -347,13 +361,41 @@ const RegistrationForm: React.FC = () => {
             type="email"
             error={errors.email?.message}
           />
-          <ComplexInputField
+          {/* <ComplexInputField
             id="phoneNumber"
             label="Phone Number *"
             registerOptions={register("phoneNumber")}
             placeholder="123-456-7890"
             error={errors.phoneNumber?.message}
-          />
+          /> */}
+          <div className="col-span-1">
+            <label
+              className="block mb-2 text-xl font-semibold"
+              htmlFor="phoneNumber"
+            >
+              Phone Number
+            </label>
+            <PhoneInputWithCountry
+              name="phoneNumber"
+              control={control}
+              defaultCountry="CA"
+              placeholder="Enter phone number"
+              className={`text-black ${
+                errors.phoneNumber
+                  ? "border-red-500 border-2"
+                  : "border-gray-700"
+              }`}
+              classNamePrefix="react-select"
+              styles={customStyles}
+            />
+
+            {errors.phoneNumber && (
+              <p className="text-red-500 text-s italic">
+                {errors.phoneNumber.message}
+              </p>
+            )}
+          </div>
+
           <SelectField
             id="school"
             label="School *"
@@ -366,7 +408,10 @@ const RegistrationForm: React.FC = () => {
             id="levelOfStudy"
             label="Level of Study *"
             control={control}
-            options={options.levelsOfStudy.map((option) => ({ label: option, value: option }))}
+            options={options.levelsOfStudy.map((option) => ({
+              label: option,
+              value: option,
+            }))}
             className="col-span-1"
             error={errors.levelOfStudy?.message}
           />
@@ -374,7 +419,10 @@ const RegistrationForm: React.FC = () => {
             id="fieldOfStudy"
             label="Field of Study"
             control={control}
-            options={options.fieldsOfStudy.map((option) => ({ label: option, value: option }))}
+            options={options.fieldsOfStudy.map((option) => ({
+              label: option,
+              value: option,
+            }))}
             className="col-span-1"
             error={errors.fieldOfStudy?.message}
           />
@@ -397,7 +445,10 @@ const RegistrationForm: React.FC = () => {
             id="dietaryRestrictions"
             label="Dietary Restrictions *"
             control={control}
-            options={options.dietaryRestrictions.map((option) => ({ label: option, value: option }))}
+            options={options.dietaryRestrictions.map((option) => ({
+              label: option,
+              value: option,
+            }))}
             className="col-span-1"
             error={errors.dietaryRestrictions?.message}
           />
@@ -412,7 +463,10 @@ const RegistrationForm: React.FC = () => {
             id="tShirtSize"
             label="T-shirt Size *"
             control={control}
-            options={options.tShirtSizes.map((option) => ({ label: option, value: option }))}
+            options={options.tShirtSizes.map((option) => ({
+              label: option,
+              value: option,
+            }))}
             className="col-span-1"
             error={errors.tShirtSize?.message}
           />
@@ -500,7 +554,10 @@ const RegistrationForm: React.FC = () => {
             id="underrepresented"
             label="Do you identify as part of an underrepresented group in the technology industry?"
             control={control}
-            options={options.underrepresented.map((option) => ({ label: option, value: option }))}
+            options={options.underrepresented.map((option) => ({
+              label: option,
+              value: option,
+            }))}
             className="col-span-2"
             error={errors.underrepresented?.message}
           />
@@ -508,7 +565,10 @@ const RegistrationForm: React.FC = () => {
             id="gender"
             label="Gender"
             control={control}
-            options={options.genders.map((option) => ({ label: option, value: option }))}
+            options={options.genders.map((option) => ({
+              label: option,
+              value: option,
+            }))}
             className="col-span-2"
             error={errors.gender?.message}
           />
@@ -516,7 +576,10 @@ const RegistrationForm: React.FC = () => {
             id="pronouns"
             label="Pronouns"
             control={control}
-            options={options.pronouns.map((option) => ({ label: option, value: option }))}
+            options={options.pronouns.map((option) => ({
+              label: option,
+              value: option,
+            }))}
             className="col-span-2"
             error={errors.pronouns?.message}
           />
@@ -524,7 +587,10 @@ const RegistrationForm: React.FC = () => {
             id="ethnicity"
             label="Race/Ethnicity"
             control={control}
-            options={options.ethnicities.map((option) => ({ label: option, value: option }))}
+            options={options.ethnicities.map((option) => ({
+              label: option,
+              value: option,
+            }))}
             className="col-span-2"
             error={errors.ethnicity?.message}
           />
@@ -532,7 +598,10 @@ const RegistrationForm: React.FC = () => {
             id="sexuality"
             label="Do you consider yourself to be any of the following?"
             control={control}
-            options={options.sexualities.map((option) => ({ label: option, value: option }))}
+            options={options.sexualities.map((option) => ({
+              label: option,
+              value: option,
+            }))}
             className="col-span-2"
             error={errors.sexuality?.message}
           />
