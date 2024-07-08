@@ -11,12 +11,25 @@ import { validatePassword } from '@/lib/passwordUtils';
 
 async function getUser(email: string): Promise<AuthUser | null> {
   try {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/users/${email}`);
-    return response.data;
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/users`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    if (response.ok) {
+      return await response.json();
+    } else {
+      return null;
+    }
   } catch (error) {
+    console.error('Error fetching user:', error);
     return null;
   }
 }
+
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,

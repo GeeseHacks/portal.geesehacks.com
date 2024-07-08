@@ -27,7 +27,6 @@ export const authConfig = {
       else if (user) {
         token.id = user.id;
       }
-      console.log("User:", user);
       return token;
     },
     session({ session, token }) {

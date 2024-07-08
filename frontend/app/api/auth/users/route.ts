@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@lib/prisma'; // Import the initialized Prisma client
 
-// Handler for GET requests
-export async function GET(request: NextRequest, { params }: { params: { email: string } }) {
+// Handler for POST requests
+export async function POST(request: NextRequest) {
   try {
-    const email = params.email;
+    // Parse the JSON body from the request
+    const { email } = await request.json();
 
-    // Find the unique user by ID using Prisma
+    // Find the unique user by email using Prisma
     const user = await prisma.user_auth.findUnique({
       where: { email: email },
     });
