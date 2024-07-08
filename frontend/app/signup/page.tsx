@@ -1,18 +1,79 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation"; // Import from next/navigation
 import { signIn } from "next-auth/react";
+import { signInActionGoogle } from "@/components/utils/signInActionGoogle";
+import { signInActionDiscord } from "@/components/utils/signInActionDiscord";
+import { validatePassword } from '@/lib/passwordUtils';
+import { validateEmail } from '@/lib/emailUtils';
+import toast, { Toaster } from 'react-hot-toast';
 
 const SignUp: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [verifyPassword, setVerifyPassword] = useState("");
+  const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
+  const [emailError, setEmailError] = useState<string>("");
+  const [verifyPasswordError, setVerifyPasswordError] = useState<string>("");
   const [isButtonActive, setIsButtonActive] = useState(false);
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const emailValidationError = validateEmail(email);
+    const passwordValidationErrors = validatePassword(password);
+
+    if (emailValidationError || passwordValidationErrors.length > 0) {
+      setEmailError(emailValidationError);
+      setPasswordErrors(passwordValidationErrors);
+    } else {
+      setEmailError("");
+      setPasswordErrors([]);
+
+      if (password !== verifyPassword) {
+        setVerifyPasswordError("Passwords do not match");
+        return;
+      }
+
+      setVerifyPasswordError("");
+
+      // Show a promise toast while waiting for the API response
+      const promise = fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      })
+      .then(async response => {
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data.message || 'Failed to register user');
+        }
+        return response.json();
+      });
+
+      toast.promise(promise, {
+        loading: 'Registering user...',
+        success: 'User registered successfully!',
+        error: (err) => err.message,
+      })
+      .then(data => {
+        console.log('Success:', data);
+        router.push('/login'); // Redirect to the login page on success
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }
+  };
 
   useEffect(() => {
-    setIsButtonActive(
-      email !== "" && password !== "" && password === verifyPassword
-    );
+    const arePasswordsMatching = password === verifyPassword;
+    setVerifyPasswordError(arePasswordsMatching ? "" : "Passwords do not match");
+    setIsButtonActive(email !== "" && password !== "" && arePasswordsMatching);
   }, [email, password, verifyPassword]);
 
   return (
@@ -23,35 +84,33 @@ const SignUp: React.FC = () => {
           Make an account with us to continue!
         </p>
         <div className="flex flex-col gap-4 w-full mb-6">
-          <button
-            onClick={() => signIn("google", {callbackUrl: "http://localhost:3000/apply"})}
-            className="bg-white text-black py-2 rounded-md flex items-center justify-center gap-2"
-          >
-            <img
-              src="/static/icons/google-icon.png"
-              alt="Google"
-              className="h-6 w-6"
-            />
-            Sign Up with Google
-          </button>
-          <button
-            onClick={() => signIn("discord")}
-            className="bg-white text-black py-2 rounded-md flex items-center justify-center gap-2"
-          >
-            <img
-              src="/static/icons/discord-icon.png"
-              alt="Discord"
-              className="h-6 w-7"
-            />
-            Sign Up with Discord
-          </button>
+          <form className="bg-white text-black py-2 rounded-md flex items-center justify-center gap-2" action={signInActionGoogle}>
+            <button className="flex gap-2">
+              <img
+                src="/static/icons/google-icon.png"
+                alt="Google"
+                className="h-6 w-6"
+              />
+              Sign Up with Google
+            </button>
+          </form>
+          <form className="bg-white text-black py-2 rounded-md flex items-center justify-center gap-2" action={signInActionDiscord}>
+            <button className="flex gap-2">
+              <img
+                src="/static/icons/discord-icon.png"
+                alt="Google"
+                className="h-6 w-7"
+              />
+              Sign Up with Discord
+            </button>
+          </form>
         </div>
         <div className="flex items-center w-full mb-4">
           <div className="border-t border-gray-600 flex-grow mr-2"></div>
           <span className="text-gray-500">OR</span>
           <div className="border-t border-gray-600 flex-grow ml-2"></div>
         </div>
-        <form className="flex flex-col gap-4 w-full">
+        <form className="flex flex-col gap-4 w-full" onSubmit={handleSubmit} noValidate>
           <label htmlFor="email" className="text-gray-400">
             Email
           </label>
@@ -65,6 +124,9 @@ const SignUp: React.FC = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
+          {emailError && (
+            <p className="text-red-500 text-sm mt-2">{emailError}</p>
+          )}
           <label htmlFor="password" className="text-gray-400">
             Password
           </label>
@@ -78,6 +140,13 @@ const SignUp: React.FC = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+          {passwordErrors.length > 0 && (
+            <ul className="text-red-500 text-sm mt-2 list-disc list-inside">
+              {passwordErrors.map((error, index) => (
+                <li key={index}>{error}</li>
+              ))}
+            </ul>
+          )}
           <label htmlFor="verify-password" className="text-gray-400">
             Verify Password
           </label>
@@ -91,13 +160,12 @@ const SignUp: React.FC = () => {
             value={verifyPassword}
             onChange={(e) => setVerifyPassword(e.target.value)}
           />
+          {verifyPasswordError && (
+            <p className="text-red-500 text-sm mt-2">{verifyPasswordError}</p>
+          )}
           <button
             type="submit"
-            className={`py-2 rounded-md mt-4 ${
-              isButtonActive
-                ? "bg-blue-600 text-white"
-                : "bg-gray-600 text-gray-400"
-            }`}
+            className={`py-2 rounded-md mt-4 ${isButtonActive ? "bg-blue-600 text-white" : "bg-gray-600 text-gray-400"}`}
             disabled={!isButtonActive}
           >
             Sign Up
@@ -116,6 +184,7 @@ const SignUp: React.FC = () => {
         className="bg-cover bg-center w-0 sm:w-1/2"
         style={{ backgroundImage: "url('/static/images/background.png')" }}
       ></div>
+      <Toaster />
     </div>
   );
 };
