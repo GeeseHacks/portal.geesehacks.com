@@ -161,6 +161,7 @@ const TextAreaField: React.FC<TextAreaFieldProps> = ({
 );
 
 interface ComplexInputFieldProps {
+  className: string;
   id: string;
   label: string;
   registerOptions: any;
@@ -176,23 +177,20 @@ const ComplexInputField: React.FC<ComplexInputFieldProps> = ({
   placeholder,
   type = "text",
   error,
+  className,
 }) => (
-  <div className="col-span-1 md:col-span-2">
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12">
-      <div className="col-span-1">
-        <label className="block mb-2 text-xl font-bold" htmlFor={id}>
-          {label}
-        </label>
-        <input
-          id={id}
-          type={type}
-          {...registerOptions}
-          className="w-full p-2 border border-gray-700 rounded-lg text-black focus:outline-none"
-          placeholder={placeholder}
-        />
-        {error && <p className="text-red-500 text-s italic">{error}</p>}
-      </div>
-    </div>
+  <div className={className}>
+    <label className="block mb-2 text-xl font-bold" htmlFor={id}>
+      {label}
+    </label>
+    <input
+      id={id}
+      type={type}
+      {...registerOptions}
+      className="w-full p-2 border border-gray-700 rounded-lg text-black focus:outline-none"
+      placeholder={placeholder}
+    />
+    {error && <p className="text-red-500 text-s italic">{error}</p>}
   </div>
 );
 
@@ -368,7 +366,7 @@ const RegistrationForm: React.FC = () => {
             placeholder="123-456-7890"
             error={errors.phoneNumber?.message}
           /> */}
-          <div className="col-span-1">
+          {/* <div className="col-span-1">
             <label
               className="block mb-2 text-xl font-semibold"
               htmlFor="phoneNumber"
@@ -394,6 +392,29 @@ const RegistrationForm: React.FC = () => {
                 {errors.phoneNumber.message}
               </p>
             )}
+          </div> */}
+          <div className="col-span-1">
+            <label
+              className="block mb-2 text-xl font-semibold"
+              htmlFor="phoneNumber"
+            >
+              Phone Number
+            </label>
+            <PhoneInputWithCountry
+              name="phoneNumber"
+              control={control}
+              defaultCountry="CA"
+              placeholder="Enter phone number"
+              className={`bg-white text-black w-full p-2 border border-gray-700 rounded-lg ${
+                errors.phoneNumber
+                  ? "border-red-500 border-2"
+                  : "border-gray-700"
+              }`}
+              classNamePrefix="react-select"
+              numberInputProps={{
+                className: "px-1 focus:outline-none",
+              }}
+            />
           </div>
 
           <SelectField
@@ -439,6 +460,7 @@ const RegistrationForm: React.FC = () => {
             label="Address"
             registerOptions={register("address")}
             placeholder="Enter address"
+            className="col-span-1"
             error={errors.address?.message}
           />
           <SelectField
