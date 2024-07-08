@@ -5,10 +5,95 @@ info:
   description: API Documentation for the Registration Portal
 servers:
   - url: http://localhost:3000
-    description: Local server (would be replaced with production server URL)
+    description: Would require other production server
+tags:
+  - name: auth
+    description: Authentication related endpoints
+  - name: users
+    description: User related endpoints
+  - name: application-responses
+    description: Application responses related endpoints
 paths:
+  /api/auth/users/{email}:
+    get:
+      tags:
+        - auth
+      summary: Get a user's login details (password)
+      parameters:
+        - name: email
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Login details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/users_auth'
+  /api/auth/users:
+    post:
+      tags:
+        - auth
+      summary: Create a new user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: user@example.com
+                password:
+                  type: string
+                  example: secret_password
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User created successfully
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Email and password are required
+        '409':
+          description: User already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User already exists
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Failed to create user
   /api/users/{id}:
     get:
+      tags:
+        - users
       summary: Get a user by ID
       parameters:
         - name: id
@@ -23,14 +108,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/users'
-        '404':
-          description: The resource was not found
-        '500':
-          description: Internal Server Error
-
-              
   /api/users:
     post:
+      tags:
+        - users
       summary: Create a new user with fields in the users table
       requestBody:
         content:
@@ -40,9 +121,10 @@ paths:
       responses:
         '201':
           description: User created
-
   /api/application-responses/{id}:
     get:
+      tags:
+        - application-responses
       summary: Get an application response by user ID
       parameters:
         - name: id
@@ -59,6 +141,8 @@ paths:
                 $ref: '#/components/schemas/application_responses'
   /api/application-responses:
     post:
+      tags:
+        - application-responses
       summary: Create a new application response in the application_responses table
       requestBody:
         content:
@@ -68,9 +152,17 @@ paths:
       responses:
         '201':
           description: Application response created
-
 components:
   schemas:
+    users_auth:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        password:
+          type: string
     users:
       type: object
       properties:
@@ -92,7 +184,7 @@ components:
           description: The user's email address.
         phone_number:
           type: string
-          description: The user's telephone number (should we incorporate regular expression?).
+          description: The user's telephone number.
         school:
           type: string
           description: The name of the school or university the user attends or attended.
@@ -134,10 +226,10 @@ components:
           description: The user's racial or ethnic background.
         optional_consider:
           type: string
-          description: The question "do you consider yourself the following?"
+          description: The question "Do you consider yourself to be any of the following? (Select all that apply)"
         MLH_authorize:
           type: boolean
-          description: Consent given by the user for Major League Hacking (MLH) to use their data (send email).
+          description: Consent given by the user for Major League Hacking (MLH) to use their data (and send email).
         resume:
           type: string
           format: uri
@@ -148,7 +240,6 @@ components:
         other_dietary_restrictions:
           type: string
           description: Additional dietary restrictions not captured under 'dietary_restrictions'.
-
       required:
         - id
         - firstname
@@ -161,6 +252,7 @@ components:
         - field_of_study
         - country_of_residence
         - dietary_restrictions
+
     application_responses:
       type: object
       properties:
