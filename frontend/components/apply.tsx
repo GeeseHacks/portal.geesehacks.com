@@ -1,25 +1,17 @@
 "use client";
 
-import React from "react";
-import {
-  SubmitHandler,
-  useForm,
-  UseFormRegisterReturn,
-  Controller,
-} from "react-hook-form";
+import React, { useState, useEffect } from "react";
+import { SubmitHandler, useForm, UseFormRegisterReturn, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { options } from "./formAssets/formAssets";
 import { getAgeOptions } from "./formAssets/formAssets";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
+import { signOutAction } from './utils/signOutAction';
+import { useSession } from 'next-auth/react'
 import { fetchCSV } from "./formAssets/csvUtils";
-import { useState } from "react";
-import { useEffect } from "react";
-import Select from "react-select";
-import PhoneInputWithCountry from "react-phone-number-input/react-hook-form";
-import { isValidPhoneNumber } from "react-phone-number-input/input";
-// import "react-phone-number-input/style.css";
+import Select from 'react-select'
 
 interface InputFieldProps {
   id: string;
@@ -255,12 +247,9 @@ const formSchema = z.object({
 type formSchemaType = z.infer<typeof formSchema>;
 
 const RegistrationForm: React.FC = () => {
-  const [countryOptions, setCountryOptions] = useState<
-    { label: string; value: string }[]
-  >([]);
-  const [schoolOptions, setSchoolOptions] = useState<
-    { label: string; value: string }[]
-  >([]);
+  const { data: session } = useSession()
+  const [countryOptions, setCountryOptions] = useState<{ label: string; value: string }[]>([]);
+  const [schoolOptions, setSchoolOptions] = useState<{ label: string; value: string }[]>([]);
 
   useEffect(() => {
     const fetchOptions = async () => {
@@ -328,6 +317,7 @@ const RegistrationForm: React.FC = () => {
     }
   };
 
+  
   return (
     <div className="max-w-5xl mx-auto p-8 text-white">
       {/* <button
@@ -339,6 +329,17 @@ const RegistrationForm: React.FC = () => {
       >
         TEST TEST TEST
       </button> */}
+      
+      {/* Signout button */}
+      <form action={signOutAction}>
+        <button className="flex h-12 items-center justify-center gap-2 rounded-md bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 p-3 text-sm font-medium text-white shadow-lg transition duration-200 ease-in-out hover:bg-gradient-to-r hover:from-purple-500 hover:via-pink-600 hover:to-red-600 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
+          Sign Out
+        </button>
+      </form>
+      <button onClick={() => {console.log(session)}}>Get Usser</button>
+      <div>
+        {session && <h1>{JSON.stringify(session.user)}</h1>}
+      </div>
       <h1 className="text-white text-4xl font-bold mb-6">Hacker Information</h1>
       <hr className="border-white pb-6" />
       <form onSubmit={handleSubmit(onSubmit)}>

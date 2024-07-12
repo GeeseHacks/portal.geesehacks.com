@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Prisma } from '@prisma/client';
-import prisma from '@lib/prisma'; // Import the initialized Prisma client
+import prisma from '@lib/prisma';
 
 // Handler for POST requests
 export async function POST(request: NextRequest) {

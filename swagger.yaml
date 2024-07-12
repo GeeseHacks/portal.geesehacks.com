@@ -5,9 +5,98 @@ info:
   description: API Documentation for the Registration Portal
 servers:
   - url: http://localhost:3000
+    description: Would require other production server
+tags:
+  - name: auth
+    description: Authentication related endpoints
+  - name: users
+    description: User related endpoints
+  - name: application-responses
+    description: Application responses related endpoints
 paths:
+  /api/auth/users:
+    post:
+      tags:
+        - auth
+      summary: Get a user's login details
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: test@example.com
+      responses:
+        '200':
+          description: Login details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/users_auth'
+  /api/auth/signup:
+    post:
+      tags:
+        - auth
+      summary: Create a new user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: user@example.com
+                password:
+                  type: string
+                  example: secret_password
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User created successfully
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Email and password are required
+        '409':
+          description: User already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User already exists
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Failed to create user
   /api/users/{id}:
     get:
+      tags:
+        - users
       summary: Get a user by ID
       parameters:
         - name: id
@@ -24,6 +113,8 @@ paths:
                 $ref: '#/components/schemas/users'
   /api/users:
     post:
+      tags:
+        - users
       summary: Create a new user with fields in the users table
       requestBody:
         content:
@@ -33,9 +124,10 @@ paths:
       responses:
         '201':
           description: User created
-
   /api/application-responses/{id}:
     get:
+      tags:
+        - application-responses
       summary: Get an application response by user ID
       parameters:
         - name: id
@@ -52,6 +144,8 @@ paths:
                 $ref: '#/components/schemas/application_responses'
   /api/application-responses:
     post:
+      tags:
+        - application-responses
       summary: Create a new application response in the application_responses table
       requestBody:
         content:
@@ -61,43 +155,107 @@ paths:
       responses:
         '201':
           description: Application response created
-
 components:
   schemas:
+    users_auth:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        password:
+          type: string
     users:
       type: object
       properties:
         id:
           type: integer
+          description: The unique identifier for a user.
         firstname:
           type: string
+          description: The user's first name.
         lastname:
           type: string
+          description: The user's last name.
         age:
           type: integer
           minimum: 0
+          description: The user's age. Must be a non-negative integer.
         email:
           type: string
+          description: The user's email address.
         phone_number:
           type: string
+          description: The user's telephone number.
         school:
           type: string
+          description: The name of the school or university the user attends or attended.
         level_of_study:
           type: string
+          description: The user's current level of study (e.g., undergraduate, graduate).
         field_of_study:
           type: string
+          description: The user's major or primary field of study.
         country_of_residence:
           type: string
+          description: The country in which the user currently resides.
         address:
           type: string
+          description: The user's full mailing address.
         dietary_restrictions:
           type: string
+          description: Any dietary restrictions the user has that should be considered at events.
         github:
           type: string
+          description: The user's GitHub username or URL.
         linkedin:
           type: string
+          description: The user's LinkedIn profile URL.
         personal_website:
           type: string
+          description: URL to the user's personal or professional website.
+        optional_underrepresented:
+          type: string
+          description: If the user identifies as part of an underrepresented group.
+        optional_gender:
+          type: string
+          description: The gender identity of the user.
+        optional_pronouns:
+          type: string
+          description: The pronouns the user prefers to be used in communication.
+        optional_race:
+          type: string
+          description: The user's racial or ethnic background.
+        optional_consider:
+          type: string
+          description: The question "Do you consider yourself to be any of the following? (Select all that apply)"
+        MLH_authorize:
+          type: boolean
+          description: Consent given by the user for Major League Hacking (MLH) to use their data (and send email).
+        resume:
+          type: string
+          format: uri
+          description: A URL linking to the user's resume.
+        t_shirt_size:
+          type: string
+          description: The user's t-shirt size (S, M, L, XL, etc.)
+        other_dietary_restrictions:
+          type: string
+          description: Additional dietary restrictions not captured under 'dietary_restrictions'.
+      required:
+        - id
+        - firstname
+        - lastname
+        - email
+        - age
+        - phone_number
+        - school
+        - level_of_study
+        - field_of_study
+        - country_of_residence
+        - dietary_restrictions
+
     application_responses:
       type: object
       properties:
