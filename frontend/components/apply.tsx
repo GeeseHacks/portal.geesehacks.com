@@ -330,7 +330,7 @@ const RegistrationForm: React.FC = () => {
 
   return (
     <div className="max-w-5xl mx-auto p-8 text-white">
-      <button
+      {/* <button
         className="bg-red-400"
         onClick={() => {
           console.log(formSchema.safeParse(watchAllFields));
@@ -338,7 +338,7 @@ const RegistrationForm: React.FC = () => {
         }}
       >
         TEST TEST TEST
-      </button>
+      </button> */}
       <h1 className="text-white text-4xl font-bold mb-6">Hacker Information</h1>
       <hr className="border-white pb-6" />
       <form onSubmit={handleSubmit(onSubmit)}>
