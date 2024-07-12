@@ -19,7 +19,7 @@ import { useEffect } from "react";
 import Select from "react-select";
 import PhoneInputWithCountry from "react-phone-number-input/react-hook-form";
 import { isValidPhoneNumber } from "react-phone-number-input/input";
-import "react-phone-number-input/style.css";
+// import "react-phone-number-input/style.css";
 
 interface InputFieldProps {
   id: string;
@@ -79,16 +79,17 @@ const SelectField: React.FC<SelectFieldProps> = ({
     <Controller
       name={id}
       control={control}
-      render={({ field }) => (
+      render={({ field: { onChange, value, name, ref } }) => (
         <Select
-          {...field}
-          options={options}
           styles={customStyles}
           className={`text-black ${
             error ? "border-red-500 border-2" : "border-gray-700"
           }`}
           classNamePrefix="react-select"
           placeholder=""
+          options={options}
+          value={options.find((c) => c.value === value)}
+          onChange={(val) => onChange(val.value)}
         />
       )}
     />
@@ -161,7 +162,6 @@ const TextAreaField: React.FC<TextAreaFieldProps> = ({
 );
 
 interface ComplexInputFieldProps {
-  className: string;
   id: string;
   label: string;
   registerOptions: any;
@@ -177,20 +177,23 @@ const ComplexInputField: React.FC<ComplexInputFieldProps> = ({
   placeholder,
   type = "text",
   error,
-  className,
 }) => (
-  <div className={className}>
-    <label className="block mb-2 text-xl font-bold" htmlFor={id}>
-      {label}
-    </label>
-    <input
-      id={id}
-      type={type}
-      {...registerOptions}
-      className="w-full p-2 border border-gray-700 rounded-lg text-black focus:outline-none"
-      placeholder={placeholder}
-    />
-    {error && <p className="text-red-500 text-s italic">{error}</p>}
+  <div className="col-span-1 md:col-span-2">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12">
+      <div className="col-span-1">
+        <label className="block mb-2 text-xl font-bold" htmlFor={id}>
+          {label}
+        </label>
+        <input
+          id={id}
+          type={type}
+          {...registerOptions}
+          className="w-full p-2 border border-gray-700 rounded-lg text-black focus:outline-none"
+          placeholder={placeholder}
+        />
+        {error && <p className="text-red-500 text-s italic">{error}</p>}
+      </div>
+    </div>
   </div>
 );
 
@@ -198,17 +201,16 @@ const formSchema = z.object({
   firstName: z.string().min(1, { message: "First name is required" }),
   lastName: z.string().min(1, { message: "Last name is required" }),
   email: z.string().email({ message: "Invalid email address" }),
-  phoneNumber: z.string().refine(isValidPhoneNumber, "Invalid phone number"),
+  phoneNumber: z.string().regex(/^\+\d{1,3}\s\d{7,15}$/, {
+    message: "Phone number must be in the format +CountryCode PhoneNumber",
+  }),
   school: z.string().min(1, { message: "School is required" }),
   levelOfStudy: z.string().min(1, { message: "Level of study is required" }),
   countryOfResidence: z.string().min(1, { message: "Country is required" }),
   dietaryRestrictions: z
     .string()
     .min(1, { message: "Dietary restriction is required" }),
-  age: z.preprocess(
-    (val) => parseInt(z.string().parse(val), 10),
-    z.number({ required_error: "Age is required" })
-  ),
+  age: z.number().min(1, { message: "Age is required" }),
   address: z.string().optional(),
   fieldOfStudy: z.string().optional(),
   tShirtSize: z.string().min(1, { message: "T-shirt size is required" }),
@@ -278,12 +280,15 @@ const RegistrationForm: React.FC = () => {
   const {
     control,
     register,
+    watch,
     handleSubmit,
     formState: { errors },
     reset,
   } = useForm<formSchemaType>({
     resolver: zodResolver(formSchema),
   });
+
+  const watchAllFields = watch();
 
   const onSubmit: SubmitHandler<formSchemaType> = async (data) => {
     console.log("form submitted!");
@@ -325,6 +330,15 @@ const RegistrationForm: React.FC = () => {
 
   return (
     <div className="max-w-5xl mx-auto p-8 text-white">
+      <button
+        className="bg-red-400"
+        onClick={() => {
+          console.log(formSchema.safeParse(watchAllFields));
+          console.log(watchAllFields);
+        }}
+      >
+        TEST TEST TEST
+      </button>
       <h1 className="text-white text-4xl font-bold mb-6">Hacker Information</h1>
       <hr className="border-white pb-6" />
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -359,63 +373,13 @@ const RegistrationForm: React.FC = () => {
             type="email"
             error={errors.email?.message}
           />
-          {/* <ComplexInputField
+          <ComplexInputField
             id="phoneNumber"
             label="Phone Number *"
             registerOptions={register("phoneNumber")}
-            placeholder="123-456-7890"
+            placeholder="Ex. +1 4161234567"
             error={errors.phoneNumber?.message}
-          /> */}
-          {/* <div className="col-span-1">
-            <label
-              className="block mb-2 text-xl font-semibold"
-              htmlFor="phoneNumber"
-            >
-              Phone Number
-            </label>
-            <PhoneInputWithCountry
-              name="phoneNumber"
-              control={control}
-              defaultCountry="CA"
-              placeholder="Enter phone number"
-              className={`text-black ${
-                errors.phoneNumber
-                  ? "border-red-500 border-2"
-                  : "border-gray-700"
-              }`}
-              classNamePrefix="react-select"
-              styles={customStyles}
-            />
-
-            {errors.phoneNumber && (
-              <p className="text-red-500 text-s italic">
-                {errors.phoneNumber.message}
-              </p>
-            )}
-          </div> */}
-          <div className="col-span-1">
-            <label
-              className="block mb-2 text-xl font-semibold"
-              htmlFor="phoneNumber"
-            >
-              Phone Number
-            </label>
-            <PhoneInputWithCountry
-              name="phoneNumber"
-              control={control}
-              defaultCountry="CA"
-              placeholder="Enter phone number"
-              className={`bg-white text-black w-full p-2 border border-gray-700 rounded-lg ${
-                errors.phoneNumber
-                  ? "border-red-500 border-2"
-                  : "border-gray-700"
-              }`}
-              classNamePrefix="react-select"
-              numberInputProps={{
-                className: "px-1 focus:outline-none",
-              }}
-            />
-          </div>
+          />
 
           <SelectField
             id="school"
@@ -460,7 +424,6 @@ const RegistrationForm: React.FC = () => {
             label="Address"
             registerOptions={register("address")}
             placeholder="Enter address"
-            className="col-span-1"
             error={errors.address?.message}
           />
           <SelectField
