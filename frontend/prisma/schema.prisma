@@ -8,25 +8,34 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
-// Define the users model which corresponds to the users table
 model users {
-  id                    Int                     @id // The primary key
-  firstname             String                  @db.VarChar(50) // First name of the user, with a max length of 50 characters
-  lastname              String                  @db.VarChar(50)
-  age                   Int? // Age of the user, can be null
-  email                 String                  @unique @db.VarChar(100) // Email of the user, must be unique and max length of 100 characters
-  phone_number          String?                 @db.VarChar(20) // Phone number of the user, can be null and max length of 20 characters
-  school                String?                 @db.VarChar(100)
-  level_of_study        String?                 @db.VarChar(50)
-  country_of_residence  String?                 @db.VarChar(255)
-  address               String?                 @db.VarChar(255)
-  dietary_restrictions  String?                 @db.VarChar(100)
-  github                String?                 @db.VarChar(255)
-  linkedin              String?                 @db.VarChar(255)
-  personal_website      String?                 @db.VarChar(255)
-  
+  id                         Int                     @id // the primary key
+  firstname                  String                  @db.VarChar(50) //First name of the user, with a max length of 50 characters
+  lastname                   String                  @db.VarChar(50)
+  age                        Int
+  email                      String                  @unique @db.VarChar(100) // Email of the user, must be unique and max length of 100 characters
+  phone_number               String                  @db.VarChar(20) // Phone number of the user, can be null and max length of 20 characters
+  school                     String                  @db.VarChar(100)
+  level_of_study             String                  @db.VarChar(100)
+  country_of_residence       String                  @db.VarChar(255)
+  address                    String?                 @db.VarChar(255)
+  dietary_restrictions       String                  @db.VarChar(100)
+  github                     String?                 @db.VarChar(255)
+  linkedin                   String?                 @db.VarChar(255)
+  personal_website           String?                 @db.VarChar(255)
+  MLH_authorize              Boolean?
+  field_of_study             String                  @db.VarChar(50)
+  optional_consider          String?                 @db.VarChar(255)
+  optional_gender            String?                 @db.VarChar(50)
+  optional_pronouns          String?                 @db.VarChar(50)
+  optional_race              String?                 @db.VarChar(50)
+  optional_underrepresented  String?
+  other_dietary_restrictions String?                 @db.VarChar(100)
+  resume                     String?                 @db.VarChar(255)
+  t_shirt_size               String?                 @db.VarChar(50)
+
   // Define the relation to application_responses -- Not an actual field in the DB schema
-  application_responses application_responses[] // Relation field pointing to application_responses
+  application_responses      application_responses[]
 }
 
 // Define the application_responses model which corresponds to the applications_responses table
@@ -38,7 +47,7 @@ model application_responses {
   q3     String @db.VarChar(1000) // Response to question 3, max length 1000 characters
 
   // Define the foreign key relationship to users table
-  user users @relation(fields: [userid], references: [id])
+  user   users  @relation(fields: [userid], references: [id])
 
   // Create an index on the userid field
   @@index([userid])
