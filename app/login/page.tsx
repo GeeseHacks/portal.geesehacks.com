@@ -1,13 +1,13 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { authenticate } from '@/app/lib/actions';
+import { authenticate } from "@lib/actions";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
-import { validatePassword } from '@/lib/passwordUtils';
-import { validateEmail } from '@/lib/emailUtils';
+import { validatePassword } from "@/lib/passwordUtils";
+import { validateEmail } from "@/lib/emailUtils";
 import { signInActionGoogle } from "@/components/utils/signInActionGoogle";
 import { signInActionDiscord } from "@/components/utils/signInActionDiscord";
-import toast, { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from "react-hot-toast";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -31,18 +31,19 @@ const Login: React.FC = () => {
 
       const promise = authenticate(email, password);
 
-      toast.promise(promise, {
-        loading: 'Logging in...',
-        success: 'Logged in successfully!',
-        error: (err) => err.message || 'Failed to log in',
-      })
-      .then(data => {
-        console.log('Success:', data);
-        // Redirect or other success actions
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
+      toast
+        .promise(promise, {
+          loading: "Logging in...",
+          success: "Logged in successfully!",
+          error: (err) => err.message || "Failed to log in",
+        })
+        .then((data) => {
+          console.log("Success:", data);
+          // Redirect or other success actions
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
     }
   };
 
@@ -56,7 +57,10 @@ const Login: React.FC = () => {
         <h2 className="mt-2 mb-2 text-left text-4xl font-bold">Welcome</h2>
         <p className="mb-6 mt-3 text-left">Log in to GeeseHacks!</p>
         <div className="flex flex-col gap-4 w-full mb-6">
-          <form className="bg-white text-black py-2 rounded-md flex items-center justify-center gap-2" action={signInActionGoogle}>
+          <form
+            className="bg-white text-black py-2 rounded-md flex items-center justify-center gap-2"
+            action={signInActionGoogle}
+          >
             <button className="flex gap-2">
               <img
                 src="/static/icons/google-icon.png"
@@ -66,7 +70,10 @@ const Login: React.FC = () => {
               Log in with Google
             </button>
           </form>
-          <form className="bg-white text-black py-2 rounded-md flex items-center justify-center gap-2" action={signInActionDiscord}>
+          <form
+            className="bg-white text-black py-2 rounded-md flex items-center justify-center gap-2"
+            action={signInActionDiscord}
+          >
             <button className="flex gap-2">
               <img
                 src="/static/icons/discord-icon.png"

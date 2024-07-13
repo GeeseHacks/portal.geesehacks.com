@@ -1,7 +1,7 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { authConfig } from './auth.config';
-import type { AuthUser } from '@/app/lib/definitions';
+import type { AuthUser } from '@lib/definitions';
 import bcrypt from 'bcrypt';
 import Google from "next-auth/providers/google";
 import Discord from "next-auth/providers/discord";
