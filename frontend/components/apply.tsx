@@ -1,17 +1,22 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { SubmitHandler, useForm, UseFormRegisterReturn, Controller } from "react-hook-form";
+import {
+  SubmitHandler,
+  useForm,
+  UseFormRegisterReturn,
+  Controller,
+} from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { options } from "./formAssets/formAssets";
 import { getAgeOptions } from "./formAssets/formAssets";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
-import { signOutAction } from './utils/signOutAction';
-import { useSession } from 'next-auth/react'
+import { signOutAction } from "./utils/signOutAction";
+import { useSession } from "next-auth/react";
 import { fetchCSV } from "./formAssets/csvUtils";
-import Select from 'react-select'
+import Select from "react-select";
 
 interface InputFieldProps {
   id: string;
@@ -71,16 +76,17 @@ const SelectField: React.FC<SelectFieldProps> = ({
     <Controller
       name={id}
       control={control}
-      render={({ field }) => (
+      render={({ field: { onChange, value, name, ref } }) => (
         <Select
-          {...field}
-          options={options}
           styles={customStyles}
           className={`text-black ${
             error ? "border-red-500 border-2" : "border-gray-700"
           }`}
           classNamePrefix="react-select"
           placeholder=""
+          options={options}
+          value={options.find((c) => c.value === value)}
+          onChange={(val) => onChange(val.value)}
         />
       )}
     />
@@ -89,35 +95,35 @@ const SelectField: React.FC<SelectFieldProps> = ({
 );
 
 const customStyles = {
-  control: (provided: any, state: { isFocused: any; }) => ({
+  control: (provided: any, state: { isFocused: any }) => ({
     ...provided,
-    width: '100%',
-    padding: '0.13rem',
-    borderRadius: '0.5rem',
-    borderColor: state.isFocused ? '#374151' : '#374151',
-    '&:hover': {
-      borderColor: state.isFocused ? '#374151' : '#374151',
+    width: "100%",
+    padding: "0.13rem",
+    borderRadius: "0.5rem",
+    borderColor: state.isFocused ? "#374151" : "#374151",
+    "&:hover": {
+      borderColor: state.isFocused ? "#374151" : "#374151",
     },
-    boxShadow: 'none'
+    boxShadow: "none",
   }),
   placeholder: (provided: any) => ({
     ...provided,
-    color: '#9ca3af',
+    color: "#9ca3af",
   }),
   singleValue: (provided: any) => ({
     ...provided,
-    color: 'black',
+    color: "black",
   }),
   input: (provided: any) => ({
     ...provided,
-    color: 'black',
+    color: "black",
   }),
   indicatorSeparator: () => ({
-    display: 'none',
+    display: "none",
   }),
   dropdownIndicator: (provided: any) => ({
     ...provided,
-    color: 'black',
+    color: "black",
   }),
 };
 
@@ -192,8 +198,8 @@ const formSchema = z.object({
   firstName: z.string().min(1, { message: "First name is required" }),
   lastName: z.string().min(1, { message: "Last name is required" }),
   email: z.string().email({ message: "Invalid email address" }),
-  phoneNumber: z.string().regex(/^\d{3}-\d{3}-\d{4}$/, {
-    message: "Phone number must be in the format xxx-xxx-xxxx",
+  phoneNumber: z.string().regex(/^\+\d{1,3}\s\d{7,15}$/, {
+    message: "Phone number must be in the format +CountryCode PhoneNumber",
   }),
   school: z.string().min(1, { message: "School is required" }),
   levelOfStudy: z.string().min(1, { message: "Level of study is required" }),
@@ -201,10 +207,7 @@ const formSchema = z.object({
   dietaryRestrictions: z
     .string()
     .min(1, { message: "Dietary restriction is required" }),
-  age: z.preprocess(
-    (val) => parseInt(z.string().parse(val), 10),
-    z.number({ required_error: "Age is required" })
-  ),
+  age: z.number().min(1, { message: "Age is required" }),
   address: z.string().optional(),
   fieldOfStudy: z.string().optional(),
   tShirtSize: z.string().min(1, { message: "T-shirt size is required" }),
@@ -216,19 +219,19 @@ const formSchema = z.object({
   q1: z
     .string()
     .min(1, { message: "Please input your answer to this question" })
-    .max(600, {
+    .max(1000, {
       message: "Your answer should not be longer than 250 characters",
     }),
   q2: z
     .string()
     .min(1, { message: "Please input your answer to this question" })
-    .max(600, {
+    .max(1000, {
       message: "Your answer should not be longer than 250 characters",
     }),
   q3: z
     .string()
     .min(1, { message: "Please input your answer to this question" })
-    .max(600, {
+    .max(1000, {
       message: "Your answer should not be longer than 250 characters",
     }),
   other: z.string().optional(),
@@ -249,17 +252,24 @@ const formSchema = z.object({
 type formSchemaType = z.infer<typeof formSchema>;
 
 const RegistrationForm: React.FC = () => {
-  
-  const { data: session } = useSession()
-  const [countryOptions, setCountryOptions] = useState<{ label: string; value: string }[]>([]);
-  const [schoolOptions, setSchoolOptions] = useState<{ label: string; value: string }[]>([]);
+  const { data: session } = useSession();
+  const [countryOptions, setCountryOptions] = useState<
+    { label: string; value: string }[]
+  >([]);
+  const [schoolOptions, setSchoolOptions] = useState<
+    { label: string; value: string }[]
+  >([]);
 
   useEffect(() => {
     const fetchOptions = async () => {
       const countries = await fetchCSV("/countries.csv");
       const schools = await fetchCSV("/schools.csv");
-      setCountryOptions(countries.map((country) => ({ label: country, value: country })));
-      setSchoolOptions(schools.map((school) => ({ label: school, value: school })));
+      setCountryOptions(
+        countries.map((country) => ({ label: country, value: country }))
+      );
+      setSchoolOptions(
+        schools.map((school) => ({ label: school, value: school }))
+      );
     };
 
     fetchOptions();
@@ -268,12 +278,15 @@ const RegistrationForm: React.FC = () => {
   const {
     control,
     register,
+    watch,
     handleSubmit,
     formState: { errors },
     reset,
   } = useForm<formSchemaType>({
     resolver: zodResolver(formSchema),
   });
+
+  const watchAllFields = watch();
 
   const onSubmit: SubmitHandler<formSchemaType> = async (data) => {
     console.log("form submitted!");
@@ -313,20 +326,32 @@ const RegistrationForm: React.FC = () => {
     }
   };
 
-  
   return (
     <div className="max-w-5xl mx-auto p-8 text-white">
-      
+      {/* <button
+        className="bg-red-400"
+        onClick={() => {
+          console.log(formSchema.safeParse(watchAllFields));
+          console.log(watchAllFields);
+        }}
+      >
+        TEST TEST TEST
+      </button> */}
+
       {/* Signout button */}
       <form action={signOutAction}>
         <button className="flex h-12 items-center justify-center gap-2 rounded-md bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 p-3 text-sm font-medium text-white shadow-lg transition duration-200 ease-in-out hover:bg-gradient-to-r hover:from-purple-500 hover:via-pink-600 hover:to-red-600 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
           Sign Out
         </button>
       </form>
-      <button onClick={() => {console.log(session)}}>Get Usser</button>
-      <div>
-        {session && <h1>{JSON.stringify(session.user)}</h1>}
-      </div>
+      <button
+        onClick={() => {
+          console.log(session);
+        }}
+      >
+        Get Usser
+      </button>
+      <div>{session && <h1>{JSON.stringify(session.user)}</h1>}</div>
       <h1 className="text-white text-4xl font-bold mb-6">Hacker Information</h1>
       <hr className="border-white pb-6" />
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -365,9 +390,10 @@ const RegistrationForm: React.FC = () => {
             id="phoneNumber"
             label="Phone Number *"
             registerOptions={register("phoneNumber")}
-            placeholder="123-456-7890"
+            placeholder="Ex. +1 4161234567"
             error={errors.phoneNumber?.message}
           />
+
           <SelectField
             id="school"
             label="School *"
@@ -380,7 +406,10 @@ const RegistrationForm: React.FC = () => {
             id="levelOfStudy"
             label="Level of Study *"
             control={control}
-            options={options.levelsOfStudy.map((option) => ({ label: option, value: option }))}
+            options={options.levelsOfStudy.map((option) => ({
+              label: option,
+              value: option,
+            }))}
             className="col-span-1"
             error={errors.levelOfStudy?.message}
           />
@@ -388,7 +417,10 @@ const RegistrationForm: React.FC = () => {
             id="fieldOfStudy"
             label="Field of Study"
             control={control}
-            options={options.fieldsOfStudy.map((option) => ({ label: option, value: option }))}
+            options={options.fieldsOfStudy.map((option) => ({
+              label: option,
+              value: option,
+            }))}
             className="col-span-1"
             error={errors.fieldOfStudy?.message}
           />
@@ -411,7 +443,10 @@ const RegistrationForm: React.FC = () => {
             id="dietaryRestrictions"
             label="Dietary Restrictions *"
             control={control}
-            options={options.dietaryRestrictions.map((option) => ({ label: option, value: option }))}
+            options={options.dietaryRestrictions.map((option) => ({
+              label: option,
+              value: option,
+            }))}
             className="col-span-1"
             error={errors.dietaryRestrictions?.message}
           />
@@ -426,7 +461,10 @@ const RegistrationForm: React.FC = () => {
             id="tShirtSize"
             label="T-shirt Size *"
             control={control}
-            options={options.tShirtSizes.map((option) => ({ label: option, value: option }))}
+            options={options.tShirtSizes.map((option) => ({
+              label: option,
+              value: option,
+            }))}
             className="col-span-1"
             error={errors.tShirtSize?.message}
           />
@@ -514,7 +552,10 @@ const RegistrationForm: React.FC = () => {
             id="underrepresented"
             label="Do you identify as part of an underrepresented group in the technology industry?"
             control={control}
-            options={options.underrepresented.map((option) => ({ label: option, value: option }))}
+            options={options.underrepresented.map((option) => ({
+              label: option,
+              value: option,
+            }))}
             className="col-span-2"
             error={errors.underrepresented?.message}
           />
@@ -522,7 +563,10 @@ const RegistrationForm: React.FC = () => {
             id="gender"
             label="Gender"
             control={control}
-            options={options.genders.map((option) => ({ label: option, value: option }))}
+            options={options.genders.map((option) => ({
+              label: option,
+              value: option,
+            }))}
             className="col-span-2"
             error={errors.gender?.message}
           />
@@ -530,7 +574,10 @@ const RegistrationForm: React.FC = () => {
             id="pronouns"
             label="Pronouns"
             control={control}
-            options={options.pronouns.map((option) => ({ label: option, value: option }))}
+            options={options.pronouns.map((option) => ({
+              label: option,
+              value: option,
+            }))}
             className="col-span-2"
             error={errors.pronouns?.message}
           />
@@ -538,7 +585,10 @@ const RegistrationForm: React.FC = () => {
             id="ethnicity"
             label="Race/Ethnicity"
             control={control}
-            options={options.ethnicities.map((option) => ({ label: option, value: option }))}
+            options={options.ethnicities.map((option) => ({
+              label: option,
+              value: option,
+            }))}
             className="col-span-2"
             error={errors.ethnicity?.message}
           />
@@ -546,7 +596,10 @@ const RegistrationForm: React.FC = () => {
             id="sexuality"
             label="Do you consider yourself to be any of the following?"
             control={control}
-            options={options.sexualities.map((option) => ({ label: option, value: option }))}
+            options={options.sexualities.map((option) => ({
+              label: option,
+              value: option,
+            }))}
             className="col-span-2"
             error={errors.sexuality?.message}
           />
@@ -646,205 +699,3 @@ const RegistrationForm: React.FC = () => {
 };
 
 export default RegistrationForm;
-
-// "use client";
-
-// import { SubmitHandler, useForm } from "react-hook-form";
-// import { zodResolver } from "@hookform/resolvers/zod";
-// import { z } from "zod";
-
-// const validationSchema = z
-//   .object({
-//     firstName: z.string().min(1, { message: "Firstname is required" }),
-//     lastName: z.string().min(1, { message: "Lastname is required" }),
-//     email: z.string().min(1, { message: "Email is required" }).email({
-//       message: "Must be a valid email",
-//     }),
-//     password: z
-//       .string()
-//       .min(6, { message: "Password must be atleast 6 characters" }),
-//     confirmPassword: z
-//       .string()
-//       .min(1, { message: "Confirm Password is required" }),
-//     terms: z.literal(true, {
-//       errorMap: () => ({ message: "You must accept Terms and Conditions" }),
-//     }),
-//   })
-//   .refine((data) => data.password === data.confirmPassword, {
-//     path: ["confirmPassword"],
-//     message: "Password don't match",
-//   });
-
-// type ValidationSchema = z.infer<typeof validationSchema>;
-
-// const registrationForm = () => {
-//   const {
-//     register,
-//     handleSubmit,
-//     formState: { errors },
-//   } = useForm<ValidationSchema>({
-//     resolver: zodResolver(validationSchema),
-//   });
-
-//   const onSubmit: SubmitHandler<ValidationSchema> = (data) => console.log(data);
-
-//   return (
-//     <form className="px-8 pt-6 pb-8 mb-4" onSubmit={handleSubmit(onSubmit)}>
-//       <div className="mb-4 md:flex md:justify-between">
-//         <div className="mb-4 md:mr-2 md:mb-0">
-//           <label
-//             className="block mb-2 text-sm font-bold text-gray-700"
-//             htmlFor="firstName"
-//           >
-//             First Name
-//           </label>
-//           <input
-//             className={`w-full px-3 py-2 text-sm leading-tight text-gray-700 border ${
-//               errors.firstName && "border-red-500"
-//             } rounded appearance-none focus:outline-none focus:shadow-outline`}
-//             id="firstName"
-//             type="text"
-//             placeholder="First Name"
-//             {...register("firstName")}
-//           />
-//           {errors.firstName && (
-//             <p className="text-xs italic text-red-500 mt-2">
-//               {errors.firstName?.message}
-//             </p>
-//           )}
-//         </div>
-//         <div className="md:ml-2">
-//           <label
-//             className="block mb-2 text-sm font-bold text-gray-700"
-//             htmlFor="lastName"
-//           >
-//             Last Name
-//           </label>
-//           <input
-//             className={`w-full px-3 py-2 text-sm leading-tight text-gray-700 border ${
-//               errors.lastName && "border-red-500"
-//             } rounded appearance-none focus:outline-none focus:shadow-outline`}
-//             id="lastName"
-//             type="text"
-//             placeholder="Last Name"
-//             {...register("lastName")}
-//           />
-//           {errors.lastName && (
-//             <p className="text-xs italic text-red-500 mt-2">
-//               {errors.lastName?.message}
-//             </p>
-//           )}
-//         </div>
-//       </div>
-//       <div className="mb-4">
-//         <label
-//           className="block mb-2 text-sm font-bold text-gray-700"
-//           htmlFor="email"
-//         >
-//           Email
-//         </label>
-//         <input
-//           className={`w-full px-3 py-2 text-sm leading-tight text-gray-700 border ${
-//             errors.email && "border-red-500"
-//           } rounded appearance-none focus:outline-none focus:shadow-outline`}
-//           id="email"
-//           type="email"
-//           placeholder="Email"
-//           {...register("email")}
-//         />
-//         {errors.email && (
-//           <p className="text-xs italic text-red-500 mt-2">
-//             {errors.email?.message}
-//           </p>
-//         )}
-//       </div>
-//       <div className="mb-4 md:flex md:justify-between">
-//         <div className="mb-4 md:mr-2 md:mb-0">
-//           <label
-//             className="block mb-2 text-sm font-bold text-gray-700"
-//             htmlFor="password"
-//           >
-//             Password
-//           </label>
-//           <input
-//             className={`w-full px-3 py-2 text-sm leading-tight text-gray-700 border ${
-//               errors.password && "border-red-500"
-//             } rounded appearance-none focus:outline-none focus:shadow-outline`}
-//             id="password"
-//             type="password"
-//             {...register("password")}
-//           />
-//           {errors.password && (
-//             <p className="text-xs italic text-red-500 mt-2">
-//               {errors.password?.message}
-//             </p>
-//           )}
-//         </div>
-//         <div className="md:ml-2">
-//           <label
-//             className="block mb-2 text-sm font-bold text-gray-700"
-//             htmlFor="c_password"
-//           >
-//             Confirm Password
-//           </label>
-//           <input
-//             className={`w-full px-3 py-2 text-sm leading-tight text-gray-700 border ${
-//               errors.confirmPassword && "border-red-500"
-//             } rounded appearance-none focus:outline-none focus:shadow-outline`}
-//             id="c_password"
-//             type="password"
-//             {...register("confirmPassword")}
-//           />
-//           {errors.confirmPassword && (
-//             <p className="text-xs italic text-red-500 mt-2">
-//               {errors.confirmPassword?.message}
-//             </p>
-//           )}
-//         </div>
-//       </div>
-//       <div className="mb-4">
-//         <input type="checkbox" id="terms" {...register("terms")} />
-//         <label
-//           htmlFor="terms"
-//           className={`ml-2 mb-2 text-sm font-bold ${
-//             errors.terms ? "text-red-500" : "text-gray-700"
-//           }`}
-//         >
-//           Accept Terms & Conditions
-//         </label>
-//         {errors.terms && (
-//           <p className="text-xs italic text-red-500 mt-2">
-//             {errors.terms?.message}
-//           </p>
-//         )}
-//       </div>
-//       <div className="mb-6 text-center">
-//         <button
-//           className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700 focus:outline-none focus:shadow-outline"
-//           type="submit"
-//         >
-//           Register Account
-//         </button>
-//       </div>
-//       <hr className="mb-6 border-t" />
-//       <div className="text-center">
-//         <a
-//           className="inline-block text-sm text-blue-500 align-baseline hover:text-blue-800"
-//           href="#test"
-//         >
-//           Forgot Password?
-//         </a>
-//       </div>
-//       <div className="text-center">
-//         <a
-//           className="inline-block text-sm text-blue-500 align-baseline hover:text-blue-800"
-//           href="./index.html"
-//         >
-//           Already have an account? Login!
-//         </a>
-//       </div>
-//     </form>
-//   );
-// };
-
-// export default registrationForm;
