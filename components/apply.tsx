@@ -291,11 +291,16 @@ const RegistrationForm: React.FC = () => {
   const onSubmit: SubmitHandler<formSchemaType> = async (data) => {
     console.log("form submitted!");
     console.log(data);
-    const tempId = Date.now() % 1000;
-    console.log(tempId);
+    
     try {
+      if (!session?.user?.id) {
+        throw new Error("User is not authenticated");
+      }
+
+      const userId = session.user.id;
+      
       const userData = await axios.post("/api/users", {
-        id: tempId,
+        id: userId,
         firstname: data.firstName,
         lastname: data.lastName,
         age: data.age,
@@ -311,7 +316,7 @@ const RegistrationForm: React.FC = () => {
         linkedin: data.linkedin,
         personal_website: data.personalWebsite,
       });
-      const userId = userData.data.id;
+      //const userId = userData.data.id;
 
       await axios.post("/api/application-responses", {
         userid: userId,
