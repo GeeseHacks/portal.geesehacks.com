@@ -264,6 +264,7 @@ const RegistrationForm: React.FC = () => {
     const fetchOptions = async () => {
       const countries = await fetchCSV("/countries.csv");
       const schools = await fetchCSV("/schools.csv");
+      console.log("Fetched schools:", schools);
       setCountryOptions(
         countries.map((country) => ({ label: country, value: country }))
       );
@@ -298,7 +299,18 @@ const RegistrationForm: React.FC = () => {
       }
 
       const userId = session.user.id;
-      
+      const resumeFile = data.resume[0];
+      const filename = encodeURIComponent(resumeFile.name);
+
+      //Upload the resume file and get the URL
+      const uploadResponse = await fetch(`/api/resume?filename=${filename}`, {
+        method: 'POST',
+        body: resumeFile,
+      });
+      const blob = await uploadResponse.json();
+      const resumeUrl = blob.url;
+
+
       const userData = await axios.post("/api/users", {
         id: userId,
         firstname: data.firstName,
@@ -315,6 +327,7 @@ const RegistrationForm: React.FC = () => {
         github: data.githubProfile,
         linkedin: data.linkedin,
         personal_website: data.personalWebsite,
+        resume: resumeUrl,  
       });
       //const userId = userData.data.id;
 
