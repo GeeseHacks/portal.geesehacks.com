@@ -15,7 +15,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   const readableStream = request.body as ReadableStream<Uint8Array>;
 
-  const blob = await put(filename, readableStream, {
+  const blob = await put(`resumes/${filename}`, readableStream, {
     access: 'public',
   });
 
