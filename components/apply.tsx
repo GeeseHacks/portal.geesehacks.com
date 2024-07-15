@@ -11,7 +11,6 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { options } from "./formAssets/formAssets";
 import { getAgeOptions } from "./formAssets/formAssets";
-import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { signOutAction } from "./utils/signOutAction";
 import { useSession } from "next-auth/react";
@@ -338,16 +337,10 @@ const RegistrationForm: React.FC = () => {
           optional_race: data.ethnicity,
           t_shirt_size: data.tShirtSize,
           resume: resumeUrl,
+          optional_underrepresented: data.underrepresented,
         }),
       });
-      //const userId = userData.data.id;
 
-      // await axios.post("/api/application-responses", {
-      //   userid: userId,
-      //   q1: data.q1,
-      //   q2: data.q2,
-      //   q3: data.q3,
-      // });
       const longAnswers = await fetch("/api/application-responses", {
         method: "POST",
         headers: {
