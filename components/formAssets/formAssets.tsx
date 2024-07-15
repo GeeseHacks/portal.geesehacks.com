@@ -44,7 +44,6 @@ export const options = {
     "Health science (such as nursing, pharmacy, radiology, etc.)",
     "Undecided / No Declared Major",
   ],
-  countries: ["USA", "Canada"],
   dietaryRestrictions: [
     "None",
     "Vegetarian",

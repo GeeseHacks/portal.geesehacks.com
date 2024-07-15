@@ -34,14 +34,15 @@ export async function POST(request: NextRequest) {
       dietary_restrictions,
       github,
       linkedin,
-      personal_website
+      personal_website,
+      resume
     } = body;
 
     // Log session, userId, and request body for debugging
     console.log('Session:', session);
     console.log('UserID:', userId);
     console.log('Request Body:', body);
-    
+
     // Validate the required fields
     if (!firstname || !lastname || !email) {
       return new NextResponse(JSON.stringify({ error: 'Required fields are missing' }), { status: 400 });
@@ -66,7 +67,8 @@ export async function POST(request: NextRequest) {
           dietary_restrictions,
           github,
           linkedin,
-          personal_website
+          personal_website,
+          resume
         }
       });
       return createdUser;
