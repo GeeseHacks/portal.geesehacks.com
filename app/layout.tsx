@@ -4,6 +4,7 @@ import { auth } from '@/auth'
 import { SessionProvider } from 'next-auth/react';
 
 import "./globals.css";
+import Head from "next/head";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,6 +21,9 @@ export default async function RootLayout({
   const session = await auth()
   return (
     <html lang="en">
+      <Head>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <body className={inter.className}>
         <SessionProvider session={session}>
           {children}
