@@ -35,7 +35,14 @@ export async function POST(request: NextRequest) {
       github,
       linkedin,
       personal_website,
-      resume
+      resume,
+      MLH_authorize,
+      optional_consider,
+      optional_gender,
+      optional_pronouns,
+      optional_race,
+      optional_underrepresented,
+      t_shirt_size
     } = body;
 
     // Log session, userId, and request body for debugging
@@ -68,7 +75,14 @@ export async function POST(request: NextRequest) {
           github,
           linkedin,
           personal_website,
-          resume
+          MLH_authorize,
+          optional_consider,
+          optional_gender,
+          optional_pronouns,
+          optional_race,
+          optional_underrepresented,
+          resume,
+          t_shirt_size
         }
       });
       return createdUser;
