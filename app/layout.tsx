@@ -8,11 +8,6 @@ import Head from "next/head";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: "GeeseHacks",
-  description: "GeeseHacks, a hybrid hackathon and case competition, will be held from January 10-13, 2025. Participants are invited to create innovative projects or craft unique solutions for real-world challenges. Join us for a weekend of creativity, collaboration, and problem-solving!",
-};
-
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -31,4 +26,11 @@ export default async function RootLayout({
       </body>
     </html>
   );
+}
+
+export async function generateMetadata({ params: { id } }: { params: { id: string } }) {
+  return {
+    title: "GeeseHacks",
+    description: "GeeseHacks, a hybrid hackathon and case competition, will be held from January 10-13, 2025. Participants are invited to create innovative projects or craft unique solutions for real-world challenges. Join us for a weekend of creativity, collaboration, and problem-solving!",
+  }
 }
