@@ -16,9 +16,6 @@ export default async function RootLayout({
   const session = await auth()
   return (
     <html lang="en">
-      <Head>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
       <body className={inter.className}>
         <SessionProvider session={session}>
           {children}
@@ -32,5 +29,8 @@ export async function generateMetadata({ params: { id } }: { params: { id: strin
   return {
     title: "GeeseHacks",
     description: "GeeseHacks, a hybrid hackathon and case competition, will be held from January 10-13, 2025. Participants are invited to create innovative projects or craft unique solutions for real-world challenges. Join us for a weekend of creativity, collaboration, and problem-solving!",
+    icons: {
+      icon: '/favicon.ico',
+    },
   }
 }
