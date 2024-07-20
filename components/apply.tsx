@@ -11,7 +11,6 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { options } from "./formAssets/formAssets";
 import { getAgeOptions } from "./formAssets/formAssets";
-import axios from "axios";
 import { signOutAction } from "./utils/signOutAction";
 import { useSession } from "next-auth/react";
 import { fetchCSV } from "./formAssets/csvUtils";
@@ -264,6 +263,7 @@ const RegistrationForm: React.FC = () => {
     const fetchOptions = async () => {
       const countries = await fetchCSV("/countries.csv");
       const schools = await fetchCSV("/schools.csv");
+      console.log("Fetched schools:", schools);
       setCountryOptions(
         countries.map((country) => ({ label: country, value: country }))
       );
@@ -291,6 +291,73 @@ const RegistrationForm: React.FC = () => {
   const onSubmit: SubmitHandler<formSchemaType> = async (data) => {
     console.log("form submitted!");
     console.log(data);
+
+    try {
+      if (!session?.user?.id) {
+        throw new Error("User is not authenticated");
+      }
+
+      const userId = Number(session.user.id);
+      const resumeFile = data.resume[0];
+      const filename = encodeURIComponent(resumeFile.name);
+
+      //Upload the resume file and get the URL
+      const uploadResponse = await fetch(`/api/resume?filename=${filename}`, {
+        method: "POST",
+        body: resumeFile,
+      });
+      const blob = await uploadResponse.json();
+      const resumeUrl = blob.url;
+
+      const userData = await fetch("/api/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: userId,
+          firstname: data.firstName,
+          lastname: data.lastName,
+          age: data.age,
+          email: data.email,
+          phone_number: data.phoneNumber,
+          school: data.school,
+          level_of_study: data.levelOfStudy,
+          field_of_study: data.fieldOfStudy,
+          country_of_residence: data.countryOfResidence,
+          address: data.address,
+          dietary_restrictions: data.dietaryRestrictions,
+          github: data.githubProfile,
+          linkedin: data.linkedin,
+          personal_website: data.personalWebsite,
+          MLH_authorize: data.mlhCodeOfConduct && data.mlhPrivacyPolicy,
+          optional_consider: data.sexuality,
+          optional_gender: data.gender,
+          optional_pronouns: data.pronouns,
+          optional_race: data.ethnicity,
+          t_shirt_size: data.tShirtSize,
+          resume: resumeUrl,
+          optional_underrepresented: data.underrepresented,
+        }),
+      });
+
+      const longAnswers = await fetch("/api/application-responses", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userid: userId,
+          q1: data.q1,
+          q2: data.q2,
+          q3: data.q3,
+        }),
+      });
+
+      reset(); //scuffed
+    } catch (err) {
+      console.error("Submission Error: ", err);
+    }
     const tempId = Date.now() % 1000;
     console.log(tempId);
   
