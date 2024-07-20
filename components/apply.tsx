@@ -291,117 +291,98 @@ const RegistrationForm: React.FC = () => {
   const onSubmit: SubmitHandler<formSchemaType> = async (data) => {
     console.log("form submitted!");
     console.log(data);
-
-    try {
-      if (!session?.user?.id) {
-        throw new Error("User is not authenticated");
-      }
-
-      const userId = Number(session.user.id);
-      const resumeFile = data.resume[0];
-      const filename = encodeURIComponent(resumeFile.name);
-
-      //Upload the resume file and get the URL
-      const uploadResponse = await fetch(`/api/resume?filename=${filename}`, {
-        method: "POST",
-        body: resumeFile,
-      });
-      const blob = await uploadResponse.json();
-      const resumeUrl = blob.url;
-
-      const userData = await fetch("/api/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: userId,
-          firstname: data.firstName,
-          lastname: data.lastName,
-          age: data.age,
-          email: data.email,
-          phone_number: data.phoneNumber,
-          school: data.school,
-          level_of_study: data.levelOfStudy,
-          field_of_study: data.fieldOfStudy,
-          country_of_residence: data.countryOfResidence,
-          address: data.address,
-          dietary_restrictions: data.dietaryRestrictions,
-          github: data.githubProfile,
-          linkedin: data.linkedin,
-          personal_website: data.personalWebsite,
-          MLH_authorize: data.mlhCodeOfConduct && data.mlhPrivacyPolicy,
-          optional_consider: data.sexuality,
-          optional_gender: data.gender,
-          optional_pronouns: data.pronouns,
-          optional_race: data.ethnicity,
-          t_shirt_size: data.tShirtSize,
-          resume: resumeUrl,
-          optional_underrepresented: data.underrepresented,
-        }),
-      });
-
-      const longAnswers = await fetch("/api/application-responses", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userid: userId,
-          q1: data.q1,
-          q2: data.q2,
-          q3: data.q3,
-        }),
-      });
-
-      reset(); //scuffed
-    } catch (err) {
-      console.error("Submission Error: ", err);
-    }
-    const tempId = Date.now() % 1000;
-    console.log(tempId);
   
     // Create a promise for the form submission process
     const submissionPromise = (async () => {
       try {
-        const userData = await axios.post("/api/users", {
-          id: tempId,
-          firstname: data.firstName,
-          lastname: data.lastName,
-          age: data.age,
-          email: data.email,
-          phone_number: data.phoneNumber,
-          school: data.school,
-          level_of_study: data.levelOfStudy,
-          field_of_study: data.fieldOfStudy,
-          country_of_residence: data.countryOfResidence,
-          address: data.address,
-          dietary_restrictions: data.dietaryRestrictions,
-          github: data.githubProfile,
-          linkedin: data.linkedin,
-          personal_website: data.personalWebsite,
-        });
-        const userId = userData.data.id;
+        if (!session?.user?.id) {
+          throw new Error("User is not authenticated");
+        }
   
-        await axios.post("/api/application-responses", {
-          userid: userId,
-          q1: data.q1,
-          q2: data.q2,
-          q3: data.q3,
+        const userId = Number(session.user.id);
+        const resumeFile = data.resume[0];
+        const filename = encodeURIComponent(resumeFile.name);
+  
+        // Upload the resume file and get the URL
+        const uploadResponse = await fetch(`/api/resume?filename=${filename}`, {
+          method: "POST",
+          body: resumeFile,
         });
   
-        reset(); // Reset the form fields
+        if (!uploadResponse.ok) {
+          throw new Error("Failed to upload resume");
+        }
+  
+        const blob = await uploadResponse.json();
+        const resumeUrl = blob.url;
+  
+        const userData = await fetch("/api/users", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: userId,
+            firstname: data.firstName,
+            lastname: data.lastName,
+            age: data.age,
+            email: data.email,
+            phone_number: data.phoneNumber,
+            school: data.school,
+            level_of_study: data.levelOfStudy,
+            field_of_study: data.fieldOfStudy,
+            country_of_residence: data.countryOfResidence,
+            address: data.address,
+            dietary_restrictions: data.dietaryRestrictions,
+            github: data.githubProfile,
+            linkedin: data.linkedin,
+            personal_website: data.personalWebsite,
+            MLH_authorize: data.mlhCodeOfConduct && data.mlhPrivacyPolicy,
+            optional_consider: data.sexuality,
+            optional_gender: data.gender,
+            optional_pronouns: data.pronouns,
+            optional_race: data.ethnicity,
+            t_shirt_size: data.tShirtSize,
+            resume: resumeUrl,
+            optional_underrepresented: data.underrepresented,
+          }),
+        });
+  
+        if (!userData.ok) {
+          throw new Error("Failed to submit user data");
+        }
+  
+        const longAnswers = await fetch("/api/application-responses", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userid: userId,
+            q1: data.q1,
+            q2: data.q2,
+            q3: data.q3,
+          }),
+        });
+  
+        if (!longAnswers.ok) {
+          throw new Error("Failed to submit long answers");
+        }
+  
+        reset();
       } catch (err) {
+        console.error("Submission Error: ", err);
         throw err;
       }
     })();
   
     toast.promise(submissionPromise, {
-      loading: "Submitting form...",
-      success: "Form submitted successfully!",
-      error: (err) => err.message || "Failed to submit the form",
+      loading: "Submitting application...",
+      success: "Application submitted successfully!",
+      error: (err) => err.message || "Failed to submit application",
     });
   };
+  
   
 
   return (
