@@ -12,11 +12,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { options } from "./formAssets/formAssets";
 import { getAgeOptions } from "./formAssets/formAssets";
 import axios from "axios";
-import { v4 as uuidv4 } from "uuid";
 import { signOutAction } from "./utils/signOutAction";
 import { useSession } from "next-auth/react";
 import { fetchCSV } from "./formAssets/csvUtils";
 import Select from "react-select";
+import toast from "react-hot-toast";
 
 interface InputFieldProps {
   id: string;
@@ -293,38 +293,49 @@ const RegistrationForm: React.FC = () => {
     console.log(data);
     const tempId = Date.now() % 1000;
     console.log(tempId);
-    try {
-      const userData = await axios.post("/api/users", {
-        id: tempId,
-        firstname: data.firstName,
-        lastname: data.lastName,
-        age: data.age,
-        email: data.email,
-        phone_number: data.phoneNumber,
-        school: data.school,
-        level_of_study: data.levelOfStudy,
-        field_of_study: data.fieldOfStudy,
-        country_of_residence: data.countryOfResidence,
-        address: data.address,
-        dietary_restrictions: data.dietaryRestrictions,
-        github: data.githubProfile,
-        linkedin: data.linkedin,
-        personal_website: data.personalWebsite,
-      });
-      const userId = userData.data.id;
-
-      await axios.post("/api/application-responses", {
-        userid: userId,
-        q1: data.q1,
-        q2: data.q2,
-        q3: data.q3,
-      });
-
-      reset(); //scuffed
-    } catch (err) {
-      console.error("Submission Error: ", err);
-    }
+  
+    // Create a promise for the form submission process
+    const submissionPromise = (async () => {
+      try {
+        const userData = await axios.post("/api/users", {
+          id: tempId,
+          firstname: data.firstName,
+          lastname: data.lastName,
+          age: data.age,
+          email: data.email,
+          phone_number: data.phoneNumber,
+          school: data.school,
+          level_of_study: data.levelOfStudy,
+          field_of_study: data.fieldOfStudy,
+          country_of_residence: data.countryOfResidence,
+          address: data.address,
+          dietary_restrictions: data.dietaryRestrictions,
+          github: data.githubProfile,
+          linkedin: data.linkedin,
+          personal_website: data.personalWebsite,
+        });
+        const userId = userData.data.id;
+  
+        await axios.post("/api/application-responses", {
+          userid: userId,
+          q1: data.q1,
+          q2: data.q2,
+          q3: data.q3,
+        });
+  
+        reset(); // Reset the form fields
+      } catch (err) {
+        throw err;
+      }
+    })();
+  
+    toast.promise(submissionPromise, {
+      loading: "Submitting form...",
+      success: "Form submitted successfully!",
+      error: (err) => err.message || "Failed to submit the form",
+    });
   };
+  
 
   return (
     <div className="max-w-5xl mx-auto p-8 text-white">
