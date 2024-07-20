@@ -7,7 +7,7 @@ import { validatePassword } from "@/lib/passwordUtils";
 import { validateEmail } from "@/lib/emailUtils";
 import { signInActionGoogle } from "@/components/utils/signInActionGoogle";
 import { signInActionDiscord } from "@/components/utils/signInActionDiscord";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -161,7 +161,6 @@ const Login: React.FC = () => {
         className="bg-cover bg-center w-0 sm:w-1/2"
         style={{ backgroundImage: "url('/static/images/background.png')" }}
       ></div>
-      <Toaster />
     </div>
   );
 };
