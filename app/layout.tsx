@@ -4,7 +4,6 @@ import { auth } from '@/auth'
 import { SessionProvider } from 'next-auth/react';
 
 import "./globals.css";
-import Head from "next/head";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,6 +15,10 @@ export default async function RootLayout({
   const session = await auth()
   return (
     <html lang="en">
+      <head>
+        <meta name="description" content="GeeseHacks, a hybrid hackathon and case competition, will be held from January 10-13, 2025. Participants are invited to create innovative projects or craft unique solutions for real-world challenges. Join us for a weekend of creativity, collaboration, and problem-solving!" />
+        <link rel="icon" href="/favicon.ico" />
+      </head>
       <body className={inter.className}>
         <SessionProvider session={session}>
           {children}
@@ -25,12 +28,6 @@ export default async function RootLayout({
   );
 }
 
-export async function generateMetadata({ params: { id } }: { params: { id: string } }) {
-  return {
-    title: "GeeseHacks",
-    description: "GeeseHacks, a hybrid hackathon and case competition, will be held from January 10-13, 2025. Participants are invited to create innovative projects or craft unique solutions for real-world challenges. Join us for a weekend of creativity, collaboration, and problem-solving!",
-    icons: {
-      icon: '/favicon.ico',
-    },
-  }
+export const metadata = {
+  title: "GeeseHacks",
 }
