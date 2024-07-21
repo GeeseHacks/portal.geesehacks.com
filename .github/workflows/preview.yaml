@@ -21,7 +21,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
       
       - name: Install Vercel CLI
         run: npm install -g vercel
@@ -34,6 +34,11 @@ jobs:
 
       - name: Generate Prisma Client
         run: npx prisma generate
+
+      - name: Clean up unnecessary Prisma engines
+        run: |
+          rm -rf node_modules/@prisma/engines
+          rm -f node_modules/.prisma/client/query-engine-debian-openssl-1.1.x
 
       - name: Build Project Artifacts
         run: vercel build --token=$VERCEL_TOKEN
