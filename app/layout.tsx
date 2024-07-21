@@ -4,6 +4,7 @@ import { auth } from '@/auth'
 import { SessionProvider } from 'next-auth/react';
 
 import "./globals.css";
+import Head from "next/head";
 
 const inter = Inter({ subsets: ["latin"] });
 

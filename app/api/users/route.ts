@@ -1,10 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Prisma } from '@prisma/client';
 import prisma from '@lib/prisma'; // Import the initialized Prisma client
+import { auth } from '@/auth';
 
 // Handler for POST requests
 export async function POST(request: NextRequest) {
   try {
+    // Get the session
+    const session = await auth();
+
+    // Check if the session exists and get the user ID
+    if (!session?.user?.id) {
+      return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+    }
+
+    // Convert user ID to number
+    const userId = Number(session.user.id);
+
     // Parse the request body to get user data
     const body = await request.json();
     const {
@@ -22,8 +34,21 @@ export async function POST(request: NextRequest) {
       dietary_restrictions,
       github,
       linkedin,
-      personal_website
+      personal_website,
+      resume,
+      MLH_authorize,
+      optional_consider,
+      optional_gender,
+      optional_pronouns,
+      optional_race,
+      optional_underrepresented,
+      t_shirt_size
     } = body;
+
+    // Log session, userId, and request body for debugging
+    console.log('Session:', session);
+    console.log('UserID:', userId);
+    console.log('Request Body:', body);
 
     // Validate the required fields
     if (!firstname || !lastname || !email) {
@@ -35,7 +60,7 @@ export async function POST(request: NextRequest) {
       // Create the new user
       const createdUser = await prisma.users.create({
         data: {
-          id,
+          id: userId,
           firstname,
           lastname,
           age,
@@ -49,7 +74,15 @@ export async function POST(request: NextRequest) {
           dietary_restrictions,
           github,
           linkedin,
-          personal_website
+          personal_website,
+          MLH_authorize,
+          optional_consider,
+          optional_gender,
+          optional_pronouns,
+          optional_race,
+          optional_underrepresented,
+          resume,
+          t_shirt_size
         }
       });
       return createdUser;
