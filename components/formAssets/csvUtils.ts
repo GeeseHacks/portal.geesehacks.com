@@ -8,6 +8,7 @@ export const fetchCSV = async (url: string): Promise<string[]> => {
       complete: (results) => {
         const data = results.data as string[][];
         const firstColumn = data.map(row => row[0]); // Extract the first column
+        console.log("Fetched schools:", firstColumn);
         resolve(firstColumn.filter((item) => item));
       },
       error: (error: any) => {
