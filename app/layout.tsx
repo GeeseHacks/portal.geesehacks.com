@@ -16,9 +16,10 @@ export default async function RootLayout({
   const session = await auth()
   return (
     <html lang="en">
-      <Head>
+      <head>
+        <meta name="description" content="GeeseHacks, a hybrid hackathon and case competition, will be held from January 10-12, 2025. Participants are invited to create innovative projects or craft unique solutions for real-world challenges. Join us for a weekend of creativity, collaboration, and problem-solving!" />
         <link rel="icon" href="/favicon.ico" />
-      </Head>
+      </head>
       <body className={inter.className}>
         <SessionProvider session={session}>
           {children}
@@ -28,9 +29,6 @@ export default async function RootLayout({
   );
 }
 
-export async function generateMetadata({ params: { id } }: { params: { id: string } }) {
-  return {
-    title: "GeeseHacks",
-    description: "GeeseHacks, a hybrid hackathon and case competition, will be held from January 10-13, 2025. Participants are invited to create innovative projects or craft unique solutions for real-world challenges. Join us for a weekend of creativity, collaboration, and problem-solving!",
-  }
+export const metadata = {
+  title: "GeeseHacks",
 }
