@@ -7,11 +7,10 @@ import Google from "next-auth/providers/google";
 import Discord from "next-auth/providers/discord";
 import { validateEmail } from '@/lib/emailUtils';
 import { validatePassword } from '@/lib/passwordUtils';
-import { BASE_API_URL } from './components/utils/constants';
 
 async function getUser(email: string): Promise<AuthUser | null> {
   try {
-    const response = await fetch(`${BASE_API_URL}/api/auth/users`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/users`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
