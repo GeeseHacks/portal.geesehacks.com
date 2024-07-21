@@ -29,6 +29,10 @@ jobs:
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --environment=preview --token=$VERCEL_TOKEN
 
+      # Copy the Prisma directory to ensure binaries are included during install
+      - name: Copy Prisma directory
+        run: cp -r prisma ./prisma
+      
       - name: Install dependencies
         run: npm install
 
@@ -38,7 +42,7 @@ jobs:
       - name: Clean up unnecessary Prisma engines
         run: |
           rm -rf node_modules/@prisma/engines
-          rm -f node_modules/.prisma/client/libquery_engine-debian-openssl-1.1.x.so.node
+          rm -f node_modules/.prisma/client/query-engine-debian-openssl-1.1.x
 
       - name: Build Project Artifacts
         run: vercel build --token=$VERCEL_TOKEN
