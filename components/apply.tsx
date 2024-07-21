@@ -47,7 +47,7 @@ const InputField: React.FC<InputFieldProps> = ({
       } rounded-lg text-black focus:outline-none`}
       placeholder={placeholder}
     />
-    {error && <p className="text-red-500 text-s italic">{error}</p>}
+    {error && <p className="text-red-500 text-s italic" role="alert" aria-errormessage="Invalid input value">{error}</p>}
   </div>
 );
 
@@ -89,7 +89,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
         />
       )}
     />
-    {error && <p className="text-red-500 text-s italic">{error}</p>}
+    {error && <p className="text-red-500 text-s italic" role="alert" aria-errormessage="Invalid input value">{error}</p>}
   </div>
 );
 
@@ -153,7 +153,7 @@ const TextAreaField: React.FC<TextAreaFieldProps> = ({
       } rounded-lg text-black h-48 focus:outline-none`}
       placeholder={placeholder}
     />
-    {error && <p className="text-red-500 text-s italic">{error}</p>}
+    {error && <p className="text-red-500 text-s italic" role="alert" aria-errormessage="Invalid input value">{error}</p>}
   </div>
 );
 
@@ -187,7 +187,7 @@ const ComplexInputField: React.FC<ComplexInputFieldProps> = ({
           className="w-full p-2 border border-gray-700 rounded-lg text-black focus:outline-none"
           placeholder={placeholder}
         />
-        {error && <p className="text-red-500 text-s italic">{error}</p>}
+        {error && <p className="text-red-500 text-s italic" role="alert" aria-errormessage="Invalid input value">{error}</p>}
       </div>
     </div>
   </div>
@@ -386,7 +386,7 @@ const RegistrationForm: React.FC = () => {
         Get Usser
       </button>
       <div>{session && <h1>{JSON.stringify(session.user)}</h1>}</div>
-      <h1 className="text-white text-4xl font-bold mb-6">Hacker Information</h1>
+      <h1 className="text-white text-4xl font-bold mb-6" aria-label="Hacker information">Hacker Information</h1>
       <hr className="border-white pb-6" />
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-x-12 gap-y-14">
