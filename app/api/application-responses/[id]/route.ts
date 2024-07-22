@@ -1,10 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@lib/prisma'; // Import the initialized Prisma client
-
+import { auth } from '@/auth';
 
 // Handler for GET requests
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    // Get the session
+    const session = await auth();
+
+    // Check if the session exists and get the user ID
+    if (!session?.user?.id) {
+      return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+    }
+
     // Convert the 'id' parameter from string to integer
     const userId = parseInt(params.id, 10);
 
