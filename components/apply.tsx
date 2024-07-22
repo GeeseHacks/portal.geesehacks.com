@@ -35,16 +35,15 @@ const InputField: React.FC<InputFieldProps> = ({
   error,
 }) => (
   <div className="col-span-1">
-    <label className="block mb-2 text-xl font-semibold" htmlFor={id}>
+    <label className="block my-4 text-xl font-semibold" htmlFor={id}>
       {label}
     </label>
     <input
       id={id}
       type={type}
       {...registerOptions}
-      className={`w-full p-2 border ${
-        error ? "border-red-500 border-2" : "border-gray-700"
-      } rounded-lg text-black focus:outline-none`}
+      className={`w-full p-2 border ${error ? "border-red-500 border-2" : "border-gray-500"
+        } rounded-lg text-white bg-transparent focus:outline-none`}
       placeholder={placeholder}
     />
     {error && <p className="text-red-500 text-s italic">{error}</p>}
@@ -69,7 +68,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
   error,
 }) => (
   <div className={className}>
-    <label className="block mb-2 text-xl font-semibold" htmlFor={id}>
+    <label className="block my-4 text-xl font-semibold" htmlFor={id}>
       {label}
     </label>
     <Controller
@@ -78,9 +77,8 @@ const SelectField: React.FC<SelectFieldProps> = ({
       render={({ field: { onChange, value, name, ref } }) => (
         <Select
           styles={customStyles}
-          className={`text-black ${
-            error ? "border-red-500 border-2" : "border-gray-700"
-          }`}
+          className={`text-red ${error ? "border-red-500 border-2" : "border-gray-700"
+            }`}
           classNamePrefix="react-select"
           placeholder=""
           options={options}
@@ -99,9 +97,10 @@ const customStyles = {
     width: "100%",
     padding: "0.13rem",
     borderRadius: "0.5rem",
-    borderColor: state.isFocused ? "#374151" : "#374151",
+    backgroundColor: "transparent",
+    borderColor: state.isFocused ? "#6b7280" : "#6b7280", // border style
     "&:hover": {
-      borderColor: state.isFocused ? "#374151" : "#374151",
+      borderColor: state.isFocused ? "#6b7280" : "#6b7280",
     },
     boxShadow: "none",
   }),
@@ -111,18 +110,24 @@ const customStyles = {
   }),
   singleValue: (provided: any) => ({
     ...provided,
-    color: "black",
+    color: "white",
   }),
   input: (provided: any) => ({
     ...provided,
-    color: "black",
+    color: "white",
   }),
   indicatorSeparator: () => ({
     display: "none",
   }),
   dropdownIndicator: (provided: any) => ({
     ...provided,
+    color: "white",
+  }),
+  menu: (provided: any) => ({
+    ...provided,
+    backgroundColor: "white",
     color: "black",
+    opacity: "90%"
   }),
 };
 
@@ -148,9 +153,8 @@ const TextAreaField: React.FC<TextAreaFieldProps> = ({
     <textarea
       id={id}
       {...registerOptions}
-      className={`w-full p-2 border ${
-        error ? "border-red-500 border-2" : "border-gray-700"
-      } rounded-lg text-black h-48 focus:outline-none`}
+      className={`w-full p-2 border ${error ? "border-red-500 border-2" : "border-gray-800"
+        } rounded-lg text-white  h-48 focus:outline-none`}
       placeholder={placeholder}
     />
     {error && <p className="text-red-500 text-s italic">{error}</p>}
@@ -177,14 +181,14 @@ const ComplexInputField: React.FC<ComplexInputFieldProps> = ({
   <div className="col-span-1 md:col-span-2">
     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12">
       <div className="col-span-1">
-        <label className="block mb-2 text-xl font-bold" htmlFor={id}>
+        <label className="block my-4 text-xl font-bold" htmlFor={id}>
           {label}
         </label>
         <input
           id={id}
           type={type}
           {...registerOptions}
-          className="w-full p-2 border border-gray-700 rounded-lg text-black focus:outline-none"
+          className="w-full p-2 border bg-transparent border-gray-500 rounded-lg text-white focus:outline-none"
           placeholder={placeholder}
         />
         {error && <p className="text-red-500 text-s italic">{error}</p>}
@@ -286,7 +290,7 @@ const RegistrationForm: React.FC = () => {
     resolver: zodResolver(formSchema),
   });
 
-  const watchAllFields = watch();
+  const watchAllFields = watch(); // unused variable?
 
   const onSubmit: SubmitHandler<formSchemaType> = async (data) => {
     console.log("form submitted!");
@@ -386,8 +390,8 @@ const RegistrationForm: React.FC = () => {
         Get Usser
       </button>
       <div>{session && <h1>{JSON.stringify(session.user)}</h1>}</div>
-      <h1 className="text-white text-4xl font-bold mb-6">Hacker Information</h1>
-      <hr className="border-white pb-6" />
+      <h1 className="text-white text-4xl font-bold my-6">Hacker Information 🌟 </h1>
+      <hr className="border-white mb-12" />
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-x-12 gap-y-14">
           <InputField
@@ -504,16 +508,17 @@ const RegistrationForm: React.FC = () => {
           />
           <div className="col-span-1">
             <label
-              className="block mb-2 text-xl font-semibold"
+              className="block my-4 text-xl font-semibold"
               htmlFor="resume"
             >
-              Resume
+              Resume 
+              {/* BUG IN SAFARI */}
             </label>
             <input
               id="resume"
               type="file"
               {...register("resume")}
-              className="custom-upload w-full p-2 border border-gray-700 rounded-lg text-black"
+              className="w-full border border-gray-500 rounded-lg text-white"
             />
           </div>
           <InputField
