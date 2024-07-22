@@ -74,7 +74,7 @@ const Login: React.FC = () => {
               <button className="flex gap-2">
                 <img
                   src="/static/icons/google-icon.png"
-                  alt="Log in with Google"
+                  alt="Google icon"
                   className="h-6 w-6"
                 />
                 Log in with Google
@@ -87,7 +87,7 @@ const Login: React.FC = () => {
               <button className="flex gap-2">
                 <img
                   src="/static/icons/discord-icon.png"
-                  alt="Login with Discord"
+                  alt="Discord icon"
                   className="h-6 w-7"
                 />
                 Log in with Discord
@@ -175,6 +175,7 @@ const Login: React.FC = () => {
         <div
           className="bg-cover bg-center w-0 sm:w-1/2"
           style={{ backgroundImage: "url('/static/images/background.png')" }}
+          aria-label="background image"
         ></div>
         <Toaster />
       </div>
