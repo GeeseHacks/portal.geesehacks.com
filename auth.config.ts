@@ -21,7 +21,7 @@ export const authConfig = {
         token.id = profile.sub;
       }
       else if (profile && account?.provider === 'discord') {
-        token.id = profile.sub;
+        token.id = profile.id;
       }
 
       else if (user) {
