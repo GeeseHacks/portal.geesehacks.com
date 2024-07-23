@@ -1,0 +1,33 @@
+import React from "react";
+import { UseFormRegisterReturn } from "react-hook-form";
+
+interface TextAreaFieldProps {
+  id: string;
+  label: string;
+  registerOptions: UseFormRegisterReturn;
+  placeholder?: string;
+  error?: string;
+}
+
+const TextAreaField: React.FC<TextAreaFieldProps> = ({
+  id,
+  label,
+  registerOptions,
+  placeholder,
+  error,
+}) => (
+  <div className="col-span-1">
+    <label className="block mb-2 text-xl font-semibold" htmlFor={id}>
+      {label}
+    </label>
+    <textarea
+      id={id}
+      {...registerOptions}
+      className={`w-full p-2 border ${error ? "border-red-500 border-2" : "border-gray-800"} rounded-lg text-white  h-48 focus:outline-none`}
+      placeholder={placeholder}
+    />
+    {error && <p className="text-red-500 text-s italic">{error}</p>}
+  </div>
+);
+
+export default TextAreaField;
