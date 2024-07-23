@@ -293,7 +293,7 @@ const RegistrationForm: React.FC = () => {
   const watchAllFields = watch(); // unused variable?
 
   const onSubmit: SubmitHandler<formSchemaType> = async (data) => {
-    console.log("form submitted!");
+    console.log("form is submitting..");
     console.log(data);
 
     try {
@@ -303,15 +303,21 @@ const RegistrationForm: React.FC = () => {
 
       const userId = Number(session.user.id);
       const resumeFile = data.resume[0];
-      const filename = encodeURIComponent(resumeFile.name);
 
-      //Upload the resume file and get the URL
-      const uploadResponse = await fetch(`/api/resume?filename=${filename}`, {
-        method: "POST",
-        body: resumeFile,
-      });
-      const blob = await uploadResponse.json();
-      const resumeUrl = blob.url;
+      // temporary fix to resume issue:
+      let resumeUrl = "";
+      if (resumeFile && resumeFile.name) {
+        console.log("WTF");
+        const filename = encodeURIComponent(resumeFile.name);
+
+        //Upload the resume file and get the URL
+        const uploadResponse = await fetch(`/api/resume?filename=${filename}`, {
+          method: "POST",
+          body: resumeFile,
+        });
+        const blob = await uploadResponse.json();
+        resumeUrl = blob.url;
+      }
 
       const userData = await fetch("/api/users", {
         method: "POST",
@@ -357,6 +363,8 @@ const RegistrationForm: React.FC = () => {
           q3: data.q3,
         }),
       });
+
+      console.log("form is submitted!");
 
       reset(); //scuffed
     } catch (err) {
