@@ -1,4 +1,3 @@
-import Image from "next/image";
 import SignUp, { metadata as signUpMetadata } from "@/app/signup/page";
 
 export const metadata = signUpMetadata;

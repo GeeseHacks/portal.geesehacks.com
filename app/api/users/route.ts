@@ -42,7 +42,8 @@ export async function POST(request: NextRequest) {
       optional_pronouns,
       optional_race,
       optional_underrepresented,
-      t_shirt_size
+      t_shirt_size,
+      status
     } = body;
 
     // Log session, userId, and request body for debugging
@@ -82,7 +83,8 @@ export async function POST(request: NextRequest) {
           optional_race,
           optional_underrepresented,
           resume,
-          t_shirt_size
+          t_shirt_size,
+          status
         }
       });
       return createdUser;
