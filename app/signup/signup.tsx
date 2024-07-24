@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation"; // Import from next/navigation
-import { signIn } from "next-auth/react";
 import { signInActionGoogle } from "@/utils/signInActionGoogle";
 import { signInActionDiscord } from "@/utils/signInActionDiscord";
 import { validatePassword } from '@/lib/passwordUtils';

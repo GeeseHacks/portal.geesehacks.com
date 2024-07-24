@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import { authenticate } from "@lib/actions";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
 import { validatePassword } from "@/lib/passwordUtils";
 import { validateEmail } from "@/lib/emailUtils";
 import { signInActionGoogle } from "@/utils/signInActionGoogle";
