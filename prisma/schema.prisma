@@ -35,7 +35,17 @@ model users {
   other_dietary_restrictions String?                 @db.VarChar(100)
   resume                     String?                 @db.VarChar(255)
   t_shirt_size               String?                 @db.VarChar(50)
+  status                     UserStatus
+
+  // Define the relation to application_responses -- Not an actual field in the DB schema
   application_responses      application_responses[]
+}
+
+enum UserStatus {
+  ACCEPTED
+  REJECTED
+  WAITLIST
+  NOT_APPLIED
 }
 
 model application_responses {
