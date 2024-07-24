@@ -41,14 +41,15 @@ export const formSubmission = async (data: formSchemaType, session: any) => {
         github: data.githubProfile,
         linkedin: data.linkedin,
         personal_website: data.personalWebsite,
+        resume: resumeUrl,
         MLH_authorize: data.mlhCodeOfConduct && data.mlhPrivacyPolicy,
         optional_consider: data.sexuality,
         optional_gender: data.gender,
         optional_pronouns: data.pronouns,
         optional_race: data.ethnicity,
-        t_shirt_size: data.tShirtSize,
-        resume: resumeUrl,
         optional_underrepresented: data.underrepresented,
+        t_shirt_size: data.tShirtSize,
+        status: "APPLIED"
       }),
     });
 
