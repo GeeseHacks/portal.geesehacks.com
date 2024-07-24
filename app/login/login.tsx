@@ -2,11 +2,10 @@
 import React, { useState, useEffect } from "react";
 import { authenticate } from "@lib/actions";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
 import { validatePassword } from "@/lib/passwordUtils";
 import { validateEmail } from "@/lib/emailUtils";
-import { signInActionGoogle } from "@/components/utils/signInActionGoogle";
-import { signInActionDiscord } from "@/components/utils/signInActionDiscord";
+import { signInActionGoogle } from "@/utils/signInActionGoogle";
+import { signInActionDiscord } from "@/utils/signInActionDiscord";
 import toast, { Toaster } from "react-hot-toast";
 
 const Login: React.FC = () => {
