@@ -8,6 +8,7 @@ export default function registrationForm() {
   );
 }
 
+
 export const metadata = {
   title: "Apply | GeeseHacks",
 }
