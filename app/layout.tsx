@@ -3,6 +3,7 @@ import { auth } from '@/auth'
 import { SessionProvider } from 'next-auth/react';
 import { Toaster } from 'react-hot-toast';
 import { ThemeProvider } from "@/components/ThemeProvider"
+import { Analytics } from "@vercel/analytics/react"
 
 import "./globals.css";
 
@@ -30,6 +31,7 @@ export default async function RootLayout({
           >
             {children}
             <Toaster/>
+            <Analytics/>
           </ThemeProvider>
         </SessionProvider>
       </body>
