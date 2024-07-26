@@ -1,4 +1,3 @@
-
 import SignUp from './signup';
 
 const Page: React.FC = () => {
