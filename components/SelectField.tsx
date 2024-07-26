@@ -35,7 +35,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
       render={({ field: { onChange, value, name, ref } }) => (
         <Select
           styles={customInputStyles}
-          className={`text-red ${error ? "border-red-500 border-2" : "border-gray-700"}`}
+          // className={`text-red ${error ? "border-red-500 border-2" : "border-gray-700"}`}
           classNamePrefix="react-select"
           placeholder=""
           options={options}
@@ -44,7 +44,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
         />
       )}
     />
-    {error && <p className="text-red-500 text-s italic">{error.message}</p>}
+    {error && <p className="text-red-500 text-s italic mt-2">{error.message}</p>}
   </div>
 );
 

@@ -14,6 +14,9 @@ import { formSubmission } from "../utils/formSubmission";
 import { signOutAction } from "../utils/signOutAction";
 import { getAgeOptions } from "../utils/formAssets/formAssets";
 import { options } from "../utils/formAssets/formAssets";
+import { Checkbox } from "@/components/ui/checkbox"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 
 const RegistrationForm: React.FC = () => {
   const { data: session } = useSession();
@@ -157,11 +160,11 @@ const RegistrationForm: React.FC = () => {
             <label className="block my-4 text-xl font-semibold" htmlFor="resume">
               Resume 
             </label>
-            <input
+            <Input
               id="resume"
               type="file"
               {...register("resume")}
-              className="w-full border border-gray-500 rounded-lg text-white"
+              className="focus:border-none h-15"
             />
           </div>
           <InputField
@@ -276,12 +279,7 @@ const RegistrationForm: React.FC = () => {
         </h1>
         <div className="grid grid-cols-1 gap-x-12 gap-y-10 text-white text-xl">
           <div className="flex items-start">
-            <input
-              id="mlhCodeOfConduct"
-              type="checkbox"
-              {...register("mlhCodeOfConduct")}
-              className="mr-3 mt-1 w-8 h-8"
-            />
+            <Checkbox id="mlhCodeOfConduct" {...register("mlhCodeOfConduct")} className="mr-6 mt-1 w-6 h-6" />
             <label htmlFor="mlhCodeOfConduct">
               I have read and agree to the MLH Code of Conduct. (
               <a href="https://github.com/MLH/mlh-policies/blob/main/code-of-conduct.md" className="underline">
@@ -296,12 +294,7 @@ const RegistrationForm: React.FC = () => {
             </p>
           )}
           <div className="flex items-start">
-            <input
-              id="mlhPrivacyPolicy"
-              type="checkbox"
-              {...register("mlhPrivacyPolicy")}
-              className="mr-3 mt-1 w-32 h-8"
-            />
+            <Checkbox id="mlhPrivacyPolicy" {...register("mlhPrivacyPolicy")} className="mr-6 mt-1 w-6 h-6" />
             <label htmlFor="mlhPrivacyPolicy">
               I authorize you to share my application/registration information with Major League Hacking for event administration, ranking, and MLH administration in-line with the MLH Privacy Policy (
               <a href="https://github.com/MLH/mlh-policies/blob/main/privacy-policy.md" className="underline">
@@ -324,20 +317,16 @@ const RegistrationForm: React.FC = () => {
             </p>
           )}
           <div className="flex items-start">
-            <input
-              id="mlhEmails"
-              type="checkbox"
-              {...register("mlhEmails")}
-              className="mr-3 mt-1 w-8 h-8"
-            />
+            <Checkbox id="mlhEmails" {...register("mlhEmails")} className="mr-6 mt-1 w-6 h-6" />
             <label htmlFor="mlhEmails">
               I authorize MLH to send me occasional emails about relevant events, career opportunities, and community announcements.
             </label>
           </div>
         </div>
-        <button type="submit" className="w-full py-2 bg-purple-600 hover:bg-purple-800 rounded-lg text-white mt-10">
+
+        <Button type="submit" className="w-full py-2 text-white mt-10">
           Submit
-        </button>
+        </Button>
       </form>
     </div>
   );
