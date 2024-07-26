@@ -35,10 +35,10 @@ export const formSchema = z.object({
   pronouns: z.string().optional(),
   ethnicity: z.string().optional(),
   sexuality: z.string().optional(),
-  mlhCodeOfConduct: z.boolean().refine((val) => val === true, {
+  mlhCodeOfConduct: z.string().refine((val) => val === "true", { // For some reason, we get a string instead of a boolean
     message: "You must agree to the MLH Code of Conduct",
   }),
-  mlhPrivacyPolicy: z.boolean().refine((val) => val === true, {
+  mlhPrivacyPolicy: z.string().refine((val) => val === "true", { // For some reason, we get a string instead of a boolean
     message: "You must agree to the MLH Privacy Policy",
   }),
   mlhEmails: z.boolean().optional(),
