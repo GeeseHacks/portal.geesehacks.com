@@ -46,15 +46,14 @@ const RegistrationForm: React.FC = () => {
 
   return (
     <div className="max-w-5xl mx-auto p-8 text-white">
+      {/* For debugging purposes */}
       <form action={signOutAction}>
-        <button className="flex h-12 items-center justify-center gap-2 rounded-md bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 p-3 text-sm font-medium text-white shadow-lg transition duration-200 ease-in-out hover:bg-gradient-to-r hover:from-purple-500 hover:via-pink-600 hover:to-red-600 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
+        <Button className="flex h-12 items-center justify-center gap-2 rounded-md bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 p-3 text-sm font-medium text-white shadow-lg transition duration-200 ease-in-out hover:bg-gradient-to-r hover:from-purple-500 hover:via-pink-600 hover:to-red-600 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
           Sign Out
-        </button>
+        </Button>
       </form>
-      <button onClick={() => console.log(session)}>
-        Get User
-      </button>
-      <div>{session && <h1>{JSON.stringify(session.user)}</h1>}</div>
+      <div>{session && <h1>{JSON.stringify(session.user)}</h1>}</div> 
+      
       <h1 className="text-white text-4xl font-bold my-6">Hacker Information 🌟 </h1>
       <hr className="border-white mb-12" />
       <form onSubmit={handleSubmit(onSubmit)}>
