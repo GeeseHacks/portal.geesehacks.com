@@ -1,19 +1,24 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession } from "next-auth/react";
 import InputField from "./InputField";
 import SelectField from "./SelectField";
 import TextAreaField from "./TextAreaField";
-import ComplexInputField from "./ComplexInputField";
+import PhoneInput from "./PhoneInput";
+import ComplexInputWrapper from "./ComplexInputWrapper";
 import { formSchema, formSchemaType } from "../utils/formSchema";
 import { fetchCSVOptions } from "../utils/fetchCSVOptions";
 import { formSubmission } from "../utils/formSubmission";
 import { signOutAction } from "../utils/signOutAction";
 import { getAgeOptions } from "../utils/formAssets/formAssets";
 import { options } from "../utils/formAssets/formAssets";
+
+import { Checkbox } from "@/components/ui/checkbox"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 
 const RegistrationForm: React.FC = () => {
   const { data: session } = useSession();
@@ -41,15 +46,14 @@ const RegistrationForm: React.FC = () => {
 
   return (
     <div className="max-w-5xl mx-auto p-8 text-white">
+      {/* For debugging purposes */}
       <form action={signOutAction}>
-        <button className="flex h-12 items-center justify-center gap-2 rounded-md bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 p-3 text-sm font-medium text-white shadow-lg transition duration-200 ease-in-out hover:bg-gradient-to-r hover:from-purple-500 hover:via-pink-600 hover:to-red-600 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
+        <Button className="flex h-12 items-center justify-center gap-2 rounded-md bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 p-3 text-sm font-medium text-white shadow-lg transition duration-200 ease-in-out hover:bg-gradient-to-r hover:from-purple-500 hover:via-pink-600 hover:to-red-600 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
           Sign Out
-        </button>
+        </Button>
       </form>
-      <button onClick={() => console.log(session)}>
-        Get Usser
-      </button>
-      <div>{session && <h1>{JSON.stringify(session.user)}</h1>}</div>
+      <div>{session && <h1>{JSON.stringify(session.user)}</h1>}</div> 
+      
       <h1 className="text-white text-4xl font-bold my-6">Hacker Information 🌟 </h1>
       <hr className="border-white mb-12" />
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -84,13 +88,22 @@ const RegistrationForm: React.FC = () => {
             type="email"
             error={errors.email?.message}
           />
-          <ComplexInputField
-            id="phoneNumber"
-            label="Phone Number *"
-            registerOptions={register("phoneNumber")}
-            placeholder="Ex. +1 4161234567"
-            error={errors.phoneNumber?.message}
-          />
+          <ComplexInputWrapper>
+            <Controller
+              name="phoneNumber"
+              control={control}
+              render={({ field }) => (
+                <PhoneInput
+                  defaultCountry="CA"
+                  id="phoneNumber"
+                  label="Phone Number"
+                  registerOptions={register("phoneNumber")}
+                  onChange={field.onChange}
+                  error={errors.phoneNumber?.message}
+                />
+              )}
+            />
+          </ComplexInputWrapper>
           <SelectField
             id="school"
             label="School *"
@@ -123,13 +136,15 @@ const RegistrationForm: React.FC = () => {
             className="col-span-1"
             error={errors.countryOfResidence}
           />
-          <ComplexInputField
-            id="address"
-            label="Address"
-            registerOptions={register("address")}
-            placeholder="Enter address"
-            error={errors.address?.message}
-          />
+          <ComplexInputWrapper>
+            <InputField
+              id="address"
+              label="Address"
+              registerOptions={register("address")}
+              placeholder="Enter address"
+              error={errors.address?.message}
+            />
+          </ComplexInputWrapper>
           <SelectField
             id="dietaryRestrictions"
             label="Dietary Restrictions *"
@@ -157,11 +172,11 @@ const RegistrationForm: React.FC = () => {
             <label className="block my-4 text-xl font-semibold" htmlFor="resume">
               Resume 
             </label>
-            <input
+            <Input
               id="resume"
               type="file"
               {...register("resume")}
-              className="w-full border border-gray-500 rounded-lg text-white"
+              className="focus:border-none h-15"
             />
           </div>
           <InputField
@@ -275,69 +290,88 @@ const RegistrationForm: React.FC = () => {
           We are currently in the process of partnering with MLH. The following 3 checkboxes are for this partnership. If we do not end up partnering with MLH, your information will not be shared
         </h1>
         <div className="grid grid-cols-1 gap-x-12 gap-y-10 text-white text-xl">
-          <div className="flex items-start">
-            <input
-              id="mlhCodeOfConduct"
-              type="checkbox"
-              {...register("mlhCodeOfConduct")}
-              className="mr-3 mt-1 w-8 h-8"
-            />
-            <label htmlFor="mlhCodeOfConduct">
-              I have read and agree to the MLH Code of Conduct. (
-              <a href="https://github.com/MLH/mlh-policies/blob/main/code-of-conduct.md" className="underline">
-                https://github.com/MLH/mlh-policies/blob/main/code-of-conduct.md
-              </a>
-              ). *
-            </label>
-          </div>
+          <Controller
+            name="mlhCodeOfConduct"
+            control={control}
+            render={({ field }) => (
+              <div className="flex items-start">
+                <Checkbox
+                  id="mlhCodeOfConduct"
+                  checked={field.value}
+                  onCheckedChange={(checked) => field.onChange(!!checked)}
+                  className="mr-6 mt-1 w-6 h-6"
+                />
+                <label htmlFor="mlhCodeOfConduct">
+                  I have read and agree to the MLH Code of Conduct. (
+                  <a href="https://github.com/MLH/mlh-policies/blob/main/code-of-conduct.md" className="underline">
+                    https://github.com/MLH/mlh-policies/blob/main/code-of-conduct.md
+                  </a>
+                  ). *
+                </label>
+              </div>
+            )}
+          />
           {errors.mlhCodeOfConduct && (
             <p className="text-red-500 text-s italic">
               {errors.mlhCodeOfConduct.message}
             </p>
           )}
-          <div className="flex items-start">
-            <input
-              id="mlhPrivacyPolicy"
-              type="checkbox"
-              {...register("mlhPrivacyPolicy")}
-              className="mr-3 mt-1 w-32 h-8"
-            />
-            <label htmlFor="mlhPrivacyPolicy">
-              I authorize you to share my application/registration information with Major League Hacking for event administration, ranking, and MLH administration in-line with the MLH Privacy Policy (
-              <a href="https://github.com/MLH/mlh-policies/blob/main/privacy-policy.md" className="underline">
-                https://github.com/MLH/mlh-policies/blob/main/privacy-policy.md
-              </a>
-              ). I further agree to the terms of both the MLH Contest Terms and Conditions (
-              <a href="https://github.com/MLH/mlh-policies/blob/main/contest-terms.md" className="underline">
-                https://github.com/MLH/mlh-policies/blob/main/contest-terms.md
-              </a>
-              ) and the MLH Privacy Policy (
-              <a href="https://github.com/MLH/mlh-policies/blob/main/privacy-policy.md" className="underline">
-                https://github.com/MLH/mlh-policies/blob/main/privacy-policy.md
-              </a>
-              ). *
-            </label>
-          </div>
+          <Controller
+            name="mlhPrivacyPolicy"
+            control={control}
+            render={({ field }) => (
+              <div className="flex items-start">
+                <Checkbox
+                  id="mlhPrivacyPolicy"
+                  checked={field.value}
+                  onCheckedChange={(checked) => field.onChange(!!checked)}
+                  className="mr-6 mt-1 w-6 h-6"
+                />
+                <label htmlFor="mlhPrivacyPolicy">
+                  I authorize you to share my application/registration information with Major League Hacking for event administration, ranking, and MLH administration in-line with the MLH Privacy Policy (
+                  <a href="https://github.com/MLH/mlh-policies/blob/main/privacy-policy.md" className="underline">
+                    https://github.com/MLH/mlh-policies/blob/main/privacy-policy.md
+                  </a>
+                  ). I further agree to the terms of both the MLH Contest Terms and Conditions (
+                  <a href="https://github.com/MLH/mlh-policies/blob/main/contest-terms.md" className="underline">
+                    https://github.com/MLH/mlh-policies/blob/main/contest-terms.md
+                  </a>
+                  ) and the MLH Privacy Policy (
+                  <a href="https://github.com/MLH/mlh-policies/blob/main/privacy-policy.md" className="underline">
+                    https://github.com/MLH/mlh-policies/blob/main/privacy-policy.md
+                  </a>
+                  ). *
+                </label>
+              </div>
+            )}
+          />
           {errors.mlhPrivacyPolicy && (
             <p className="text-red-500 text-s italic">
               {errors.mlhPrivacyPolicy.message}
             </p>
           )}
-          <div className="flex items-start">
-            <input
-              id="mlhEmails"
-              type="checkbox"
-              {...register("mlhEmails")}
-              className="mr-3 mt-1 w-8 h-8"
-            />
-            <label htmlFor="mlhEmails">
-              I authorize MLH to send me occasional emails about relevant events, career opportunities, and community announcements.
-            </label>
-          </div>
+          <Controller
+            name="mlhEmails"
+            control={control}
+            render={({ field }) => (
+              <div className="flex items-start">
+                <Checkbox
+                  id="mlhEmails"
+                  checked={field.value}
+                  onCheckedChange={(checked) => field.onChange(!!checked)}
+                  className="mr-6 mt-1 w-6 h-6"
+                />
+                <label htmlFor="mlhEmails">
+                  I authorize MLH to send me occasional emails about relevant events, career opportunities, and community announcements.
+                </label>
+              </div>
+            )}
+          />
         </div>
-        <button type="submit" className="w-full py-2 bg-purple-600 hover:bg-purple-800 rounded-lg text-white mt-10">
+
+        <Button type="submit" className="w-full py-2 text-white mt-10">
           Submit
-        </button>
+        </Button>
       </form>
     </div>
   );

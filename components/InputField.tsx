@@ -1,5 +1,6 @@
 import React from "react";
 import { UseFormRegisterReturn } from "react-hook-form";
+import { Input } from "@/components/ui/input"
 
 interface InputFieldProps {
   id: string;
@@ -22,14 +23,15 @@ const InputField: React.FC<InputFieldProps> = ({
     <label className="block my-4 text-xl font-semibold" htmlFor={id}>
       {label}
     </label>
-    <input
+    <Input
       id={id}
       type={type}
       {...registerOptions}
-      className={`w-full p-2 border ${error ? "border-red-500 border-2" : "border-gray-500"} rounded-lg text-white bg-transparent focus:outline-none`}
+      // className={`w-full p-2 border ${error ? "border-red-500 border-2" : "border-gray-500"} rounded-lg text-white bg-transparent focus:outline-none`}
+      className={`focus:border-transparent py-5`}
       placeholder={placeholder}
     />
-    {error && <p className="text-red-500 text-s italic">{error}</p>}
+    {error && <p className="text-red-500 text-s italic mt-2">{error}</p>}
   </div>
 );
 

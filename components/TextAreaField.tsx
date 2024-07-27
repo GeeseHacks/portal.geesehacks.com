@@ -1,5 +1,6 @@
 import React from "react";
 import { UseFormRegisterReturn } from "react-hook-form";
+import { Textarea } from "@/components/ui/textarea"
 
 interface TextAreaFieldProps {
   id: string;
@@ -20,13 +21,14 @@ const TextAreaField: React.FC<TextAreaFieldProps> = ({
     <label className="block mb-2 text-xl font-semibold" htmlFor={id}>
       {label}
     </label>
-    <textarea
+    <Textarea
       id={id}
       {...registerOptions}
-      className={`w-full p-2 border ${error ? "border-red-500 border-2" : "border-gray-800"} rounded-lg text-white  h-48 focus:outline-none`}
+      // className={`w-full p-2 border ${error ? "border-red-500 border-2" : "border-gray-800"} rounded-lg text-white  h-48 focus:outline-none`}
+      className={`mt-4 h-48 focus:border-transparent`}
       placeholder={placeholder}
     />
-    {error && <p className="text-red-500 text-s italic">{error}</p>}
+    {error && <p className="text-red-500 text-s italic mt-2">{error}</p>}
   </div>
 );
 

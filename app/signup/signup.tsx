@@ -6,7 +6,10 @@ import { signInActionGoogle } from "@/utils/signInActionGoogle";
 import { signInActionDiscord } from "@/utils/signInActionDiscord";
 import { validatePassword } from '@/lib/passwordUtils';
 import { validateEmail } from '@/lib/emailUtils';
-import toast, { Toaster } from 'react-hot-toast';
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button"
+import toast from 'react-hot-toast';
 
 const SignUp: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -110,32 +113,30 @@ const SignUp: React.FC = () => {
           <div className="border-t border-gray-600 flex-grow ml-2"></div>
         </div>
         <form className="flex flex-col gap-4 w-full" onSubmit={handleSubmit} noValidate>
-          <label htmlFor="email" className="text-gray-400">
+          <Label htmlFor="email">
             Email
-          </label>
-          <input
+          </Label>
+          <Input
             type="email"
             id="email"
             name="email"
             placeholder="Your email address"
             required
-            className="p-2 rounded-md bg-gray-800 text-white border border-gray-400"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
           {emailError && (
             <p className="text-red-500 text-sm mt-2">{emailError}</p>
           )}
-          <label htmlFor="password" className="text-gray-400">
+          <Label htmlFor="password">
             Password
-          </label>
-          <input
+          </Label>
+          <Input
             type="password"
             id="password"
             name="password"
             placeholder="Your password"
             required
-            className="p-2 rounded-md bg-gray-800 text-white border border-gray-400"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -146,35 +147,36 @@ const SignUp: React.FC = () => {
               ))}
             </ul>
           )}
-          <label htmlFor="verify-password" className="text-gray-400">
+          <Label htmlFor="verify-password">
             Verify Password
-          </label>
-          <input
+          </Label>
+          <Input
             type="password"
             id="verify-password"
             name="verify-password"
             placeholder="Verify your password"
             required
-            className="p-2 rounded-md bg-gray-800 text-white border border-gray-400"
             value={verifyPassword}
             onChange={(e) => setVerifyPassword(e.target.value)}
           />
           {verifyPasswordError && (
             <p className="text-red-500 text-sm mt-2">{verifyPasswordError}</p>
           )}
-          <button
+          <Button
             type="submit"
-            className={`py-2 rounded-md mt-4 ${isButtonActive ? "bg-blue-600 text-white" : "bg-gray-600 text-gray-400"}`}
+            className={`py-2 mt-4`}
             disabled={!isButtonActive}
           >
             Sign Up
-          </button>
+          </Button>
         </form>
         <div className="flex w-full">
           <p className="mt-4 text-gray-400 text-center text-sm w-full">
             Already have an account?{" "}
-            <Link href="/login" className="text-blue-400">
-              Log in
+            <Link href="/login">
+              <Button variant="link" className="text-blue-400 p-0 h-auto">
+                Log in
+              </Button>
             </Link>
           </p>
         </div>
@@ -183,7 +185,6 @@ const SignUp: React.FC = () => {
         className="bg-cover bg-center w-0 sm:w-1/2"
         style={{ backgroundImage: "url('/static/images/background.png')" }}
       ></div>
-      <Toaster />
     </div>
   );
 };
