@@ -6,6 +6,9 @@ import { validatePassword } from "@/lib/passwordUtils";
 import { validateEmail } from "@/lib/emailUtils";
 import { signInActionGoogle } from "@/utils/signInActionGoogle";
 import { signInActionDiscord } from "@/utils/signInActionDiscord";
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button"
 import toast from "react-hot-toast";
 
 const Login: React.FC = () => {
@@ -89,38 +92,38 @@ const Login: React.FC = () => {
           <div className="border-t border-gray-600 flex-grow ml-2"></div>
         </div>
         <form className="flex flex-col gap-4 w-full" noValidate>
-          <label htmlFor="email" className="text-gray-400 ">
-            Email
-          </label>
-          <input
+          <Label htmlFor="email">Email</Label>
+          <Input
             type="email"
             id="email"
             name="email"
             placeholder="Your email address"
             required
-            className="p-2 rounded-md bg-gray-800 text-white border border-gray-400"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
           {emailError && (
             <p className="text-red-500 text-sm mt-2">{emailError}</p>
           )}
-          <label
-            htmlFor="password"
-            className="text-gray-400 flex justify-between items-center"
-          >
-            Password
-            <a href="#" className="text-blue-400 text-sm">
-              Forget password?
-            </a>
-          </label>
-          <input
+          
+          <div className="flex flex-row justify-between items-center">
+            <Label
+              htmlFor="password"
+              >
+              Password
+            </Label>
+            <Link href="/#">
+              <Button type="button" variant="link" className="text-blue-400 p-0 h-auto">
+                Forgot Password?
+              </Button>
+            </Link>
+          </div>
+          <Input
             type="password"
             id="password"
             name="password"
             placeholder="Your password"
             required
-            className="p-2 rounded-md bg-gray-800 text-white border border-gray-400"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -131,27 +134,25 @@ const Login: React.FC = () => {
               ))}
             </ul>
           )}
-          <button
+          <Button
             // ======= Handle form submit ========
             onClick={handleClick}
             aria-disabled={isButtonActive ? "false" : "true"}
             // ===================================
             type="submit"
-            className={`py-2 rounded-md mt-4 ${
-              isButtonActive
-                ? "bg-blue-600 text-white"
-                : "bg-gray-600 text-gray-400"
-            }`}
+            className={`py-2 mt-4`}
             disabled={!isButtonActive}
           >
             Log in
-          </button>
+          </Button>
         </form>
         <div className="flex w-full">
           <p className="mt-4 text-gray-400 text-center text-sm w-full">
             Don't have an account?{" "}
-            <Link href="/signup" className="text-blue-400">
-              Sign up
+            <Link href="/signup">
+              <Button variant="link" className="text-blue-400 p-0 h-auto">
+                Sign up
+              </Button>
             </Link>
           </p>
         </div>

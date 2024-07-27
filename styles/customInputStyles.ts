@@ -2,7 +2,7 @@ export const customInputStyles = {
   control: (provided: any, state: { isFocused: boolean }) => ({
     ...provided,
     width: "100%",
-    padding: "0.13rem",
+    padding: "0.125rem",
     borderRadius: "0.5rem",
     backgroundColor: "transparent",
     borderColor: state.isFocused ? "#6b7280" : "#6b7280",
@@ -34,6 +34,6 @@ export const customInputStyles = {
     ...provided,
     backgroundColor: "white",
     color: "black",
-    opacity: "90%",
+    opacity: "100%",
   }),
 };

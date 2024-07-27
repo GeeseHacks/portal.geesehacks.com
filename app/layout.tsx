@@ -2,6 +2,8 @@ import { Inter } from "next/font/google";
 import { auth } from '@/auth'
 import { SessionProvider } from 'next-auth/react';
 import { Toaster } from 'react-hot-toast';
+import { ThemeProvider } from "@/components/ThemeProvider"
+import { Analytics } from "@vercel/analytics/react"
 
 import "./globals.css";
 
@@ -21,8 +23,16 @@ export default async function RootLayout({
       </head>
       <body className={inter.className}>
         <SessionProvider session={session}>
-          {children}
-          <Toaster/>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+            <Toaster/>
+            <Analytics/>
+          </ThemeProvider>
         </SessionProvider>
       </body>
     </html>
