@@ -11,7 +11,7 @@ export const formSchema = z.object({
   dietaryRestrictions: z.string().min(1, { message: "Dietary restriction is required" }),
   age: z.number().min(1, { message: "Age is required" }),
   address: z.string().optional(),
-  fieldOfStudy: z.string().optional(),
+  fieldOfStudy: z.string().min(1, { message: "Field of study is required" }),
   tShirtSize: z.string().min(1, { message: "T-shirt size is required" }),
   resume: z.any().optional(),
   githubProfile: z.string().optional(),

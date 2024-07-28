@@ -45,6 +45,7 @@ enum UserStatus {
   ACCEPTED
   REJECTED
   WAITLIST
+  APPLIED
   NOT_APPLIED
 }
 

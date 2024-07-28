@@ -27,7 +27,7 @@ export const formSubmission = async (data: formSchemaType, session: any) => {
         resumeUrl = blob.url;
       }
 
-      await fetch("/api/users", {
+      const userResponse = await fetch("/api/users", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -60,7 +60,11 @@ export const formSubmission = async (data: formSchemaType, session: any) => {
         }),
       });
 
-      await fetch("/api/application-responses", {
+      if (!userResponse.ok) {
+        throw new Error("Failed to submit user data");
+      }
+
+      const responseResponse = await fetch("/api/application-responses", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -72,6 +76,10 @@ export const formSubmission = async (data: formSchemaType, session: any) => {
           q3: data.q3,
         }),
       });
+
+      if (!responseResponse.ok) {
+        throw new Error("Failed to submit application responses");
+      }
 
       console.log("form is submitted!");
     } catch (err) {
