@@ -13,7 +13,7 @@ export const formSchema = z.object({
   address: z.string().optional(),
   fieldOfStudy: z.string().min(1, { message: "Field of study is required" }),
   tShirtSize: z.string().min(1, { message: "T-shirt size is required" }),
-  resume: z.array(z.any()).min(1, { message: "Resume is required" }),
+  resume: z.any().optional(),
   githubProfile: z.string().optional(),
   linkedin: z.string().optional(),
   personalWebsite: z.string().optional(),
