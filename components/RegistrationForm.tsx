@@ -40,8 +40,12 @@ const RegistrationForm: React.FC = () => {
   });
 
   const onSubmit: SubmitHandler<formSchemaType> = async (data) => {
-    await formSubmission(data, session);
-    reset();
+    try {
+      await formSubmission(data, session);
+      reset();
+    } catch (error) {
+      console.error("Error during form submission: ", error);
+    }
   };
 
   return (
@@ -122,7 +126,7 @@ const RegistrationForm: React.FC = () => {
           />
           <SelectField
             id="fieldOfStudy"
-            label="Field of Study"
+            label="Field of Study *"
             control={control}
             options={options.fieldsOfStudy.map((option) => ({ label: option, value: option }))}
             className="col-span-1"
