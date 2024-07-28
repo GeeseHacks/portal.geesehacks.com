@@ -1,5 +1,5 @@
 import React from "react";
-import { UseFormRegisterReturn } from "react-hook-form";
+import { UseFormRegisterReturn, FieldError } from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea"
 
 interface TextAreaFieldProps {
@@ -7,7 +7,7 @@ interface TextAreaFieldProps {
   label: string;
   registerOptions: UseFormRegisterReturn;
   placeholder?: string;
-  error?: string;
+  error?: FieldError | undefined;
 }
 
 const TextAreaField: React.FC<TextAreaFieldProps> = ({
@@ -28,7 +28,7 @@ const TextAreaField: React.FC<TextAreaFieldProps> = ({
       className={`mt-4 h-48 focus:border-transparent`}
       placeholder={placeholder}
     />
-    {error && <p className="text-red-500 text-s italic mt-2">{error}</p>}
+    {error && <p className="text-red-500 text-s italic mt-2">{error.message}</p>}
   </div>
 );
 
