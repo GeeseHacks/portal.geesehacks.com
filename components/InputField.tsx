@@ -1,5 +1,5 @@
 import React from "react";
-import { UseFormRegisterReturn } from "react-hook-form";
+import { UseFormRegisterReturn, FieldError } from "react-hook-form";
 import { Input } from "@/components/ui/input"
 
 interface InputFieldProps {
@@ -8,7 +8,7 @@ interface InputFieldProps {
   registerOptions: UseFormRegisterReturn;
   placeholder?: string;
   type?: string;
-  error?: string;
+  error?: FieldError | undefined;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -31,7 +31,7 @@ const InputField: React.FC<InputFieldProps> = ({
       className={`focus:border-transparent py-5`}
       placeholder={placeholder}
     />
-    {error && <p className="text-red-500 text-s italic mt-2">{error}</p>}
+    {error && <p className="text-red-500 text-s italic mt-2">{error.message}</p>}
   </div>
 );
 

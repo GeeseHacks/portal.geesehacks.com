@@ -67,14 +67,14 @@ const RegistrationForm: React.FC = () => {
             label="First Name *"
             registerOptions={register("firstName")}
             placeholder="John"
-            error={errors.firstName?.message}
+            error={errors.firstName}
           />
           <InputField
             id="lastName"
             label="Last Name *"
             registerOptions={register("lastName")}
             placeholder="Doe"
-            error={errors.lastName?.message}
+            error={errors.lastName}
           />
           <SelectField
             id="age"
@@ -90,7 +90,7 @@ const RegistrationForm: React.FC = () => {
             registerOptions={register("email")}
             placeholder="Enter email"
             type="email"
-            error={errors.email?.message}
+            error={errors.email}
           />
           <ComplexInputWrapper>
             <Controller
@@ -103,7 +103,7 @@ const RegistrationForm: React.FC = () => {
                   label="Phone Number"
                   registerOptions={register("phoneNumber")}
                   onChange={field.onChange}
-                  error={errors.phoneNumber?.message}
+                  error={errors.phoneNumber}
                 />
               )}
             />
@@ -146,7 +146,7 @@ const RegistrationForm: React.FC = () => {
               label="Address"
               registerOptions={register("address")}
               placeholder="Enter address"
-              error={errors.address?.message}
+              error={errors.address}
             />
           </ComplexInputWrapper>
           <SelectField
@@ -162,7 +162,7 @@ const RegistrationForm: React.FC = () => {
             label="Other"
             registerOptions={register("other")}
             placeholder="Other..."
-            error={errors.other?.message}
+            error={errors.other}
           />
           <SelectField
             id="tShirtSize"
@@ -182,34 +182,35 @@ const RegistrationForm: React.FC = () => {
               {...register("resume")}
               className="focus:border-none h-15"
             />
+            {errors.resume && <p className="text-red-500 text-s italic mt-2">{errors.resume.message?.toString()}</p>}
           </div>
           <InputField
             id="githubProfile"
             label="GitHub Profile"
             registerOptions={register("githubProfile")}
             placeholder=""
-            error={errors.githubProfile?.message}
+            error={errors.githubProfile}
           />
           <InputField
             id="linkedin"
             label="LinkedIn"
             registerOptions={register("linkedin")}
             placeholder=""
-            error={errors.linkedin?.message}
+            error={errors.linkedin}
           />
           <InputField
             id="personalWebsite"
             label="Personal Website"
             registerOptions={register("personalWebsite")}
             placeholder=""
-            error={errors.personalWebsite?.message}
+            error={errors.personalWebsite}
           />
           <InputField
             id="additionalLinks"
             label="Additional Links"
             registerOptions={register("additionalLinks")}
             placeholder=""
-            error={errors.additionalLinks?.message}
+            error={errors.additionalLinks}
           />
         </div>
         <h1 className="text-white text-4xl font-bold mb-6 mt-24">
@@ -222,21 +223,21 @@ const RegistrationForm: React.FC = () => {
             label="Why are you running *"
             registerOptions={register("q1")}
             placeholder="Type your answer"
-            error={errors.q1?.message}
+            error={errors.q1}
           />
           <TextAreaField
             id="q2"
             label="How are you running *"
             registerOptions={register("q2")}
             placeholder="Type your answer"
-            error={errors.q2?.message}
+            error={errors.q2}
           />
           <TextAreaField
             id="q3"
             label="Where are you running *"
             registerOptions={register("q3")}
             placeholder="Type your answer"
-            error={errors.q3?.message}
+            error={errors.q3}
           />
         </div>
 
