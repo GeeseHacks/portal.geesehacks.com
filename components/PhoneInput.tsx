@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { UseFormRegisterReturn } from "react-hook-form";
+import { UseFormRegisterReturn, FieldError } from "react-hook-form";
 
 interface PhoneInputProps {
   id: string;
@@ -21,7 +21,7 @@ interface PhoneInputProps {
   registerOptions: UseFormRegisterReturn;
   placeholder?: string;
   type?: string;
-  error?: string;
+  error?: FieldError | undefined;
   onChange?: (value: RPNInput.Value) => void;
   className?: string;
   value?: RPNInput.Value;
@@ -62,7 +62,7 @@ const PhoneInput: React.ForwardRefExoticComponent<PhoneInputProps> =
             defaultCountry={defaultCountry}
             {...props}
           />
-          {error && <p className="text-red-500 text-s italic mt-2">{error}</p>}
+          {error && <p className="text-red-500 text-s italic mt-2">{error.message}</p>}
         </div>
       );
     },
