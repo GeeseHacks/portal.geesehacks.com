@@ -6,9 +6,9 @@ import { validatePassword } from "@/lib/passwordUtils";
 import { validateEmail } from "@/lib/emailUtils";
 import { signInActionGoogle } from "@/utils/signInActionGoogle";
 import { signInActionDiscord } from "@/utils/signInActionDiscord";
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
 
 const Login: React.FC = () => {
@@ -105,15 +105,15 @@ const Login: React.FC = () => {
           {emailError && (
             <p className="text-red-500 text-sm mt-2">{emailError}</p>
           )}
-          
+
           <div className="flex flex-row justify-between items-center">
-            <Label
-              htmlFor="password"
+            <Label htmlFor="password">Password</Label>
+            <Link href="/reset">
+              <Button
+                type="button"
+                variant="link"
+                className="text-blue-400 p-0 h-auto"
               >
-              Password
-            </Label>
-            <Link href="/#">
-              <Button type="button" variant="link" className="text-blue-400 p-0 h-auto">
                 Forgot Password?
               </Button>
             </Link>

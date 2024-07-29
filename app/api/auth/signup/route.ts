@@ -33,6 +33,8 @@ export async function POST(req: NextRequest) {
       data: {
         email,
         password: hashedPassword,
+        resetToken: null,
+        tokenExpiration: null
       },
     });
 
