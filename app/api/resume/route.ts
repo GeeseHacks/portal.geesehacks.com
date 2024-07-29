@@ -22,6 +22,14 @@ export async function POST(request: Request): Promise<NextResponse> {
     return NextResponse.json({ error: 'Request body is empty' }, { status: 400 });
   }
 
+  // Check file size
+  const contentLength = request.headers.get('content-length');
+  const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1 MB limit
+
+  if (contentLength && parseInt(contentLength) > MAX_FILE_SIZE) {
+    return NextResponse.json({ error: 'File size exceeds the 1 MB limit' }, { status: 413 });
+  }
+
   const readableStream = request.body as ReadableStream<Uint8Array>;
 
   const blob = await put(`resumes/${filename}`, readableStream, {
