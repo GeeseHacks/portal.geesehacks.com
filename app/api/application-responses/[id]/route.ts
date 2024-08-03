@@ -3,7 +3,7 @@ import prisma from '@lib/prisma'; // Import the initialized Prisma client
 import { auth } from '@/auth';
 import { z } from 'zod';
 
-// Define the schema for your params using Zod
+// Define the schema for params using Zod
 const paramsSchema = z.object({
   id: z.string().regex(/^\d+$/, "ID must be a numeric string"),
 });

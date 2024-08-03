@@ -3,7 +3,7 @@ import prisma from '@lib/prisma';
 import bcrypt from 'bcrypt';
 import { z } from 'zod';
 
-// Your predefined validation schemas for email and password
+// Validation schemas for email and password, copied from lib/passwordUtils.ts
 const passwordSchema = z.string()
   .min(8, { message: 'Password must be at least 8 characters long' })
   .regex(/[A-Z]/, { message: 'Password must contain at least one uppercase letter' })
