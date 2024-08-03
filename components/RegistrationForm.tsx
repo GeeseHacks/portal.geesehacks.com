@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession } from "next-auth/react";
 import InputField from "./InputField";
 import SelectField from "./SelectField";
+import SearchableSelectField from "./SearchableSelectField";
 import TextAreaField from "./TextAreaField";
 import PhoneInput from "./PhoneInput";
 import ComplexInputWrapper from "./ComplexInputWrapper";
@@ -108,7 +109,7 @@ const RegistrationForm: React.FC = () => {
               )}
             />
           </ComplexInputWrapper>
-          <SelectField
+          <SearchableSelectField
             id="school"
             label="School *"
             control={control}
@@ -132,7 +133,7 @@ const RegistrationForm: React.FC = () => {
             className="col-span-1"
             error={errors.fieldOfStudy}
           />
-          <SelectField
+          <SearchableSelectField
             id="countryOfResidence"
             label="Country of Residence *"
             control={control}
@@ -161,7 +162,7 @@ const RegistrationForm: React.FC = () => {
             id="other"
             label="Other"
             registerOptions={register("other")}
-            placeholder="Other..."
+            placeholder="Other dietary restrictions..."
             error={errors.other}
           />
           <SelectField
@@ -186,7 +187,7 @@ const RegistrationForm: React.FC = () => {
           </div>
           <InputField
             id="githubProfile"
-            label="GitHub Profile"
+            label="GitHub Profile Link"
             registerOptions={register("githubProfile")}
             placeholder=""
             error={errors.githubProfile}
@@ -307,11 +308,11 @@ const RegistrationForm: React.FC = () => {
                   className="mr-6 mt-1 w-6 h-6"
                 />
                 <label htmlFor="mlhCodeOfConduct">
-                  I have read and agree to the MLH Code of Conduct. (
+                  I have read and agree to the {' '}
                   <a href="https://github.com/MLH/mlh-policies/blob/main/code-of-conduct.md" className="underline">
-                    https://github.com/MLH/mlh-policies/blob/main/code-of-conduct.md
+                  MLH Code of Conduct
                   </a>
-                  ). *
+                  . *
                 </label>
               </div>
             )}
@@ -333,19 +334,19 @@ const RegistrationForm: React.FC = () => {
                   className="mr-6 mt-1 w-6 h-6"
                 />
                 <label htmlFor="mlhPrivacyPolicy">
-                  I authorize you to share my application/registration information with Major League Hacking for event administration, ranking, and MLH administration in-line with the MLH Privacy Policy (
+                  I authorize you to share my application/registration information with Major League Hacking for event administration, ranking, and MLH administration in line with the{' '}
                   <a href="https://github.com/MLH/mlh-policies/blob/main/privacy-policy.md" className="underline">
-                    https://github.com/MLH/mlh-policies/blob/main/privacy-policy.md
+                    MLH Privacy Policy
                   </a>
-                  ). I further agree to the terms of both the MLH Contest Terms and Conditions (
+                  . I further agree to the terms of both the{' '}
                   <a href="https://github.com/MLH/mlh-policies/blob/main/contest-terms.md" className="underline">
-                    https://github.com/MLH/mlh-policies/blob/main/contest-terms.md
+                    MLH Contest Terms and Conditions
                   </a>
-                  ) and the MLH Privacy Policy (
+                  {' '}and the{' '}
                   <a href="https://github.com/MLH/mlh-policies/blob/main/privacy-policy.md" className="underline">
-                    https://github.com/MLH/mlh-policies/blob/main/privacy-policy.md
+                    MLH Privacy Policy
                   </a>
-                  ). *
+                  . *
                 </label>
               </div>
             )}

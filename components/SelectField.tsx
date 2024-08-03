@@ -1,7 +1,14 @@
 import React from "react";
 import { Controller, Control, FieldError } from "react-hook-form";
-import Select from "react-select";
-import { customInputStyles } from "../styles/customInputStyles";
+import {
+  Select,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 
 interface SelectOption {
   label: string;
@@ -26,22 +33,31 @@ const SelectField: React.FC<SelectFieldProps> = ({
   error,
 }) => (
   <div className={className}>
-    <label className="block my-4 text-xl font-semibold" htmlFor={id}>
+    <Label htmlFor={id} className="block my-4 text-xl font-semibold">
       {label}
-    </label>
+    </Label>
     <Controller
       name={id}
       control={control}
-      render={({ field: { onChange, value, name, ref } }) => (
-        <Select
-          styles={customInputStyles}
-          // className={`text-red ${error ? "border-red-500 border-2" : "border-gray-700"}`}
-          classNamePrefix="react-select"
-          placeholder=""
-          options={options}
-          value={options.find((c) => c.value === value)}
-          onChange={(val) => onChange(val?.value)}
-        />
+      render={({ field: { onChange, value } }) => (
+        <Select onValueChange={onChange} defaultValue={value?.toString()}>
+          <SelectTrigger className="w-full truncate focus:border-transparent py-2 font-normal">
+            <SelectValue className="truncate" placeholder="Select an option..."/>
+          </SelectTrigger>
+          <SelectContent className="w-fit absolute">
+            <SelectGroup>
+              {options.map((option) => (
+                <SelectItem
+                  key={option.value}
+                  value={option.value.toString()}
+                  className="whitespace-normal break-words"
+                >
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
       )}
     />
     {error && <p className="text-red-500 text-s italic mt-2">{error.message}</p>}
