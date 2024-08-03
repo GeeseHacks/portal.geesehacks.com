@@ -78,7 +78,7 @@ export const formSubmission = async (data: formSchemaType, session: any) => {
       });
 
       if (!responseResponse.ok) {
-        throw new Error("Failed to submit application responses");
+        throw new Error("Failed to submit application response");
       }
 
       console.log("form is submitted!");
