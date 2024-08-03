@@ -12,7 +12,10 @@ export const formSchema = z.object({
   levelOfStudy: z.string().min(1, { message: "Required" }),
   countryOfResidence: z.string().min(1, { message: "Required" }),
   dietaryRestrictions: z.string().min(1, { message: "Required" }),
-  age: z.number().min(1, { message: "Required" }),
+  age: z.preprocess(
+    (val) => Number(val),
+    z.number().min(1, { message: "Required" })
+  ),
   address: z.string().optional(),
   fieldOfStudy: z.string().min(1, { message: "Required" }),
   tShirtSize: z.string().min(1, { message: "Required" }),
