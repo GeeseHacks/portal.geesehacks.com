@@ -1,6 +1,12 @@
 import { put } from '@vercel/blob';
 import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
+import { z } from 'zod';
+
+// Define the schema for the query parameters using Zod
+const querySchema = z.object({
+  filename: z.string().min(1, 'Filename is required'),
+});
 
 export async function POST(request: Request): Promise<NextResponse> {
   // Get the session
@@ -14,8 +20,12 @@ export async function POST(request: Request): Promise<NextResponse> {
   const { searchParams } = new URL(request.url);
   const filename = searchParams.get('filename');
 
-  if (!filename) {
-    return NextResponse.json({ error: 'Filename is required' }, { status: 400 });
+  // Validate the query parameters
+  const validationResult = querySchema.safeParse({ filename });
+
+  // If validation fails, return a 400 error with validation message
+  if (!validationResult.success) {
+    return NextResponse.json({ error: validationResult.error.errors }, { status: 400 });
   }
 
   if (!request.body) {

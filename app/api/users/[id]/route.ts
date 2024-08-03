@@ -1,10 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@lib/prisma'; // Import the initialized Prisma client
 import { auth } from '@/auth';
+import { z } from 'zod';
+
+// Define the schema for your params using Zod
+const paramsSchema = z.object({
+  id: z.string().regex(/^\d+$/, "ID must be a numeric string"),
+});
 
 // Handler for GET requests
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    // Validate the params using Zod
+    const validationResult = paramsSchema.safeParse(params);
+
+    // If validation fails, return a 400 error with validation message
+    if (!validationResult.success) {
+      return new NextResponse(JSON.stringify({ error: validationResult.error.errors }), { status: 400 });
+    }
+
     // Get the session
     const session = await auth();
 
@@ -14,7 +28,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     }
 
     // Convert the 'id' parameter from string to integer
-    const userId = parseInt(params.id, 10);
+    const userId = parseInt(validationResult.data.id, 10);
 
     // Find the unique user by ID using Prisma
     const user = await prisma.users.findUnique({

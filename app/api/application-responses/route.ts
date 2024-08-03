@@ -2,6 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Prisma } from '@prisma/client';
 import prisma from '@lib/prisma';
 import { auth } from '@/auth';
+import { z } from 'zod';
+
+// Define the schema for the request body using Zod
+const requestBodySchema = z.object({
+  q1: z.string().min(1, "Question 1 is required"),
+  q2: z.string().min(1, "Question 2 is required"),
+  q3: z.string().min(1, "Question 3 is required"),
+});
 
 // Handler for POST requests
 export async function POST(request: NextRequest) {
@@ -19,31 +27,27 @@ export async function POST(request: NextRequest) {
     
     // Parse the request body to get the application response data
     const body = await request.json();
-    const {
-      q1,
-      q2,
-      q3
-    } = body;
     
+    // Validate the request body using Zod
+    const validationResult = requestBodySchema.safeParse(body);
+
+    // If validation fails, return a 400 error with validation message
+    if (!validationResult.success) {
+      return new NextResponse(JSON.stringify({ error: validationResult.error.message }), { status: 400 });
+    }
+
     // Log session, userId, and request body for debugging
     console.log('Session:', session);
     console.log('UserID:', userId);
     console.log('Request Body:', body);
 
-    // Validate the required fields
-    if (!q1 || !q2 || !q3) {
-      return new NextResponse(JSON.stringify({ error: 'Required fields are missing' }), { status: 400 });
-    }
-
     // Create a new application responses in a transaction
     const newAppResp = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       // Create the new application response
-      const createdAppResp = await prisma.application_responses.create({
+      const createdAppResp = await tx.application_responses.create({
         data: {
           userid: userId,
-          q1,
-          q2,
-          q3
+          ...validationResult.data // Use the validated data
         }
       });
       return createdAppResp;
