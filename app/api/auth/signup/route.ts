@@ -1,6 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@lib/prisma';
 import bcrypt from 'bcrypt';
+import { z } from 'zod';
+
+// Your predefined validation schemas for email and password
+const passwordSchema = z.string()
+  .min(8, { message: 'Password must be at least 8 characters long' })
+  .regex(/[A-Z]/, { message: 'Password must contain at least one uppercase letter' })
+  .regex(/[a-z]/, { message: 'Password must contain at least one lowercase letter' })
+  .regex(/[0-9]/, { message: 'Password must contain at least one digit' })
+  .regex(/[^a-zA-Z0-9]/, { message: 'Password must contain at least one special character' });
+
+const emailSchema = z.string().email({ message: 'Invalid email address' });
+
+// Define the schema for the request body using Zod
+const requestBodySchema = z.object({
+  email: emailSchema,
+  password: passwordSchema,
+});
 
 export async function POST(req: NextRequest) {
   if (req.method !== 'POST') {
@@ -8,12 +25,17 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { email, password } = await req.json();
+    const body = await req.json();
+    
+    // Validate the request body using Zod
+    const validationResult = requestBodySchema.safeParse(body);
 
-    // Validate the request body
-    if (!email || !password) {
-      return new NextResponse(JSON.stringify({ message: 'Email and password are required' }), { status: 400 });
+    // If validation fails, return a 400 error with validation message
+    if (!validationResult.success) {
+      return new NextResponse(JSON.stringify({ message: validationResult.error.errors }), { status: 400 });
     }
+
+    const { email, password } = validationResult.data;
 
     // Check if the user already exists
     const existingUser = await prisma.user_auth.findUnique({
