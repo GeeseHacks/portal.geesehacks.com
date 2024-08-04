@@ -101,7 +101,7 @@ const RegistrationForm: React.FC = () => {
                 <PhoneInput
                   defaultCountry="CA"
                   id="phoneNumber"
-                  label="Phone Number"
+                  label="Phone Number *"
                   registerOptions={register("phoneNumber")}
                   onChange={field.onChange}
                   error={errors.phoneNumber}

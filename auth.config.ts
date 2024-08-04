@@ -7,14 +7,18 @@ export const authConfig = {
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const isOnRegistrationPortal = nextUrl.pathname.startsWith('/apply');
-      if (isOnRegistrationPortal) {
-        if (isLoggedIn) return true;
-        return false; // Redirect unauthenticated users to login page
-      } else if (isLoggedIn) {
-        return Response.redirect(new URL('/apply', nextUrl));
+
+      console.log("Next URL: ", nextUrl.pathname);
+      
+      const isOnLoginOrSignUp = nextUrl.pathname.startsWith('/login') || nextUrl.pathname.startsWith('/signup');
+      if (isLoggedIn && isOnLoginOrSignUp) {
+        return Response.redirect(new URL('/dashboard', nextUrl));
       }
-      return true;
+      else if (isLoggedIn || (!isLoggedIn && isOnLoginOrSignUp)) {
+        return true;
+      }
+
+      return Response.redirect(new URL('/login', nextUrl));
     },
     jwt({ token, user, account, profile }) {
       if (profile && account?.provider === 'google') {
