@@ -108,7 +108,7 @@ const Login: React.FC = () => {
 
           <div className="flex flex-row justify-between items-center">
             <Label htmlFor="password">Password</Label>
-            <Link href="/reset">
+            <Link href="/forgot-password">
               <Button
                 type="button"
                 variant="link"
