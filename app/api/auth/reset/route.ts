@@ -36,6 +36,12 @@ export async function POST(req: NextRequest) {
         },
       });
 
+    const resetLink = `${process.env.NEXT_PUBLIC_API_URL}/reset-password?token=${resetToken}`;
+    
+    //send the email link here
+
+    console.log(`Password reset link: ${resetLink}`);
+
     return new NextResponse(JSON.stringify({ message: 'Generated token' }), { status: 201 });
   } catch (error) {
     console.error('Error generating token:', error);

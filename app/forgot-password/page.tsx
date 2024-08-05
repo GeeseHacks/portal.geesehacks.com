@@ -33,9 +33,11 @@ const ResetPassword = () => {
     }
   };
   return (
-    <div>
+    <div className="flex flex-col items-center justify-center gap-y-4">
+      <h1 className="text-white text-4xl font-bold my-6">Forgot Password</h1>
       <Input
         placeholder="Enter your email"
+        className="max-w-xl"
         onChange={handleInputChange}
       ></Input>
       <Button onClick={reset}>Reset Password</Button>
