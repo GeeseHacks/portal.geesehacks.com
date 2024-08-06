@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession } from "next-auth/react";
+import toast from "react-hot-toast";
+import { MdContentCopy } from "react-icons/md";
 import InputField from "./InputField";
 import SelectField from "./SelectField";
 import SearchableSelectField from "./SearchableSelectField";
@@ -47,6 +49,21 @@ const RegistrationForm: React.FC = () => {
     } catch (error) {
       console.error("Error during form submission: ", error);
     }
+  };
+
+  const copyQuestionsToClipboard = () => {
+    const questions = `
+    1. Why are you running 
+
+    2. How are you running
+
+    3. Where are you running
+    `;
+    navigator.clipboard.writeText(questions).then(() => {
+      toast.success("Long answer questions copied to clipboard!");
+    }, (err) => {
+      toast.error("Could not copy text: ", err);
+    });
   };
 
   return (
@@ -214,9 +231,15 @@ const RegistrationForm: React.FC = () => {
             error={errors.additionalLinks}
           />
         </div>
-        <h1 className="text-white text-4xl font-bold mb-6 mt-24">
-          Long Answer Questions
-        </h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-white text-4xl font-bold my-6 mt-24">
+            Long Answer Questions
+          </h1>
+          <Button type="button" onClick={copyQuestionsToClipboard} className="py-2 text-white mt-20">
+            <MdContentCopy className="mr-2 text-lg" />
+            Copy Questions to Clipboard
+          </Button>
+        </div>
         <hr className="border-white pb-6" />
         <div className="grid grid-cols-1 gap-x-12 gap-y-10">
           <TextAreaField
