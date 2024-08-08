@@ -1,5 +1,6 @@
 import { toast } from 'react-hot-toast';
 import { formSchemaType } from "./formSchema";
+import { UserStatus } from '@prisma/client';
 
 export const formSubmission = async (data: formSchemaType, session: any) => {
   const submissionPromise = (async () => {
@@ -56,7 +57,7 @@ export const formSubmission = async (data: formSchemaType, session: any) => {
           optional_race: data.ethnicity,
           optional_underrepresented: data.underrepresented,
           t_shirt_size: data.tShirtSize,
-          status: "APPLIED"
+          status: UserStatus.APPLIED
         }),
       });
 
