@@ -51,7 +51,9 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        cpurple: "#2E2C4E"
+        cpurple: "#2E2C4E",
+        darkpurple: "rgba(209, 117, 250, 0.15)",
+        darkteal: "rgba(149, 242, 255, 0.15)"
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -72,6 +74,12 @@ const config = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      blur: {
+        "4xl": "150px",
+      },
+      scale: {
+        102: "1.02",
+      }
     },
   },
   plugins: [require("tailwindcss-animate")],
