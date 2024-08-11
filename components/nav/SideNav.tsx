@@ -38,7 +38,7 @@ const SideNav: React.FC = () => {
         {/* Nav Logo */}
         <div className="flex items-center space-x-3 h-1/5">
           <Image src="/static/icons/geesehacks.png" height={38} width={38} alt="Geese Logo" />
-          <div className="text-3xl font-semibold">GeeseHacks</div>
+          <div className="text-3xl font-semibold drop-shadow-[0_0px_5px_rgba(255,255,255,0.5)]">GeeseHacks</div>
         </div>
 
         {/* Nav Content */}
@@ -53,7 +53,7 @@ const SideNav: React.FC = () => {
 
         {/* Log Out Button (Switch the style a bit—maybe use shadcn buttons?) */}
         <div className="h-1/6 flex-shrink-0">
-          <button className="flex w-36 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-purple-300 via-pink-500 to-red-400 p-3 text-sm font-medium text-white shadow-lg transition duration-200 ease-in-out hover:bg-gradient-to-r hover:from-purple-500 hover:via-pink-600 hover:to-red-600 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
+          <button className="flex w-44 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-purple-300 via-pink-500 to-red-400 p-3 text-lg font-medium text-white shadow-lg transition duration-200 ease-in-out hover:bg-gradient-to-r hover:from-purple-500 hover:via-pink-600 hover:to-red-600 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
             Sign Out
           </button>
         </div>
