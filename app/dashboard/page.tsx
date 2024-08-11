@@ -11,6 +11,25 @@ const Home: React.FC = () => {
         <div className="absolute bottom-48 right-48 m-20 w-1/2 h-1/2 bg-teal-700 rounded-full blur-4xl opacity-20"></div>
       </div>
 
+      <div className="absolute inset-0 z-0">
+      {[...Array(400)].map((_, i) => {
+        const size = `${Math.random() + 1}px`;
+        return (
+          <div
+            key={i}
+            className="absolute bg-white rounded-full opacity-35"
+            style={{
+              width: size,
+              height: size,
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              boxShadow: `0 0 10px 2px rgba(255, 255, 255, 0.1)`,
+            }}
+          ></div>
+        );
+      })}
+    </div>
+
       {/* SideNav */}
       <SideNav />
 
@@ -26,10 +45,11 @@ const Home: React.FC = () => {
           p-12 rounded-xl w-full min-h-52 space-y-4 
           relative overflow-hidden 
           hover:scale-102 transition-transform duration-300
+          drop-shadow-[0_0px_15px_rgba(48,133,159,0.5)]
         ">
-          <img src="/static/images/status-notsubmitted.png" alt="Not Submitted" className="absolute right-48 top-0 z-0" />
-          <h2 className="font-light text-lg">Application Status</h2>
-          <h2 className="font-semibold text-4xl">NOT SUBMITTED</h2>
+          <img src="/static/images/status-notsubmitted.png" alt="Not Submitted" className="absolute right-48 -top-10 z-0" />
+          <h2 className="font-light text-lg drop-shadow-[0_0px_5px_rgba(0,0,0,0.5)]">Application Status</h2>
+          <h2 className="font-semibold text-4xl drop-shadow-[0_0px_10px_rgba(0,0,0,0.5)]">NOT SUBMITTED</h2>
           <button className="mt-2 bg-purple-500 px-4 py-2 rounded-full">Apply Now</button>
         </div>
 
@@ -39,7 +59,9 @@ const Home: React.FC = () => {
             p-12 rounded-xl
             relative overflow-hidden 
             hover:scale-102 transition-transform duration-300
+            drop-shadow-[0_0px_15px_rgba(48,133,159,0.5)]
           ">
+            <img src="/static/images/faq.png" alt="FAQ" className=" absolute -right-10 bottom-0 z-0" />
             <h2 className="font-semibold text-4xl">FAQ</h2>
           </div>
           <div className="
@@ -47,6 +69,7 @@ const Home: React.FC = () => {
             p-12 rounded-xl
             relative overflow-hidden 
             hover:scale-102 transition-transform duration-300
+            drop-shadow-[0_0px_15px_rgba(48,133,159,0.5)]
           ">
             <h2 className="font-semibold text-4xl">QR Code</h2>
           </div>
