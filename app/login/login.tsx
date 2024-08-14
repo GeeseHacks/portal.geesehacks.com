@@ -37,7 +37,15 @@ const Login: React.FC = () => {
           {
             loading: "Logging in...",
             success: "Logged in successfully!",
-            error: (err) => "Failed to log in",
+            // We do this mapping instead of printing the error directly because otherwise Next.js will complain that we are "leaking sensitive details"
+            error: (err) => {
+              if (err.message === "Invalid_credentials") {
+                return "Invalid credentials";
+              } else if (err.message === "Something_went_wrong") {
+                return "Something went wrong";
+              }
+              return "Unknown error";
+            }
           }
         );
       } catch (error) {

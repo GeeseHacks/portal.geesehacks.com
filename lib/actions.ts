@@ -12,10 +12,10 @@ export async function authenticate(email: string, password: string) {
       switch (error.type) {
         case "CredentialsSignin":
           console.log("Invalid Credentials");
-          throw new Error("Invalid Credentials");
+          throw new Error("Invalid_credentials");
         default:
           console.log("Something went wrong");
-          throw new Error("Something went wrong");
+          throw new Error("Something_went_wrong");
       }
     }
     throw error;
