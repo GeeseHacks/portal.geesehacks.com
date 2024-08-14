@@ -37,7 +37,7 @@ const Login: React.FC = () => {
           {
             loading: "Logging in...",
             success: "Logged in successfully!",
-            error: (err) => err.message || "Failed to log in",
+            error: (err) => "Failed to log in",
           }
         );
       } catch (error) {
