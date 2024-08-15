@@ -31,28 +31,26 @@ const Login: React.FC = () => {
       setEmailError("");
       setPasswordErrors([]);
   
-      try {
-        await toast.promise(
-          authenticate(email, password),
-          {
-            loading: "Logging in...",
-            success: "Logged in successfully!",
-            // We do this mapping instead of printing the error directly because otherwise Next.js will complain that we are "leaking sensitive details"
-            error: (err) => {
-              if (err.message === "Invalid_credentials") {
-                return "Invalid credentials";
-              } else if (err.message === "Something_went_wrong") {
-                return "Something went wrong";
-              }
-              return "Unknown error";
+      toast.promise(
+        authenticate(email, password),
+        {
+          loading: 'Logging in...',
+          success: (response) => {
+            if (response && response.error) {
+              throw new Error(response.error); // Throwing the error to be caught by the error handler
             }
-          }
-        );
-      } catch (error) {
-        console.error("Error:", error);
-      }
+            return "Logged in successfully!";
+          },
+          error: (err) => {
+            return err.message || "Failed to log in";
+          },
+        }
+      )
     }
   };
+  
+  
+  
   
 
   useEffect(() => {
