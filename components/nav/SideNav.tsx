@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import { signOutAction } from "@/utils/signOutAction";
+import { Button } from "@/components/ui/button"
 
 
 const sideNavLinks = [
@@ -53,9 +55,12 @@ const SideNav: React.FC = () => {
 
         {/* Log Out Button (Switch the style a bit—maybe use shadcn buttons?) */}
         <div className="h-1/6 flex-shrink-0">
-          <button className="flex w-36 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-purple-300 via-pink-500 to-red-400 p-3 text-sm font-medium text-white shadow-lg transition duration-200 ease-in-out hover:bg-gradient-to-r hover:from-purple-500 hover:via-pink-600 hover:to-red-600 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
+        {/* signOutAction needs to be in a form */}
+          <form action={signOutAction}> 
+            <Button className="flex w-36 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-purple-300 via-pink-500 to-red-400 p-3 text-sm font-medium text-white shadow-lg transition duration-200 ease-in-out hover:bg-gradient-to-r hover:from-purple-500 hover:via-pink-600 hover:to-red-600 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
             Sign Out
-          </button>
+            </Button>
+          </form>
         </div>
 
 
