@@ -18,6 +18,16 @@ const Login: React.FC = () => {
   const [emailError, setEmailError] = useState<string>("");
   const [isButtonActive, setIsButtonActive] = useState(false);
 
+  const [apiResponse, setApiResponse] = useState("");
+
+  const callAPI = async () => {
+    const response = await fetch("/api/hello");
+    const data = await response.text();
+    console.log(data);
+    setApiResponse(data);
+  }
+  
+
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
   
@@ -160,6 +170,12 @@ const Login: React.FC = () => {
             </Link>
           </p>
         </div>
+
+        <Button onClick={callAPI}>
+          Call API
+        </Button>
+        <p>{apiResponse}</p>
+
       </div>
       <div
         className="bg-cover bg-center w-0 sm:w-1/2"
