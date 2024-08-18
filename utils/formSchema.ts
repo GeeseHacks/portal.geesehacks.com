@@ -1,19 +1,31 @@
 import { z } from "zod";
 
+const MAX_RESUME_SIZE = 1 * 1024 * 1024;
+const ACCEPTED_RESUME_TYPES = ["application/pdf"];
+
 export const formSchema = z.object({
-  firstName: z.string().min(1, { message: "First name is required" }),
-  lastName: z.string().min(1, { message: "Last name is required" }),
-  email: z.string().email({ message: "Invalid email address" }),
-  phoneNumber: z.string().min(1, { message: "Phone number is required" }),
-  school: z.string().min(1, { message: "School is required" }),
-  levelOfStudy: z.string().min(1, { message: "Level of study is required" }),
-  countryOfResidence: z.string().min(1, { message: "Country is required" }),
-  dietaryRestrictions: z.string().min(1, { message: "Dietary restriction is required" }),
-  age: z.number().min(1, { message: "Age is required" }),
+  firstName: z.string().min(1, { message: "Required" }),
+  lastName: z.string().min(1, { message: "Required" }),
+  email: z.string().email({ message: "Required" }),
+  phoneNumber: z.string().min(1, { message: "Required" }),
+  school: z.string().min(1, { message: "Required" }),
+  levelOfStudy: z.string().min(1, { message: "Required" }),
+  countryOfResidence: z.string().min(1, { message: "Required" }),
+  dietaryRestrictions: z.string().min(1, { message: "Required" }),
+  age: z.preprocess(
+    (val) => Number(val),
+    z.number().min(1, { message: "Required" })
+  ),
   address: z.string().optional(),
-  fieldOfStudy: z.string().optional(),
-  tShirtSize: z.string().min(1, { message: "T-shirt size is required" }),
-  resume: z.any().optional(),
+  fieldOfStudy: z.string().min(1, { message: "Required" }),
+  tShirtSize: z.string().min(1, { message: "Required" }),
+  resume: z.any()
+    .refine((files) => files?.length == 1, "Required")
+    .refine(
+      (files) => ACCEPTED_RESUME_TYPES.includes(files?.[0]?.type),
+      "Only PDF files are accepted"
+    )
+    .refine((files) => files?.[0]?.size <= MAX_RESUME_SIZE, 'Max file size is 1MB'),
   githubProfile: z.string().optional(),
   linkedin: z.string().optional(),
   personalWebsite: z.string().optional(),
