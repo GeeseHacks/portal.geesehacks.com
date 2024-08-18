@@ -4,15 +4,17 @@ import React, { useState, useEffect } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession } from "next-auth/react";
+import toast from "react-hot-toast";
+import { MdContentCopy } from "react-icons/md";
 import InputField from "./InputField";
 import SelectField from "./SelectField";
+import SearchableSelectField from "./SearchableSelectField";
 import TextAreaField from "./TextAreaField";
 import PhoneInput from "./PhoneInput";
 import ComplexInputWrapper from "./ComplexInputWrapper";
 import { formSchema, formSchemaType } from "../utils/formSchema";
 import { fetchCSVOptions } from "../utils/fetchCSVOptions";
 import { formSubmission } from "../utils/formSubmission";
-import { signOutAction } from "../utils/signOutAction";
 import { getAgeOptions } from "../utils/formAssets/formAssets";
 import { options } from "../utils/formAssets/formAssets";
 
@@ -40,18 +42,31 @@ const RegistrationForm: React.FC = () => {
   });
 
   const onSubmit: SubmitHandler<formSchemaType> = async (data) => {
-    await formSubmission(data, session);
-    reset();
+    try {
+      await formSubmission(data, session);
+      reset();
+    } catch (error) {
+      console.error("Error during form submission: ", error);
+    }
+  };
+
+  const copyQuestionsToClipboard = () => {
+    const questions = `
+    1. Why are you running 
+
+    2. How are you running
+
+    3. Where are you running
+    `;
+    navigator.clipboard.writeText(questions).then(() => {
+      toast.success("Long answer questions copied to clipboard!");
+    }, (err) => {
+      toast.error("Could not copy text: ", err);
+    });
   };
 
   return (
     <div className="max-w-5xl mx-auto p-8 text-white">
-      {/* For debugging purposes */}
-      <form action={signOutAction}>
-        <Button className="flex h-12 items-center justify-center gap-2 rounded-md bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 p-3 text-sm font-medium text-white shadow-lg transition duration-200 ease-in-out hover:bg-gradient-to-r hover:from-purple-500 hover:via-pink-600 hover:to-red-600 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
-          Sign Out
-        </Button>
-      </form>
       <div>{session && <h1>{JSON.stringify(session.user)}</h1>}</div> 
       
       <h1 className="text-white text-4xl font-bold my-6">Hacker Information 🌟 </h1>
@@ -63,14 +78,14 @@ const RegistrationForm: React.FC = () => {
             label="First Name *"
             registerOptions={register("firstName")}
             placeholder="John"
-            error={errors.firstName?.message}
+            error={errors.firstName}
           />
           <InputField
             id="lastName"
             label="Last Name *"
             registerOptions={register("lastName")}
             placeholder="Doe"
-            error={errors.lastName?.message}
+            error={errors.lastName}
           />
           <SelectField
             id="age"
@@ -86,7 +101,7 @@ const RegistrationForm: React.FC = () => {
             registerOptions={register("email")}
             placeholder="Enter email"
             type="email"
-            error={errors.email?.message}
+            error={errors.email}
           />
           <ComplexInputWrapper>
             <Controller
@@ -96,15 +111,15 @@ const RegistrationForm: React.FC = () => {
                 <PhoneInput
                   defaultCountry="CA"
                   id="phoneNumber"
-                  label="Phone Number"
+                  label="Phone Number *"
                   registerOptions={register("phoneNumber")}
                   onChange={field.onChange}
-                  error={errors.phoneNumber?.message}
+                  error={errors.phoneNumber}
                 />
               )}
             />
           </ComplexInputWrapper>
-          <SelectField
+          <SearchableSelectField
             id="school"
             label="School *"
             control={control}
@@ -122,13 +137,13 @@ const RegistrationForm: React.FC = () => {
           />
           <SelectField
             id="fieldOfStudy"
-            label="Field of Study"
+            label="Field of Study *"
             control={control}
             options={options.fieldsOfStudy.map((option) => ({ label: option, value: option }))}
             className="col-span-1"
             error={errors.fieldOfStudy}
           />
-          <SelectField
+          <SearchableSelectField
             id="countryOfResidence"
             label="Country of Residence *"
             control={control}
@@ -142,7 +157,7 @@ const RegistrationForm: React.FC = () => {
               label="Address"
               registerOptions={register("address")}
               placeholder="Enter address"
-              error={errors.address?.message}
+              error={errors.address}
             />
           </ComplexInputWrapper>
           <SelectField
@@ -157,8 +172,8 @@ const RegistrationForm: React.FC = () => {
             id="other"
             label="Other"
             registerOptions={register("other")}
-            placeholder="Other..."
-            error={errors.other?.message}
+            placeholder="Other dietary restrictions..."
+            error={errors.other}
           />
           <SelectField
             id="tShirtSize"
@@ -178,39 +193,46 @@ const RegistrationForm: React.FC = () => {
               {...register("resume")}
               className="focus:border-none h-15"
             />
+            {errors.resume && <p className="text-red-500 text-s italic mt-2">{errors.resume.message?.toString()}</p>}
           </div>
           <InputField
             id="githubProfile"
-            label="GitHub Profile"
+            label="GitHub Profile Link"
             registerOptions={register("githubProfile")}
             placeholder=""
-            error={errors.githubProfile?.message}
+            error={errors.githubProfile}
           />
           <InputField
             id="linkedin"
             label="LinkedIn"
             registerOptions={register("linkedin")}
             placeholder=""
-            error={errors.linkedin?.message}
+            error={errors.linkedin}
           />
           <InputField
             id="personalWebsite"
             label="Personal Website"
             registerOptions={register("personalWebsite")}
             placeholder=""
-            error={errors.personalWebsite?.message}
+            error={errors.personalWebsite}
           />
           <InputField
             id="additionalLinks"
             label="Additional Links"
             registerOptions={register("additionalLinks")}
             placeholder=""
-            error={errors.additionalLinks?.message}
+            error={errors.additionalLinks}
           />
         </div>
-        <h1 className="text-white text-4xl font-bold mb-6 mt-24">
-          Long Answer Questions
-        </h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-white text-4xl font-bold my-6 mt-24">
+            Long Answer Questions
+          </h1>
+          <Button type="button" onClick={copyQuestionsToClipboard} className="py-2 text-white mt-20">
+            <MdContentCopy className="mr-2 text-lg" />
+            Copy Questions to Clipboard
+          </Button>
+        </div>
         <hr className="border-white pb-6" />
         <div className="grid grid-cols-1 gap-x-12 gap-y-10">
           <TextAreaField
@@ -218,21 +240,21 @@ const RegistrationForm: React.FC = () => {
             label="Why are you running *"
             registerOptions={register("q1")}
             placeholder="Type your answer"
-            error={errors.q1?.message}
+            error={errors.q1}
           />
           <TextAreaField
             id="q2"
             label="How are you running *"
             registerOptions={register("q2")}
             placeholder="Type your answer"
-            error={errors.q2?.message}
+            error={errors.q2}
           />
           <TextAreaField
             id="q3"
             label="Where are you running *"
             registerOptions={register("q3")}
             placeholder="Type your answer"
-            error={errors.q3?.message}
+            error={errors.q3}
           />
         </div>
 
@@ -302,11 +324,11 @@ const RegistrationForm: React.FC = () => {
                   className="mr-6 mt-1 w-6 h-6"
                 />
                 <label htmlFor="mlhCodeOfConduct">
-                  I have read and agree to the MLH Code of Conduct. (
+                  I have read and agree to the {' '}
                   <a href="https://github.com/MLH/mlh-policies/blob/main/code-of-conduct.md" className="underline">
-                    https://github.com/MLH/mlh-policies/blob/main/code-of-conduct.md
+                  MLH Code of Conduct
                   </a>
-                  ). *
+                  . *
                 </label>
               </div>
             )}
@@ -328,19 +350,19 @@ const RegistrationForm: React.FC = () => {
                   className="mr-6 mt-1 w-6 h-6"
                 />
                 <label htmlFor="mlhPrivacyPolicy">
-                  I authorize you to share my application/registration information with Major League Hacking for event administration, ranking, and MLH administration in-line with the MLH Privacy Policy (
+                  I authorize you to share my application/registration information with Major League Hacking for event administration, ranking, and MLH administration in line with the{' '}
                   <a href="https://github.com/MLH/mlh-policies/blob/main/privacy-policy.md" className="underline">
-                    https://github.com/MLH/mlh-policies/blob/main/privacy-policy.md
+                    MLH Privacy Policy
                   </a>
-                  ). I further agree to the terms of both the MLH Contest Terms and Conditions (
+                  . I further agree to the terms of both the{' '}
                   <a href="https://github.com/MLH/mlh-policies/blob/main/contest-terms.md" className="underline">
-                    https://github.com/MLH/mlh-policies/blob/main/contest-terms.md
+                    MLH Contest Terms and Conditions
                   </a>
-                  ) and the MLH Privacy Policy (
+                  {' '}and the{' '}
                   <a href="https://github.com/MLH/mlh-policies/blob/main/privacy-policy.md" className="underline">
-                    https://github.com/MLH/mlh-policies/blob/main/privacy-policy.md
+                    MLH Privacy Policy
                   </a>
-                  ). *
+                  . *
                 </label>
               </div>
             )}

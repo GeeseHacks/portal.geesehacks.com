@@ -1,5 +1,6 @@
 import { toast } from 'react-hot-toast';
 import { formSchemaType } from "./formSchema";
+import { UserStatus } from '@prisma/client';
 
 export const formSubmission = async (data: formSchemaType, session: any) => {
   const submissionPromise = (async () => {
@@ -27,7 +28,7 @@ export const formSubmission = async (data: formSchemaType, session: any) => {
         resumeUrl = blob.url;
       }
 
-      await fetch("/api/users", {
+      const userResponse = await fetch("/api/users", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -56,11 +57,15 @@ export const formSubmission = async (data: formSchemaType, session: any) => {
           optional_race: data.ethnicity,
           optional_underrepresented: data.underrepresented,
           t_shirt_size: data.tShirtSize,
-          status: "APPLIED"
+          status: UserStatus.APPLIED
         }),
       });
 
-      await fetch("/api/application-responses", {
+      if (!userResponse.ok) {
+        throw new Error("Failed to submit user data");
+      }
+
+      const responseResponse = await fetch("/api/application-responses", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -72,6 +77,10 @@ export const formSubmission = async (data: formSchemaType, session: any) => {
           q3: data.q3,
         }),
       });
+
+      if (!responseResponse.ok) {
+        throw new Error("Failed to submit application response");
+      }
 
       console.log("form is submitted!");
     } catch (err) {

@@ -13,6 +13,8 @@ tags:
     description: User related endpoints
   - name: application-responses
     description: Application responses related endpoints
+  - name: resumes
+    description: Resume related endpoints
 paths:
   /api/auth/users:
     post:
@@ -155,6 +157,70 @@ paths:
       responses:
         '201':
           description: Application response created
+  /api/users/resume:
+    post:
+      tags:
+        - resumes
+      summary: Upload a new resume for a user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '201':
+          description: Resume uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/resume'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Filename is required
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Unauthorized
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: User not found
+        '500':
+          description: Error fetching user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Error fetching user
 components:
   schemas:
     users_auth:
@@ -267,3 +333,12 @@ components:
           type: string
         q3:
           type: string
+    resume:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+          description: URL to the uploaded resume
+      required:
+        - url

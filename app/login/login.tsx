@@ -20,34 +20,38 @@ const Login: React.FC = () => {
 
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-
+  
     const emailValidationError = validateEmail(email);
     const passwordValidationErrors = validatePassword(password);
-
+  
     if (emailValidationError || passwordValidationErrors.length > 0) {
       setEmailError(emailValidationError);
       setPasswordErrors(passwordValidationErrors);
     } else {
       setEmailError("");
       setPasswordErrors([]);
-
-      const promise = authenticate(email, password);
-
-      toast
-        .promise(promise, {
-          loading: "Logging in...",
-          success: "Logged in successfully!",
-          error: (err) => err.message || "Failed to log in",
-        })
-        .then((data) => {
-          console.log("Success:", data);
-          // Redirect or other success actions
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+  
+      toast.promise(
+        authenticate(email, password),
+        {
+          loading: 'Logging in...',
+          success: (response) => {
+            if (response && response.error) {
+              throw new Error(response.error); // Throwing the error to be caught by the error handler
+            }
+            return "Logged in successfully!";
+          },
+          error: (err) => {
+            return err.message || "Failed to log in";
+          },
+        }
+      )
     }
   };
+  
+  
+  
+  
 
   useEffect(() => {
     setIsButtonActive(email !== "" && password !== "");
