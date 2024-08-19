@@ -16,7 +16,7 @@ import { BiShow } from "react-icons/bi";
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [passwordVisibility, setPasswordVisibility] = useState(false);
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
   const [emailError, setEmailError] = useState<string>("");
   const [isButtonActive, setIsButtonActive] = useState(false);
@@ -59,10 +59,6 @@ const Login: React.FC = () => {
   useEffect(() => {
     setIsButtonActive(email !== "" && password !== "");
   }, [email, password]);
-
-  const togglePasswordVisibility = () => {
-    setPasswordVisible((prev) => !prev);
-  };
 
   return (
     <div className="flex h-screen">
@@ -131,21 +127,21 @@ const Login: React.FC = () => {
           </div>
           <div className="relative">
             <Input
-              type={passwordVisible ? "text" : "password"}
+              type={passwordVisibility ? "text" : "password"}
               id="password"
               name="password"
               placeholder="Your password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              className="pr-11"
             />
-            <button
-              type="button"
-              onClick={togglePasswordVisibility}
-              className="absolute inset-y-0 right-3 flex items-center"
+            <div
+              onClick={() => setPasswordVisibility((prev) => !prev)}
+              className="password-toggle-icon absolute inset-y-0 right-3 flex items-center"
             >
-              {passwordVisible ?  <BiHide className="mr-1 text-xl"/> : <BiShow className="mr-1 text-xl"/>}
-            </button>
+              {passwordVisibility ?  <BiHide className="mr-1 text-xl"/> : <BiShow className="mr-1 text-xl"/>}
+            </div>
           </div>
           {passwordErrors.length > 0 && (
             <ul className="text-red-500 text-sm mt-2 list-disc list-inside">
