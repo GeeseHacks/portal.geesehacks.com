@@ -150,7 +150,7 @@ const SignUp: React.FC = () => {
             />
             <div
               onClick={() => setPasswordVisibility(prev => ({ ...prev, password: !prev.password }))}
-              className="absolute inset-y-0 right-3 flex items-center"
+              className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
             >
               {passwordVisibility.password ?  <BiHide className="mr-1 text-xl"/> : <BiShow className="mr-1 text-xl"/>}
             </div>
@@ -178,7 +178,7 @@ const SignUp: React.FC = () => {
             />
             <div
               onClick={() => setPasswordVisibility(prev => ({ ...prev, verifyPassword: !prev.verifyPassword }))}
-              className="absolute inset-y-0 right-3 flex items-center"
+              className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
             >
               {passwordVisibility.verifyPassword ?  <BiHide className="mr-1 text-xl"/> : <BiShow className="mr-1 text-xl"/>}
             </div>
