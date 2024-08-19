@@ -134,7 +134,7 @@ const Login: React.FC = () => {
             />
             <div
               onClick={() => setPasswordVisibility((prev) => !prev)}
-              className="password-toggle-icon absolute inset-y-0 right-3 flex items-center"
+              className="password-toggle-icon absolute inset-y-0 right-3 flex items-center cursor-pointer"
             >
               {passwordVisibility ?  <BiHide className="mr-1 text-xl"/> : <BiShow className="mr-1 text-xl"/>}
             </div>
