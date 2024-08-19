@@ -84,13 +84,6 @@ const SignUp: React.FC = () => {
     setIsButtonActive(email !== "" && password !== "" && arePasswordsMatching);
   }, [email, password, verifyPassword]);
 
-  const togglePasswordVisibility = (field: "password" | "verifyPassword") => {
-    setPasswordVisibility((prev) => ({
-      ...prev,
-      [field]: !prev[field],
-    }));
-  };
-
   return (
     <div className="flex h-screen">
       <div className="bg-gray-900 text-white flex flex-col justify-center items-start w-full sm:w-1/2 min-w-[300px] px-8 sm:px-12 lg:px-24 xl:px-40 2xl:px-[13%]">
@@ -153,14 +146,14 @@ const SignUp: React.FC = () => {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              className="pr-11"
             />
-            <button
-              type="button"
-              onClick={() => togglePasswordVisibility("password")}
+            <div
+              onClick={() => setPasswordVisibility(prev => ({ ...prev, password: !prev.password }))}
               className="absolute inset-y-0 right-3 flex items-center"
             >
               {passwordVisibility.password ?  <BiHide className="mr-1 text-xl"/> : <BiShow className="mr-1 text-xl"/>}
-            </button>
+            </div>
           </div>
           {passwordErrors.length > 0 && (
             <ul className="text-red-500 text-sm mt-2 list-disc list-inside">
@@ -181,14 +174,14 @@ const SignUp: React.FC = () => {
               required
               value={verifyPassword}
               onChange={(e) => setVerifyPassword(e.target.value)}
+              className="pr-11"
             />
-            <button
-              type="button"
-              onClick={() => togglePasswordVisibility("verifyPassword")}
+            <div
+              onClick={() => setPasswordVisibility(prev => ({ ...prev, verifyPassword: !prev.verifyPassword }))}
               className="absolute inset-y-0 right-3 flex items-center"
             >
               {passwordVisibility.verifyPassword ?  <BiHide className="mr-1 text-xl"/> : <BiShow className="mr-1 text-xl"/>}
-            </button>
+            </div>
           </div>
           {verifyPasswordError && (
             <p className="text-red-500 text-sm mt-2">{verifyPasswordError}</p>
