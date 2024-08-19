@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState, useEffect } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,10 +15,9 @@ import { fetchCSVOptions } from "../utils/fetchCSVOptions";
 import { formSubmission } from "../utils/formSubmission";
 import { getAgeOptions } from "../utils/formAssets/formAssets";
 import { options } from "../utils/formAssets/formAssets";
-
-import { Checkbox } from "@/components/ui/checkbox"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 const RegistrationForm: React.FC = () => {
   const { data: session } = useSession();
@@ -233,165 +230,37 @@ const RegistrationForm: React.FC = () => {
             Copy Questions to Clipboard
           </Button>
         </div>
-        <hr className="border-white pb-6" />
-        <div className="grid grid-cols-1 gap-x-12 gap-y-10">
+        <hr className="border-white mb-12" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-14">
           <TextAreaField
-            id="q1"
-            label="Why are you running *"
-            registerOptions={register("q1")}
-            placeholder="Type your answer"
-            error={errors.q1}
-          />
-          <TextAreaField
-            id="q2"
-            label="How are you running *"
-            registerOptions={register("q2")}
-            placeholder="Type your answer"
-            error={errors.q2}
+            id="question1"
+            label="Why are you running for HACKATHON?"
+            registerOptions={register("question1")}
+            placeholder="Your answer..."
+            rows={4}
+            maxLength={1000}
+            error={errors.question1}
           />
           <TextAreaField
-            id="q3"
-            label="Where are you running *"
-            registerOptions={register("q3")}
-            placeholder="Type your answer"
-            error={errors.q3}
+            id="question2"
+            label="How are you running for HACKATHON?"
+            registerOptions={register("question2")}
+            placeholder="Your answer..."
+            rows={4}
+            maxLength={1000}
+            error={errors.question2}
+          />
+          <TextAreaField
+            id="question3"
+            label="Where are you running for HACKATHON?"
+            registerOptions={register("question3")}
+            placeholder="Your answer..."
+            rows={4}
+            maxLength={1000}
+            error={errors.question3}
           />
         </div>
-
-        <h1 className="text-white text-4xl font-bold mb-6 mt-10">
-          Optional Demographic Questions
-        </h1>
-        <hr className="border-white pb-6" />
-        <h1 className="text-white text-xl font-bold mb-6">
-          The answers to these questions will not affect your application in any way
-        </h1>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-12 gap-y-10">
-          <SelectField
-            id="underrepresented"
-            label="Do you identify as part of an underrepresented group in the technology industry?"
-            control={control}
-            options={options.underrepresented.map((option) => ({ label: option, value: option }))}
-            className="col-span-2"
-            error={errors.underrepresented}
-          />
-          <SelectField
-            id="gender"
-            label="Gender"
-            control={control}
-            options={options.genders.map((option) => ({ label: option, value: option }))}
-            className="col-span-2"
-            error={errors.gender}
-          />
-          <SelectField
-            id="pronouns"
-            label="Pronouns"
-            control={control}
-            options={options.pronouns.map((option) => ({ label: option, value: option }))}
-            className="col-span-2"
-            error={errors.pronouns}
-          />
-          <SelectField
-            id="ethnicity"
-            label="Race/Ethnicity"
-            control={control}
-            options={options.ethnicities.map((option) => ({ label: option, value: option }))}
-            className="col-span-2"
-            error={errors.ethnicity}
-          />
-          <SelectField
-            id="sexuality"
-            label="Do you consider yourself to be any of the following?"
-            control={control}
-            options={options.sexualities.map((option) => ({ label: option, value: option }))}
-            className="col-span-2"
-            error={errors.sexuality}
-          />
-        </div>
-        <hr className="border-white pb-6 mt-10" />
-        <h1 className="text-white text-xl font-bold pb-10">
-          We are currently in the process of partnering with MLH. The following 3 checkboxes are for this partnership. If we do not end up partnering with MLH, your information will not be shared
-        </h1>
-        <div className="grid grid-cols-1 gap-x-12 gap-y-10 text-white text-xl">
-          <Controller
-            name="mlhCodeOfConduct"
-            control={control}
-            render={({ field }) => (
-              <div className="flex items-start">
-                <Checkbox
-                  id="mlhCodeOfConduct"
-                  checked={field.value}
-                  onCheckedChange={(checked) => field.onChange(!!checked)}
-                  className="mr-6 mt-1 w-6 h-6"
-                />
-                <label htmlFor="mlhCodeOfConduct">
-                  I have read and agree to the {' '}
-                  <a href="https://github.com/MLH/mlh-policies/blob/main/code-of-conduct.md" className="underline">
-                  MLH Code of Conduct
-                  </a>
-                  . *
-                </label>
-              </div>
-            )}
-          />
-          {errors.mlhCodeOfConduct && (
-            <p className="text-red-500 text-s italic">
-              {errors.mlhCodeOfConduct.message}
-            </p>
-          )}
-          <Controller
-            name="mlhPrivacyPolicy"
-            control={control}
-            render={({ field }) => (
-              <div className="flex items-start">
-                <Checkbox
-                  id="mlhPrivacyPolicy"
-                  checked={field.value}
-                  onCheckedChange={(checked) => field.onChange(!!checked)}
-                  className="mr-6 mt-1 w-6 h-6"
-                />
-                <label htmlFor="mlhPrivacyPolicy">
-                  I authorize you to share my application/registration information with Major League Hacking for event administration, ranking, and MLH administration in line with the{' '}
-                  <a href="https://github.com/MLH/mlh-policies/blob/main/privacy-policy.md" className="underline">
-                    MLH Privacy Policy
-                  </a>
-                  . I further agree to the terms of both the{' '}
-                  <a href="https://github.com/MLH/mlh-policies/blob/main/contest-terms.md" className="underline">
-                    MLH Contest Terms and Conditions
-                  </a>
-                  {' '}and the{' '}
-                  <a href="https://github.com/MLH/mlh-policies/blob/main/privacy-policy.md" className="underline">
-                    MLH Privacy Policy
-                  </a>
-                  . *
-                </label>
-              </div>
-            )}
-          />
-          {errors.mlhPrivacyPolicy && (
-            <p className="text-red-500 text-s italic">
-              {errors.mlhPrivacyPolicy.message}
-            </p>
-          )}
-          <Controller
-            name="mlhEmails"
-            control={control}
-            render={({ field }) => (
-              <div className="flex items-start">
-                <Checkbox
-                  id="mlhEmails"
-                  checked={field.value}
-                  onCheckedChange={(checked) => field.onChange(!!checked)}
-                  className="mr-6 mt-1 w-6 h-6"
-                />
-                <label htmlFor="mlhEmails">
-                  I authorize MLH to send me occasional emails about relevant events, career opportunities, and community announcements.
-                </label>
-              </div>
-            )}
-          />
-        </div>
-
-        <Button type="submit" className="w-full py-2 text-white mt-10">
+        <Button type="submit" className="bg-[#5D85C4] py-3 px-6 text-xl font-semibold mt-12">
           Submit
         </Button>
       </form>
