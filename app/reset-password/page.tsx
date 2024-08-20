@@ -6,18 +6,22 @@ import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { validatePassword } from "@/lib/passwordUtils";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 const ResetPassword = () => {
   const [newPassword, setNewPassword] = useState("");
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   const token = searchParams.get("token");
 
   console.log(token);
 
-  const handlePasswordChange = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    
+  const handlePasswordChange = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
     e.preventDefault();
 
     const passwordErrors = validatePassword(newPassword);
@@ -32,25 +36,33 @@ const ResetPassword = () => {
       return;
     }
 
-    try {
-      const response = await fetch("/api/auth/reset-password", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ token, newPassword }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        console.log("Password reset successfully");
-      } else {
-        console.error("Error:", data.message);
+    const promise = fetch("/api/auth/reset-password", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ token, newPassword }),
+    }).then(async (response) => {
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || "Failed to update password");
       }
-    } catch (error) {
-      console.error("Error:", error);
-    }
+      return response.json();
+    });
+
+    toast
+      .promise(promise, {
+        loading: "Resetting password...",
+        success: "Password has been reset!",
+        error: (err) => err.message,
+      })
+      .then((data) => {
+        console.log("Success", data);
+        router.push("/login");
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
   };
 
   return (

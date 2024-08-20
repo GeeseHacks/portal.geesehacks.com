@@ -3,6 +3,9 @@ import prisma from '@lib/prisma';
 import bcrypt from 'bcrypt';
 
 export async function POST(req: NextRequest) {
+  if (req.method !== 'POST') {
+    return new NextResponse(`Method ${req.method} Not Allowed`, { status: 405 });
+  }
   try {
     const { token, newPassword } = await req.json();
 
@@ -34,7 +37,7 @@ export async function POST(req: NextRequest) {
         tokenExpiration: null,
       },
     });
-
+    console.log("API was called");
     return new NextResponse(JSON.stringify({ message: 'Password reset successfully' }), { status: 201 });
   } catch (error) {
     console.error('Error resetting password:', error);

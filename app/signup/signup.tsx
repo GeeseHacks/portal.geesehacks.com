@@ -90,7 +90,7 @@ const SignUp: React.FC = () => {
             <button className="flex gap-2">
               <img
                 src="/static/icons/google-icon.png"
-                alt="Google"
+                alt="Sign up with Google"
                 className="h-6 w-6"
               />
               Sign Up with Google
@@ -100,7 +100,7 @@ const SignUp: React.FC = () => {
             <button className="flex gap-2">
               <img
                 src="/static/icons/discord-icon.png"
-                alt="Google"
+                alt="Sign up with Discord"
                 className="h-6 w-7"
               />
               Sign Up with Discord
@@ -126,7 +126,7 @@ const SignUp: React.FC = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
           {emailError && (
-            <p className="text-red-500 text-sm mt-2">{emailError}</p>
+            <p role="alert" className="text-red-500 text-sm mt-2">{emailError}</p>
           )}
           <Label htmlFor="password">
             Password
@@ -141,7 +141,7 @@ const SignUp: React.FC = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
           {passwordErrors.length > 0 && (
-            <ul className="text-red-500 text-sm mt-2 list-disc list-inside">
+            <ul role="alert" className="text-red-500 text-sm mt-2 list-disc list-inside">
               {passwordErrors.map((error, index) => (
                 <li key={index}>{error}</li>
               ))}
@@ -160,7 +160,7 @@ const SignUp: React.FC = () => {
             onChange={(e) => setVerifyPassword(e.target.value)}
           />
           {verifyPasswordError && (
-            <p className="text-red-500 text-sm mt-2">{verifyPasswordError}</p>
+            <p role="alert" className="text-red-500 text-sm mt-2">{verifyPasswordError}</p>
           )}
           <Button
             type="submit"
