@@ -10,7 +10,7 @@ async function sendResetEmail(email:string, resetLink: string){
   try {
     const { data, error } = await resend.emails.send({
       from: 'no-reply@geesehacks.com',
-      to: ['jenniferli8263@gmail.com'],
+      to: [email],
       subject: 'Password Reset Link',
       react: EmailTemplate({ resetLink: resetLink }),
     });
