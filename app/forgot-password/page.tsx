@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import toast from "react-hot-toast";
 
 const ResetPassword = () => {
   const [email, setEmail] = useState("");
@@ -12,25 +13,46 @@ const ResetPassword = () => {
   };
 
   const reset = async () => {
-    try {
-      const response = await fetch("/api/auth/reset", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
-      });
+    // const response = await fetch("/api/auth/reset", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({ email }),
+    // });
 
-      const data = await response.json();
+    // const data = await response.json();
 
-      if (response.ok) {
-        console.log("Reset token generated:", data.resetToken);
-      } else {
-        console.error("Error:", data.message);
+    // if (response.ok) {
+    //   console.log("Reset token generated:", data.resetToken);
+    // } else {
+    //   console.error("Error:", data.message);
+    // }
+    const promise = fetch("/api/auth/reset", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    }).then(async (response) => {
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || "Failed to update password)");
       }
-    } catch (error) {
-      console.error("Error:", error);
-    }
+      return response.json();
+    });
+    toast
+      .promise(promise, {
+        loading: "Generating token...",
+        success: "Reset link has been sent!",
+        error: (err) => err.message,
+      })
+      .then((data) => {
+        console.log("Success", data);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
   };
   return (
     <div className="flex flex-col items-center justify-center gap-y-4">

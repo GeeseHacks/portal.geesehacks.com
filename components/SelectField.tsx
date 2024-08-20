@@ -60,7 +60,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
         </Select>
       )}
     />
-    {error && <p className="text-red-500 text-s italic mt-2">{error.message}</p>}
+    {error && <p role="alert" className="text-red-500 text-s italic mt-2">{error.message}</p>}
   </div>
 );
 

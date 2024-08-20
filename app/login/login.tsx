@@ -70,7 +70,7 @@ const Login: React.FC = () => {
             <button className="flex gap-2">
               <img
                 src="/static/icons/google-icon.png"
-                alt="Google"
+                alt="Login with Google"
                 className="h-6 w-6"
               />
               Log in with Google
@@ -83,7 +83,7 @@ const Login: React.FC = () => {
             <button className="flex gap-2">
               <img
                 src="/static/icons/discord-icon.png"
-                alt="Google"
+                alt="Login with Discord"
                 className="h-6 w-7"
               />
               Log in with Discord
@@ -107,7 +107,7 @@ const Login: React.FC = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
           {emailError && (
-            <p className="text-red-500 text-sm mt-2">{emailError}</p>
+            <p role="alert" className="text-red-500 text-sm mt-2">{emailError}</p>
           )}
 
           <div className="flex flex-row justify-between items-center">
@@ -132,7 +132,7 @@ const Login: React.FC = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
           {passwordErrors.length > 0 && (
-            <ul className="text-red-500 text-sm mt-2 list-disc list-inside">
+            <ul role="alert" className="text-red-500 text-sm mt-2 list-disc list-inside">
               {passwordErrors.map((error, index) => (
                 <li key={index}>{error}</li>
               ))}
