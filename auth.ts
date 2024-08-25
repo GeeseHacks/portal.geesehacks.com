@@ -10,6 +10,8 @@ import { validatePassword } from '@/lib/passwordUtils';
 
 async function getUser(email: string): Promise<AuthUser | null> {
   try {
+    console.log('Fetching user:', email);
+    console.log("API URL: ", `${process.env.NEXT_PUBLIC_API_URL}/api/auth/users`);
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/users`, {
       method: 'POST',
       headers: {
