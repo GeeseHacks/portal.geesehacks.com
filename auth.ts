@@ -11,8 +11,9 @@ import { validatePassword } from '@/lib/passwordUtils';
 async function getUser(email: string): Promise<AuthUser | null> {
   try {
     console.log('Fetching user:', email);
-    console.log("API URL: ", `${process.env.NEXT_PUBLIC_API_URL}/api/auth/users`);
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/users`, {
+    const apiUrl = `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/api/auth/users`;
+    console.log("API URL: ", apiUrl);
+    const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
