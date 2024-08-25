@@ -13,22 +13,7 @@ const ResetPassword = () => {
   };
 
   const reset = async () => {
-    // const response = await fetch("/api/auth/reset", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({ email }),
-    // });
-
-    // const data = await response.json();
-
-    // if (response.ok) {
-    //   console.log("Reset token generated:", data.resetToken);
-    // } else {
-    //   console.error("Error:", data.message);
-    // }
-    const promise = fetch("/api/auth/reset", {
+    const promise = fetch("/api/auth/send-reset-email", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
