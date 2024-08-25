@@ -10,11 +10,17 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import toast from 'react-hot-toast';
+import { BiHide } from "react-icons/bi";
+import { BiShow } from "react-icons/bi";
 
 const SignUp: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [verifyPassword, setVerifyPassword] = useState("");
+  const [passwordVisibility, setPasswordVisibility] = useState({
+    password: false,
+    verifyPassword: false,
+  });
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
   const [emailError, setEmailError] = useState<string>("");
   const [verifyPasswordError, setVerifyPasswordError] = useState<string>("");
@@ -131,15 +137,24 @@ const SignUp: React.FC = () => {
           <Label htmlFor="password">
             Password
           </Label>
-          <Input
-            type="password"
-            id="password"
-            name="password"
-            placeholder="Your password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <div className="relative">
+            <Input
+              type={passwordVisibility.password ? "text" : "password"}
+              id="password"
+              name="password"
+              placeholder="Your password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="pr-11"
+            />
+            <div
+              onClick={() => setPasswordVisibility(prev => ({ ...prev, password: !prev.password }))}
+              className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
+            >
+              {passwordVisibility.password ?  <BiHide className="mr-1 text-xl"/> : <BiShow className="mr-1 text-xl"/>}
+            </div>
+          </div>
           {passwordErrors.length > 0 && (
             <ul role="alert" className="text-red-500 text-sm mt-2 list-disc list-inside">
               {passwordErrors.map((error, index) => (
@@ -150,15 +165,24 @@ const SignUp: React.FC = () => {
           <Label htmlFor="verify-password">
             Verify Password
           </Label>
-          <Input
-            type="password"
-            id="verify-password"
-            name="verify-password"
-            placeholder="Verify your password"
-            required
-            value={verifyPassword}
-            onChange={(e) => setVerifyPassword(e.target.value)}
-          />
+          <div className="relative">
+            <Input
+              type={passwordVisibility.verifyPassword ? "text" : "password"}
+              id="verify-password"
+              name="verify-password"
+              placeholder="Verify your password"
+              required
+              value={verifyPassword}
+              onChange={(e) => setVerifyPassword(e.target.value)}
+              className="pr-11"
+            />
+            <div
+              onClick={() => setPasswordVisibility(prev => ({ ...prev, verifyPassword: !prev.verifyPassword }))}
+              className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
+            >
+              {passwordVisibility.verifyPassword ?  <BiHide className="mr-1 text-xl"/> : <BiShow className="mr-1 text-xl"/>}
+            </div>
+          </div>
           {verifyPasswordError && (
             <p role="alert" className="text-red-500 text-sm mt-2">{verifyPasswordError}</p>
           )}
