@@ -16,27 +16,6 @@ tags:
   - name: resumes
     description: Resume related endpoints
 paths:
-  /api/auth/users:
-    post:
-      tags:
-        - auth
-      summary: Get a user's login details
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  example: test@example.com
-      responses:
-        '200':
-          description: Login details
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/users_auth'
   /api/auth/signup:
     post:
       tags:
