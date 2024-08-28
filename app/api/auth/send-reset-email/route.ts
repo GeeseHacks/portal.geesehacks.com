@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
         },
       });
 
-    const resetLink = `${process.env.NEXT_PUBLIC_API_URL}/reset-password?token=${resetToken}`;
+    const resetLink = `http://${process.env.NEXT_PUBLIC_VERCEL_URL}/reset-password?token=${resetToken}`;
     
     //send the email link here
     await sendResetEmail(email, resetLink);
