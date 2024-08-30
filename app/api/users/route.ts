@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
     
     // Create a new user in a transaction
     const newUser = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-      const createdUser = await tx.users.create({
+      const createdUser = await tx.user.create({
         data: {
           id: userId,
           firstname: validatedData.firstname,

@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
     // Create a new application responses in a transaction
     const newAppResp = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       // Create the new application response
-      const createdAppResp = await tx.application_responses.create({
+      const createdAppResp = await tx.applicationResponse.create({
         data: {
           userid: userId,
           ...validationResult.data // Use the validated data
