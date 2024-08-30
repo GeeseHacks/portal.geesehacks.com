@@ -13,7 +13,7 @@ async function getUser(email: string): Promise<AuthUser | null> {
   
   try {
     // Find the unique user by email using Prisma
-    const user = await prisma.user_auth.findUnique({
+    const user = await prisma.userAuth.findUnique({
       where: { email: email },
     });
 
