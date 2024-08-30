@@ -31,7 +31,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     const userId = parseInt(validatedParams.data.id, 10);
 
     // Find the unique application response by ID using Prisma
-    const appResp = await prisma.application_responses.findUnique({
+    const appResp = await prisma.applicationResponse.findUnique({
       where: { id: userId },
     });
 
