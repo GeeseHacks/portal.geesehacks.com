@@ -3,14 +3,13 @@ generator client {
   binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
-
 datasource db {
-  provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL")
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL")
 }
 
 model User {
-  id                         Int                     @id
+  id                         BigInt                  @id @default(autoincrement())
   firstname                  String                  @db.VarChar(50)
   lastname                   String                  @db.VarChar(50)
   age                        Int
@@ -36,9 +35,8 @@ model User {
   t_shirt_size               String?                 @db.VarChar(50)
   status                     UserStatus
 
-
-  application_responses      ApplicationResponse[] // Define the relation to application_responses -- Not an actual field in the DB schema
-  qrCodes QRCodeRegistered[] // User can have multiple QR Codes
+  application_responses      ApplicationResponse[]   // Relation to ApplicationResponse
+  qrCodes                    QRCodeRegistered[]      // User can have multiple QR Codes
 }
 
 enum UserStatus {
@@ -50,25 +48,25 @@ enum UserStatus {
 }
 
 model ApplicationResponse {
-  id     Int    @id @default(autoincrement())
-  userid Int
-  q1     String @db.VarChar(1000)
-  q2     String @db.VarChar(1000)
-  q3     String @db.VarChar(1000)
-  user   User  @relation(fields: [userid], references: [id])
+  id     BigInt  @id @default(autoincrement())
+  userid BigInt
+  q1     String  @db.VarChar(1000)
+  q2     String  @db.VarChar(1000)
+  q3     String  @db.VarChar(1000)
+  user   User    @relation(fields: [userid], references: [id])
 
   @@index([userid])
 }
 
 model UserAuth {
-  id       Int    @id @default(autoincrement())
+  id       BigInt @id @default(autoincrement())
   email    String @unique @db.VarChar(100)
   password String @db.VarChar(60)
 }
 
 model QRCodeRegistered {
   qrCodeId  String @id @db.VarChar(255)
-  userid    Int
+  userid    BigInt
   user      User   @relation(fields: [userid], references: [id])
 
   @@index([userid])
