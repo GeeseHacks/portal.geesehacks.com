@@ -393,7 +393,7 @@ const RegistrationForm: React.FC = () => {
           />
         </div>
 
-        <Button type="submit" className="w-full py-2 text-white mt-10"></Button>
+        <Button type="submit" className="w-full py-2 text-white mt-10"> Submit </Button>
         
       </form>
     </div>
