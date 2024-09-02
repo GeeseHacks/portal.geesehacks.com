@@ -61,7 +61,7 @@ const SideNav: React.FC = () => {
 
           {/* Conditionally render the Stock Market link */}
           {shouldShowStockMarketLink() && (
-            <Link className="flex space-x-8 hover:opacity-35" key="Stock Market" href="/dashboard/stockMarket">
+            <Link className="flex space-x-8 hover:opacity-35" key="Stock Market" href="/dashboard/stock-market">
               <Image src="/static/icons/stock-market.png" height={0} width={0} sizes="100vw" alt="Stock Market" style={{ height: 24, width: 'auto' }} />
               <h2>Stock Market</h2>
             </Link>
