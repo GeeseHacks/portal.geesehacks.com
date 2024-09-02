@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Check if the user already exists
-    const existingUser = await prisma.user_auth.findUnique({
+    const existingUser = await prisma.userAuth.findUnique({
       where: { email },
     });
 
@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
     const tokenExpiration = new Date(Date.now() + 3600000); //valid for an hour
 
 
-    await prisma.user_auth.update({
+    await prisma.userAuth.update({
         where: { email },
         data: {
           resetToken,
