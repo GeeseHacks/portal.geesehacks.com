@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client';
 import prisma from '@lib/prisma'; // Import the initialized Prisma client
 import { auth } from '@/auth';
 import { z } from 'zod';
+import { serializeWithBigInt } from '@utils/serialize';
 
 // Define the UserStatus enum
 const UserStatus = z.enum(['ACCEPTED', 'REJECTED', 'WAITLIST', 'APPLIED', 'NOT_APPLIED']);
@@ -92,8 +93,9 @@ export async function POST(request: NextRequest) {
       return createdUser;
     });
 
+
     // Return the newly created user as JSON
-    return new NextResponse(JSON.stringify(newUser), { status: 201 });
+    return new NextResponse(serializeWithBigInt(newUser), { status: 201 });
   } catch (error) {
     // Log any errors to the console
     console.error(error);

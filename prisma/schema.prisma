@@ -9,7 +9,7 @@ datasource db {
 }
 
 model User {
-  id                         BigInt                  @id @default(autoincrement())
+  id                         BigInt                  @id @default(autoincrement()) @db.BigInt
   firstname                  String                  @db.VarChar(50)
   lastname                   String                  @db.VarChar(50)
   age                        Int
@@ -48,7 +48,7 @@ enum UserStatus {
 }
 
 model ApplicationResponse {
-  id     BigInt  @id @default(autoincrement())
+  id     BigInt  @id @default(autoincrement()) @db.BigInt
   userid BigInt
   q1     String  @db.VarChar(1000)
   q2     String  @db.VarChar(1000)
@@ -59,7 +59,7 @@ model ApplicationResponse {
 }
 
 model UserAuth {
-  id       BigInt @id @default(autoincrement())
+  id       BigInt @id @default(autoincrement()) @db.BigInt
   email    String @unique @db.VarChar(100)
   password String @db.VarChar(60)
 }

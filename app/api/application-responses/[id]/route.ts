@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@lib/prisma'; // Import the initialized Prisma client
 import { auth } from '@/auth';
 import { z } from 'zod';
+import { serializeWithBigInt } from '@utils/serialize';
 
 // Define the schema for params using Zod
 const paramsSchema = z.object({
@@ -37,7 +38,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
     // If the application response is found, return the application response data as JSON
     if (appResp) {
-      return new NextResponse(JSON.stringify(appResp), { status: 200 });
+      return new NextResponse(serializeWithBigInt(appResp), { status: 200 });
     } else {
       // If the application response is not found, return a 404 error with a message
       return new NextResponse(JSON.stringify({ error: 'Application response not found' }), { status: 404 });

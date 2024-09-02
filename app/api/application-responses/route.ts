@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client';
 import prisma from '@lib/prisma';
 import { auth } from '@/auth';
 import { z } from 'zod';
+import { serializeWithBigInt } from '@utils/serialize';
 
 // Define the schema for the request body using Zod
 const requestBodySchema = z.object({
@@ -54,7 +55,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Return the newly created application response as JSON
-    return new NextResponse(JSON.stringify(newAppResp), { status: 201 });
+    return new NextResponse(serializeWithBigInt(newAppResp), { status: 201 });
   } catch (error) {
     // Log any errors to the console
     console.error(error);
