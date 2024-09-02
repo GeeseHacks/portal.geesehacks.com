@@ -237,29 +237,26 @@ const RegistrationForm: React.FC = () => {
           <TextAreaField
             id="question1"
             label="Why are you running for HACKATHON?"
-            registerOptions={register("question1")}
+            registerOptions={register("q1")}
             placeholder="Your answer..."
-            rows={4}
             maxLength={1000}
-            error={errors.question1}
+            error={errors.q1}
           />
           <TextAreaField
             id="question2"
             label="How are you running for HACKATHON?"
-            registerOptions={register("question2")}
+            registerOptions={register("q2")}
             placeholder="Your answer..."
-            rows={4}
             maxLength={1000}
-            error={errors.question2}
+            error={errors.q2}
           />
           <TextAreaField
             id="question3"
             label="Where are you running for HACKATHON?"
-            registerOptions={register("question3")}
+            registerOptions={register("q3")}
             placeholder="Your answer..."
-            rows={4}
             maxLength={1000}
-            error={errors.question3}
+            error={errors.q3}
           />
         </div>
         <Button type="submit" className="bg-[#5D85C4] py-3 px-6 text-xl font-semibold mt-12">
