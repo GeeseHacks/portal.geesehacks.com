@@ -25,6 +25,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^0.2.0",
     "crypto": "^1.0.1",
+    "framer-motion": "^11.3.31",
     "lucide-react": "^0.414.0",
     "next": "14.2.4",
     "next-auth": "5.0.0-beta.18",
