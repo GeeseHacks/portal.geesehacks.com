@@ -26,7 +26,7 @@ describe("Test Authentication API Routes", () => {
       });
 
       // Clean up
-      await prisma.user_auth.delete({
+      await prisma.UserAuth.delete({
         where: {
           email: "test@example.com",
         },
@@ -117,7 +117,7 @@ describe("Test Authentication API Routes", () => {
     // duplicate email case
     it("should respond with 409 user already exists", async () => {
       // Seed with initial data
-      await prisma.user_auth.create({
+      await prisma.UserAuth.create({
         data: {
           email: "existing_user@example.com",
           password: "Some_Random_Password",
@@ -142,7 +142,7 @@ describe("Test Authentication API Routes", () => {
       });
 
       // Clean up
-      await prisma.user_auth.delete({
+      await prisma.UserAuth.delete({
         where: {
           email: "existing_user@example.com",
         },
