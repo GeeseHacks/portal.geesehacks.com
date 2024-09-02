@@ -32,7 +32,6 @@ model User {
   optional_underrepresented  String?
   other_dietary_restrictions String?                 @db.VarChar(100)
   resume                     String?                 @db.VarChar(255)
-  status                     UserStatus
   t_shirt_size               String?                 @db.VarChar(50)
   status                     UserStatus
 
