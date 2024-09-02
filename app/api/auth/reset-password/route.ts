@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
       return new NextResponse(JSON.stringify({ message: 'Token and/or new password is required' }), { status: 400 });
     }
 
-    const user = await prisma.user_auth.findFirst({
+    const user = await prisma.userAuth.findFirst({
       where: {
         resetToken: token,
         tokenExpiration: {
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
 
-    await prisma.user_auth.update({
+    await prisma.userAuth.update({
       where: { email: user.email },
       data: {
         password: hashedPassword,
