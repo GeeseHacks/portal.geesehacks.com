@@ -1,4 +1,6 @@
-// jest.globalTeardown.ts
+// This file runs once after all tests
+// It clears the testing database
+
 import { execSync } from 'child_process';
 
 module.exports = async () => {
