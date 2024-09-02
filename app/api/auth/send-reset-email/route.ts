@@ -62,6 +62,10 @@ export async function POST(req: NextRequest) {
         },
       });
 
+    console.log("Next Public Vercel URL", process.env.NEXT_PUBLIC_VERCEL_URL);
+
+    console.log("Next Public API URL", process.env.NEXT_PUBLIC_API_URL);
+
     const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
       ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
       : process.env.NEXT_PUBLIC_API_URL;
