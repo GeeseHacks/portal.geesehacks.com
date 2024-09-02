@@ -8,7 +8,7 @@ module.exports = async () => {
 
   try {
     // Run the migrations once before all tests
-    execSync('npx prisma migrate deploy', {
+    execSync('npx prisma migrate reset --force', {
       stdio: 'inherit',
     });
 
