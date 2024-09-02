@@ -31,7 +31,7 @@ const RegistrationForm: React.FC = () => {
       const { countryOptions, schoolOptions } = await fetchCSVOptions();
       setCountryOptions(countryOptions);
       setSchoolOptions(schoolOptions);
-    };≠≠=
+    };
 
     fetchAndSetOptions();
   }, []);
