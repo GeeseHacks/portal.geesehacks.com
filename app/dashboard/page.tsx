@@ -12,6 +12,12 @@ const Home: React.FC = () => {
         <div className="absolute bottom-48 right-48 m-20 w-1/4 h-1/4 bg-teal-700 rounded-full blur-3xl opacity-5"></div>
       </div> */}
 
+      {/* Glow Effect */}
+      <div className="fixed inset-0 -z-50">
+        <div className="absolute top-60 left-60 m-20 w-1/2 h-1/2 bg-gradient-to-r from-purple-700 via-purple-800 to-purple-900 rounded-full blur-4xl opacity-25"></div>
+        <div className="absolute bottom-60 right-60 m-20 w-1/2 h-1/2 bg-gradient-to-r from-teal-700 via-teal-800 to-teal-900 rounded-full blur-4xl opacity-20"></div>
+      </div>
+
       <div className="absolute inset-0 -z-50">
         {[...Array(120)].map((_, i) => { // Reduced from 100 to 50
           const size = `${Math.random() + 1}px`;
