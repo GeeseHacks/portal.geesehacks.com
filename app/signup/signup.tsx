@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation"; // Import from next/navigation
 import { signInActionGoogle } from "@/utils/signInActionGoogle";
 import { signInActionDiscord } from "@/utils/signInActionDiscord";
@@ -92,22 +93,24 @@ const SignUp: React.FC = () => {
           Make an account with us to continue!
         </p>
         <div className="flex flex-col gap-4 w-full mb-6">
-          <form className="bg-white text-black py-2 rounded-md flex items-center justify-center gap-2" action={signInActionGoogle}>
-            <button className="flex gap-2">
-              <img
+          <form action={signInActionGoogle}>
+            <button className="bg-white py-2 text-black rounded-md flex gap-2 w-full h-full justify-center">
+              <Image
                 src="/static/icons/google-icon.png"
                 alt="Google"
-                className="h-6 w-6"
+                width={24}
+                height={24}
               />
               Sign Up with Google
             </button>
           </form>
-          <form className="bg-white text-black py-2 rounded-md flex items-center justify-center gap-2" action={signInActionDiscord}>
-            <button className="flex gap-2">
-              <img
+          <form action={signInActionDiscord}>
+            <button className="bg-white py-2 text-black rounded-md flex gap-2 w-full h-full justify-center">
+              <Image
                 src="/static/icons/discord-icon.png"
                 alt="Google"
-                className="h-6 w-7"
+                width={24}
+                height={24}
               />
               Sign Up with Discord
             </button>
