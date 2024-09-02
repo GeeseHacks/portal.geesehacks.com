@@ -7,12 +7,20 @@ module.exports = async () => {
   console.log('Running Prisma migrations...');
 
   try {
-    // Run the migrations once before all tests
+    // Reset and migrate the database
     execSync('npx prisma migrate reset --force', {
       stdio: 'inherit',
     });
 
     console.log('Prisma migrations applied successfully.');
+
+    // Generate the Prisma Client
+    console.log('Generating Prisma Client...');
+    execSync('npx prisma generate', {
+      stdio: 'inherit',
+    });
+
+    console.log('Prisma Client generated successfully.');
   } catch (error) {
     console.error('Error applying Prisma migrations:', error);
     process.exit(1); // Exit with an error if migrations fail
