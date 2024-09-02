@@ -1,5 +1,5 @@
 import SideNav from '@/components/nav/SideNav';
-import StockMarket from '../stockMarket/StockMarket';
+import StockMarket from './StockMarket';
 
 const Page: React.FC = () => {
   return (
