@@ -1,5 +1,5 @@
 // This file runs once before all tests
-// It applies the Prisma migrations to the test database
+// It applies the Prisma migrations to the test database and clears the database
 
 import { execSync } from 'child_process';
 
