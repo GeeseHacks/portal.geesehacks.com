@@ -1,3 +1,5 @@
+"use client";
+
 import SideNav from "@/components/nav/SideNav";
 import Head from "next/head";
 import Link from "next/link"; // Import Link from Next.js
@@ -67,4 +69,4 @@ const Dashboard: React.FC = () => {
   );
 };
 
-export default Home;
+export default Dashboard;
