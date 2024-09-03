@@ -22,8 +22,7 @@ export async function POST(request: NextRequest) {
       return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
     }
 
-    // Convert user ID to number
-    const userId = Number(session.user.id);
+    const userId = session.user.id;
     
     // Parse the request body to get the application response data
     const body = await request.json();
