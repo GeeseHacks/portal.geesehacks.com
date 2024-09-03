@@ -1,7 +1,7 @@
 "use client"
 import SideNav from "@/components/nav/SideNav";
 import { Filter } from "lucide-react";
-import Head from "next/head";
+import Link from "next/link";
 
 const Home: React.FC = () => {
   return (
@@ -51,7 +51,9 @@ const Home: React.FC = () => {
           <img src="/static/images/status-notsubmitted.png" alt="Not Submitted" className="absolute right-48 -top-10 z-0" />
           <h2 className="font-light text-lg drop-shadow-[0_0px_5px_rgba(0,0,0,0.5)]">Application Status</h2>
           <h2 className="font-semibold text-4xl drop-shadow-[0_0px_10px_rgba(0,0,0,0.5)]">NOT SUBMITTED</h2>
-          <button className="mt-2 bg-purple-500 px-4 py-2 rounded-full">Apply Now</button>
+          <button className="mt-2 bg-purple-500 px-4 py-2 rounded-full">
+            <Link href="/apply">Apply Now</Link>
+          </button>
         </div>
 
         <div className="grid grid-cols-2 gap-10 min-h-52">
@@ -62,7 +64,7 @@ const Home: React.FC = () => {
             hover:scale-102 transition-transform duration-300 
             hover:drop-shadow-[0_0px_15px_rgba(48,133,159,0.5)]
           ">
-            <img src="/static/images/faq.png" alt="FAQ" className="absolute -right-10 bottom-0 z-0" /> 
+            <img src="/static/images/faq.png" alt="FAQ" className="absolute -right-10 bottom-0 z-0" />
             <h2 className="font-semibold text-4xl">FAQ</h2>
           </div>
           <div className="
