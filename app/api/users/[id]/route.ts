@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@lib/prisma'; // Import the initialized Prisma client
 import { auth } from '@/auth';
 import { z } from 'zod';
-import { serializeWithBigInt } from '@utils/serialize';
 
 // Define the schema for your params using Zod
 const paramsSchema = z.object({
@@ -28,8 +27,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
     }
 
-    // Convert the 'id' parameter from string to integer
-    const userId = parseInt(validationResult.data.id, 10);
+    const userId = validationResult.data.id;
 
     // Find the unique user by ID using Prisma
     const user = await prisma.user.findUnique({
@@ -38,7 +36,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
     // If user is found, return the user data as JSON
     if (user) {
-      return new NextResponse(serializeWithBigInt(user), { status: 200 });
+      return new NextResponse(JSON.stringify(user), { status: 200 });
     } else {
       // If user is not found, return a 404 error with a message
       return new NextResponse(JSON.stringify({ error: 'User not found' }), { status: 404 });
