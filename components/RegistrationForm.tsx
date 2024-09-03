@@ -99,6 +99,7 @@ const RegistrationForm: React.FC = () => {
             id="email"
             label="Email *"
             registerOptions={register("email")}
+            defaultValue={session?.user?.email ? session.user.email : ""}
             placeholder="Enter email"
             type="email"
             error={errors.email}
