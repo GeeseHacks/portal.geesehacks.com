@@ -3,7 +3,6 @@ import { Prisma } from '@prisma/client';
 import prisma from '@lib/prisma'; // Import the initialized Prisma client
 import { auth } from '@/auth';
 import { z } from 'zod';
-import { serializeWithBigInt } from '@utils/serialize';
 
 // Define the UserStatus enum
 const UserStatus = z.enum(['ACCEPTED', 'REJECTED', 'WAITLIST', 'APPLIED', 'NOT_APPLIED']);
@@ -46,7 +45,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Type assertion to assure TypeScript that session.user is defined
-    const userId = Number(session.user.id);
+    const userId = session.user.id;
 
     // Parse and validate the request body using the custom Zod schema
     const body = await request.json();
@@ -95,7 +94,7 @@ export async function POST(request: NextRequest) {
 
 
     // Return the newly created user as JSON
-    return new NextResponse(serializeWithBigInt(newUser), { status: 201 });
+    return new NextResponse(JSON.stringify(newUser), { status: 201 });
   } catch (error) {
     // Log any errors to the console
     console.error(error);
