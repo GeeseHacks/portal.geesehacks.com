@@ -6,7 +6,7 @@ env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
   VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-
+  POSTGRES_PRISMA_URL: ${{ secrets.POSTGRES_PRISMA_URL }}
 on:
   pull_request:
   workflow_dispatch:
@@ -36,6 +36,8 @@ jobs:
         run: npx prisma generate
 
       - name: Run Jest Tests
+        env:
+          POSTGRES_PRISMA_URL: ${{ secrets.POSTGRES_PRISMA_URL }}
         run: npm run test
 
       - name: Build Project Artifacts
