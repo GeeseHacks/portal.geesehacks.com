@@ -81,7 +81,6 @@ jobs:
 
       - name: Run Cypress Tests
         env:
-          CYPRESS_BASE_URL: ${{ env.DEPLOYMENT_URL }}  # Use the deployed URL from the previous job
           TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
           TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
         run: npx cypress run --config baseUrl=${{ env.DEPLOYMENT_URL }}
