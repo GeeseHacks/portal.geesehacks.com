@@ -14,6 +14,8 @@ jobs:
   Deploy-Preview:
     permissions: write-all
     runs-on: ubuntu-latest
+    outputs:
+      deployment-url: ${{ steps.deploy.outputs.DEPLOYMENT_URL }}
     steps:
       - uses: actions/checkout@v4
 
@@ -46,7 +48,7 @@ jobs:
         id: deploy
         run: |
           DEPLOYMENT_URL=$(vercel deploy --prebuilt --token=$VERCEL_TOKEN --env VERCEL_ORG_ID=$VERCEL_ORG_ID --env VERCEL_PROJECT_ID=$VERCEL_PROJECT_ID)
-          echo "DEPLOYMENT_URL=$DEPLOYMENT_URL" >> $GITHUB_ENV
+          echo "DEPLOYMENT_URL=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
 
       - name: Create Github Comment with URL
         uses: actions/github-script@v7
@@ -81,6 +83,7 @@ jobs:
 
       - name: Run Cypress Tests
         env:
+          DEPLOYMENT_URL: ${{ needs.Deploy-Preview.outputs.deployment-url }}
           TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
           TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
         run: npx cypress run --config baseUrl=${{ env.DEPLOYMENT_URL }}
