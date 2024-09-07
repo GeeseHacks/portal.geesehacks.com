@@ -48,7 +48,10 @@ jobs:
         id: deploy
         run: |
           DEPLOYMENT_URL=$(vercel deploy --prebuilt --token=$VERCEL_TOKEN --env VERCEL_ORG_ID=$VERCEL_ORG_ID --env VERCEL_PROJECT_ID=$VERCEL_PROJECT_ID)
+          # Output the deployment URL for other jobs to use
           echo "DEPLOYMENT_URL=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
+          # Output the deployment URL for the current job to use
+          echo "DEPLOYMENT_URL=$DEPLOYMENT_URL" >> $GITHUB_ENV
 
       - name: Create Github Comment with URL
         uses: actions/github-script@v7
