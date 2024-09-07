@@ -81,6 +81,10 @@ jobs:
       - name: Install Cypress
         run: npm install cypress --save-dev
 
+      - name: Create cypress.env.json from Secret
+        run: |
+          echo '${{ secrets.CYPRESS_ENV_JSON }}' > cypress.env.json
+
       - name: Run Cypress Tests
         env:
           DEPLOYMENT_URL: ${{ needs.Deploy-Preview.outputs.deployment-url }}
