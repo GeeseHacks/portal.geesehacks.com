@@ -16,6 +16,8 @@ on:
 jobs:
   Deploy-Production:
     runs-on: ubuntu-latest
+    outputs:
+      deployment-url: ${{ steps.deploy.outputs.DEPLOYMENT_URL }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -49,4 +51,35 @@ jobs:
         id: deploy
         run: |
           DEPLOYMENT_URL=$(vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN --env VERCEL_ORG_ID=$VERCEL_ORG_ID --env VERCEL_PROJECT_ID=$VERCEL_PROJECT_ID)
+          # Output the deployment URL for other jobs to use
+          echo "DEPLOYMENT_URL=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
+          # Output the deployment URL for the current job to use
           echo "DEPLOYMENT_URL=$DEPLOYMENT_URL" >> $GITHUB_ENV
+          
+  Cypress-Test:
+    runs-on: ubuntu-latest
+    needs: Deploy-Preview  # Ensure Cypress tests run after deployment
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Cypress
+        run: npm install cypress --save-dev
+
+      - name: Create cypress.env.json from Secret
+        run: |
+          echo '${{ secrets.CYPRESS_ENV_JSON }}' > cypress.env.json
+
+      - name: Run Cypress Tests
+        env:
+          DEPLOYMENT_URL: ${{ needs.Deploy-Preview.outputs.deployment-url }}
+          TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
+          TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+        run: npx cypress run --config baseUrl=${{ env.DEPLOYMENT_URL }}
