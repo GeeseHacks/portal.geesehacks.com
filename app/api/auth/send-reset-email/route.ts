@@ -61,14 +61,8 @@ export async function POST(req: NextRequest) {
           tokenExpiration,
         },
       });
-
-    console.log("Next Public Vercel URL", process.env.VERCEL_URL);
-
-    const baseUrl = process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : process.env.NEXT_PUBLIC_API_URL;
     
-    const resetLink = `${baseUrl}/reset-password?token=${resetToken}`;
+    const resetLink = `${process.env.NEXT_PUBLIC_API_URL}/reset-password?token=${resetToken}`;
     
     // const resetLink = `http://${process.env.NEXT_PUBLIC_VERCEL_URL}/reset-password?token=${resetToken}`;
     
