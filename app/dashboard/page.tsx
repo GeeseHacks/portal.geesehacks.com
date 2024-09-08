@@ -1,5 +1,3 @@
-"use client";
-
 import SideNav from "@/components/nav/SideNav";
 import Head from "next/head";
 

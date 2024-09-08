@@ -9,6 +9,7 @@ interface InputFieldProps {
   placeholder?: string;
   type?: string;
   error?: FieldError | undefined;
+  defaultValue?: string | undefined;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -16,6 +17,7 @@ const InputField: React.FC<InputFieldProps> = ({
   label,
   registerOptions,
   placeholder,
+  defaultValue,
   type = "text",
   error,
 }) => (
@@ -26,9 +28,10 @@ const InputField: React.FC<InputFieldProps> = ({
     <Input
       id={id}
       type={type}
+      defaultValue={defaultValue ? defaultValue : ""}
       {...registerOptions}
-      className={`w-full p-2 border ${error ? "border-red-500 border-2" : "border-gray-500"} rounded-lg text-white bg-transparent focus:outline-none`}
-      // className={`focus:border-transparent py-5`}
+      // className={`w-full p-2 border ${error ? "border-red-500 border-2" : "border-gray-500"} rounded-lg text-white bg-transparent focus:outline-none`}
+      className={`focus:border-transparent py-5`}
       placeholder={placeholder}
     />
     {error && <p className="text-red-500 text-s italic mt-2">{error.message}</p>}

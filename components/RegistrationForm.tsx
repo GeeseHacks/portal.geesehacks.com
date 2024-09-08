@@ -235,7 +235,7 @@ const RegistrationForm: React.FC = () => {
         <hr className="border-white mb-12" />
         <div className="grid grid-cols-1 gap-x-12 gap-y-14">
           <TextAreaField
-            id="question1"
+            id="q1"
             label="Why are you running for HACKATHON?"
             registerOptions={register("q1")}
             placeholder="Your answer..."
@@ -243,7 +243,7 @@ const RegistrationForm: React.FC = () => {
             error={errors.q1}
           />
           <TextAreaField
-            id="question2"
+            id="q2"
             label="How are you running for HACKATHON?"
             registerOptions={register("q2")}
             placeholder="Your answer..."
@@ -251,7 +251,7 @@ const RegistrationForm: React.FC = () => {
             error={errors.q2}
           />
           <TextAreaField
-            id="question3"
+            id="q3"
             label="Where are you running for HACKATHON?"
             registerOptions={register("q3")}
             placeholder="Your answer..."
