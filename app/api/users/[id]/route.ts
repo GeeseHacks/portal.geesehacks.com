@@ -27,8 +27,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
     }
 
-    // Convert the 'id' parameter from string to integer
-    const userId = parseInt(validationResult.data.id, 10);
+    const userId = validationResult.data.id;
 
     // Find the unique user by ID using Prisma
     const user = await prisma.user.findUnique({
