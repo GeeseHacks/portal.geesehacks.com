@@ -33,7 +33,7 @@ const ComplexInputField: React.FC<ComplexInputFieldProps> = ({
           className={`focus:border-transparent py-5`}
           placeholder={placeholder}
         />
-        {error && <p className="text-red-500 text-s italic mt-2">{error}</p>}
+        {error && <p role="alert" className="text-red-500 text-s italic mt-2">{error}</p>}
       </div>
     </div>
   </div>

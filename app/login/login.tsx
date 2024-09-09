@@ -7,9 +7,9 @@ import { validatePassword } from "@/lib/passwordUtils";
 import { validateEmail } from "@/lib/emailUtils";
 import { signInActionGoogle } from "@/utils/signInActionGoogle";
 import { signInActionDiscord } from "@/utils/signInActionDiscord";
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
 import { BiHide } from "react-icons/bi";
 import { BiShow } from "react-icons/bi";
@@ -35,27 +35,20 @@ const Login: React.FC = () => {
       setEmailError("");
       setPasswordErrors([]);
 
-      toast.promise(
-        authenticate(email, password),
-        {
-          loading: 'Logging in...',
-          success: (response) => {
-            if (response && response.error) {
-              throw new Error(response.error); // Throwing the error to be caught by the error handler
-            }
-            return "Logged in successfully!";
-          },
-          error: (err) => {
-            return err.message || "Failed to log in";
-          },
-        }
-      )
+      toast.promise(authenticate(email, password), {
+        loading: "Logging in...",
+        success: (response) => {
+          if (response && response.error) {
+            throw new Error(response.error); // Throwing the error to be caught by the error handler
+          }
+          return "Logged in successfully!";
+        },
+        error: (err) => {
+          return err.message || "Failed to log in";
+        },
+      });
     }
   };
-
-
-
-
 
   useEffect(() => {
     setIsButtonActive(email !== "" && password !== "");
@@ -82,7 +75,7 @@ const Login: React.FC = () => {
             <button className="bg-white py-2 text-black rounded-md flex gap-2 w-full h-full justify-center">
               <Image
                 src="/static/icons/discord-icon.png"
-                alt="Google"
+                alt="Discord"
                 width={28}
                 height={24}
               />
@@ -107,17 +100,19 @@ const Login: React.FC = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
           {emailError && (
-            <p className="text-red-500 text-sm mt-2">{emailError}</p>
+            <p role="alert" className="text-red-500 text-sm mt-2">
+              {emailError}
+            </p>
           )}
 
           <div className="flex flex-row justify-between items-center">
-            <Label
-              htmlFor="password"
-            >
-              Password
-            </Label>
-            <Link href="/#">
-              <Button type="button" variant="link" className="text-blue-400 p-0 h-auto">
+            <Label htmlFor="password">Password</Label>
+            <Link href="/forgot-password">
+              <Button
+                type="button"
+                variant="link"
+                className="text-blue-400 p-0 h-auto"
+              >
                 Forgot Password?
               </Button>
             </Link>
@@ -137,11 +132,18 @@ const Login: React.FC = () => {
               onClick={() => setPasswordVisibility((prev) => !prev)}
               className="password-toggle-icon absolute inset-y-0 right-3 flex items-center cursor-pointer"
             >
-              {passwordVisibility ? <BiHide className="mr-1 text-xl" /> : <BiShow className="mr-1 text-xl" />}
+              {passwordVisibility ? (
+                <BiHide className="mr-1 text-xl" />
+              ) : (
+                <BiShow className="mr-1 text-xl" />
+              )}
             </div>
           </div>
           {passwordErrors.length > 0 && (
-            <ul className="text-red-500 text-sm mt-2 list-disc list-inside">
+            <ul
+              role="alert"
+              className="text-red-500 text-sm mt-2 list-disc list-inside"
+            >
               {passwordErrors.map((error, index) => (
                 <li key={index}>{error}</li>
               ))}

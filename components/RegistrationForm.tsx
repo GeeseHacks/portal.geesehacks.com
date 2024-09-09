@@ -194,7 +194,7 @@ const RegistrationForm: React.FC = () => {
               {...register("resume")}
               className="focus:border-none h-15"
             />
-            {errors.resume && <p className="text-red-500 text-s italic mt-2">{errors.resume.message?.toString()}</p>}
+            {errors.resume && <p role="alert" className="text-red-500 text-s italic mt-2">{errors.resume.message?.toString()}</p>}
           </div>
           <InputField
             id="githubProfile"
@@ -335,7 +335,7 @@ const RegistrationForm: React.FC = () => {
             )}
           />
           {errors.mlhCodeOfConduct && (
-            <p className="text-red-500 text-s italic">
+            <p role="alert" className="text-red-500 text-s italic">
               {errors.mlhCodeOfConduct.message}
             </p>
           )}
@@ -369,7 +369,7 @@ const RegistrationForm: React.FC = () => {
             )}
           />
           {errors.mlhPrivacyPolicy && (
-            <p className="text-red-500 text-s italic">
+            <p role="alert" className="text-red-500 text-s italic">
               {errors.mlhPrivacyPolicy.message}
             </p>
           )}
