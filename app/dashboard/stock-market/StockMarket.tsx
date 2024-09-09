@@ -25,7 +25,7 @@ const StockMarket: React.FC = () => {
           />
           <h1 className="text-3xl md:text-4xl font-semibold">Stock Market</h1>
         </div>
-        <p className="pb-16 text-md md:text-lg pt-3 text-gray-500">
+        <p className="pb-9 text-md md:text-lg pt-3 text-gray-500">
           Some description here
         </p>
         <div className="flex space-x-4 pb-8">
