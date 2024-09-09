@@ -42,7 +42,7 @@ const SideNav: React.FC = () => {
 
   // TODO: On mobile screens, show a hamburger menu
   return (
-    <nav className="bg-gray-950 bg-opacity-25 h-screen min-h-96 w-80 xl:w-96 hidden lg:block overflow-y-auto">
+    <nav className="bg-gray-950 bg-opacity-25 h-screen min-h-96 w-80 xl:w-96 hidden lg:block overflow-y-auto z-10">
       <div className="flex flex-col items-center justify-center px-12 xl:px-20 py-2 h-full space-y-4 w-full">
         {/* Nav Logo */}
         <div className="flex items-center space-x-3 h-1/5">
