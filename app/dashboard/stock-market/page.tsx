@@ -6,7 +6,6 @@ const Page: React.FC = () => {
   return (
     <>
       <StockMarket />
-      <LeaderBoard />
     </>
   );
 };

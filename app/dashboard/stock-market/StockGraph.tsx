@@ -1,0 +1,107 @@
+import React from "react";
+
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import { ResponsiveContainer } from "recharts";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
+
+const chartData = [
+  { time: "11:00 AM", value: 186 },
+  { time: "11:15 AM", value: 305 },
+  { time: "11:30 AM", value: 305 },
+  { time: "11:45 AM", value: 305 },
+  { time: "12:00 PM", value: 237 },
+  { time: "12:15 PM", value: 237 },
+  { time: "12:30 PM", value: 73 },
+  { time: "12:45 PM", value: 237 },
+  { time: "1:00 PM", value: 209 },
+  { time: "1:15 PM", value: 209 },
+  { time: "1:30 PM", value: 214 },
+];
+
+const chartConfig = {
+  time: {
+    label: "Time",
+    color: "hsl(var(--chart-1))",
+  },
+} satisfies ChartConfig;
+
+const StockGraph = () => {
+  return (
+    <div>
+      <Card className="flex-1 flex w-full h-full min-w-0 overflow-hidden bg-opacity-5 bg-white boarder-none">
+        <CardContent className="flex-1 min-w-0">
+          <ChartContainer config={chartConfig} className="w-full h-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart
+                accessibilityLayer
+                data={chartData}
+                margin={{
+                  top: 50,
+                  bottom: 20,
+                  left: 20,
+                  right: 20,
+                }}
+              >
+                <CartesianGrid
+                  vertical={true}
+                  horizontal={false}
+                  stroke="gray"
+                />
+                <XAxis
+                  dataKey="time"
+                  tickLine={true}
+                  axisLine={false}
+                  tickMargin={30}
+                  tickFormatter={(value, index) =>
+                    index % 4 === 0 ? value : ""
+                  }
+                  orientation="top"
+                  stroke="white"
+                  tick={{ fontSize: 14 }}
+                />
+                <YAxis
+                  tickLine={false}
+                  axisLine={true}
+                  tickMargin={20}
+                  tickFormatter={(value) => `$${value}`}
+                  stroke="gray"
+                  tick={{
+                    fontSize: 14,
+                    fill: "purple",
+                  }}
+                />
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent />}
+                />
+                <Line
+                  dataKey="value"
+                  type="linear"
+                  stroke="var(--color-time)"
+                  strokeWidth={2}
+                  dot={false}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </ChartContainer>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+export default StockGraph;
