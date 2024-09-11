@@ -19,7 +19,7 @@ const Home: React.FC = () => {
       </div>
 
       <div className="absolute inset-0 -z-50">
-        {[...Array(120)].map((_, i) => { // Reduced from 100 to 50
+        {[...Array(120)].map((_, i) => { 
           const size = `${Math.random() + 1}px`;
           return (
             <div
@@ -53,12 +53,14 @@ const Home: React.FC = () => {
           relative overflow-hidden 
           hover:scale-102 transition-transform duration-300 
           hover:drop-shadow-[0_0px_15px_rgba(48,133,159,0.5)]
+          flex flex-col justify-center
         ">
           <img src="/static/images/status-notsubmitted.png" alt="Not Submitted" className="absolute right-48 -top-10 z-0" />
           <h2 className="font-light text-lg drop-shadow-[0_0px_5px_rgba(0,0,0,0.5)]">Application Status</h2>
           <h2 className="font-semibold text-4xl drop-shadow-[0_0px_10px_rgba(0,0,0,0.5)]">NOT SUBMITTED</h2>
-          <button className="mt-2 bg-purple-500 px-4 py-2 rounded-full">
-            <Link href="/apply">Apply Now</Link>
+          <button className="mt-2 bg-transparent py-2 flex items-center">
+            Apply Now
+            <img src="static/icons/arrow-right.svg" alt="Right Arrow" className="ml-2 w-7 h-7" />
           </button>
         </div>
 
@@ -70,7 +72,7 @@ const Home: React.FC = () => {
             hover:scale-102 transition-transform duration-300 
             hover:drop-shadow-[0_0px_15px_rgba(48,133,159,0.5)]
           ">
-            <img src="/static/images/faq.png" alt="FAQ" className="absolute -right-10 bottom-0 z-0" />
+            <img src="/static/images/faq.png" alt="FAQ" className="absolute -right-10 bottom-0 z-0 scale-75" />
             <h2 className="font-semibold text-4xl">FAQ</h2>
           </div>
           <div className="
