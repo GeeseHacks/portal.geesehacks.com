@@ -21,7 +21,15 @@ const Home: React.FC = () => {
 
       <div className="grid grid-cols-2 gap-10 min-h-52">
         <div className="bg-cpurple p-8 rounded-xl">FAQ</div>
-        <div className="bg-cpurple p-8 rounded-xl">Jumps to another page?</div>
+        <div className="bg-cpurple p-8 rounded-xl flex justify-between items-center">
+            <div>
+              <h2 className="text-[30px] font-semibold">QR Code</h2>
+              <p className="text-white-500">Your ID at Geesehacks</p>
+            </div>
+            <div>
+              <img src="static/images/CameraFrame.png" className="w-24 h-24"/>
+            </div>
+          </div>
       </div>
     </div>
     
