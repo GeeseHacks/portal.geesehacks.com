@@ -73,3 +73,74 @@ model QRCodeRegistered {
 
   @@index([userid])
 }
+
+//Stock Sim, I'm lost, should both sites (hacker and judging portal) point to the same database?
+
+model Project {
+  id               Int              @id @default(autoincrement())
+  name             String           @db.VarChar(255)
+  tags             Tag[]            @relation("ProjectTags")
+  investments      Investment[]     @relation("ProjectInvestments")
+  totalInvestment  Int              @default(0)
+  eventParticipations EventParticipation[] @relation("ProjectEventParticipations")
+  judgePairs       JudgePair[]      @relation("JudgePairTeams")
+
+  @@index([name])
+}
+
+model Judge {
+  id               Int              @id @default(autoincrement())
+  name             String           @db.VarChar(255)
+  company          String?          @db.VarChar(255) // For company judges
+  isGuest          Boolean          @default(false)  // To differentiate guest judges
+  investments      Investment[]     @relation("JudgeInvestments")
+  availableFunds   Int              @default(10000)  // Start with $10K
+  judgePairsPrimary JudgePair[]     @relation("PrimaryJudge")
+  judgePairsSecondary JudgePair[]   @relation("SecondaryJudge")
+
+  @@index([name])
+}
+
+model JudgePair {
+  id               Int              @id @default(autoincrement())
+  primaryJudgeId   Int
+  secondaryJudgeId Int
+  primaryJudge     Judge            @relation("PrimaryJudge", fields: [primaryJudgeId], references: [id], onDelete: Cascade)
+  secondaryJudge   Judge            @relation("SecondaryJudge", fields: [secondaryJudgeId], references: [id], onDelete: Cascade)
+  projects         Project[]        @relation("JudgePairTeams")
+
+  @@unique([primaryJudgeId, secondaryJudgeId]) // Ensures a pair is unique
+}
+
+model Investment {
+  id               Int              @id @default(autoincrement())
+  amount           Int
+  judgeId          Int
+  projectId        Int
+  judge            Judge            @relation("JudgeInvestments", fields: [judgeId], references: [id], onDelete: Cascade)
+  project          Project          @relation("ProjectInvestments", fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt        DateTime         @default(now())
+
+  @@index([judgeId])
+  @@index([projectId])
+}
+
+model EventParticipation {
+  id               Int              @id @default(autoincrement())
+  eventName        String           @db.VarChar(255)
+  projectId        Int
+  project          Project          @relation("ProjectEventParticipations", fields: [projectId], references: [id], onDelete: Cascade)
+  amount           Int              @default(0) // Amount earned from participating in an event
+
+  @@index([projectId])
+}
+
+model Tag {
+  id               Int              @id @default(autoincrement())
+  name             String           @db.VarChar(50) // "#Google"
+  color            String           @db.VarChar(7)  // Diff color hex codes
+  projectId        Int
+  project          Project          @relation("ProjectTags", fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+}
