@@ -69,6 +69,64 @@ paths:
                   message:
                     type: string
                     example: Failed to create user
+  /api/auth/send-reset-email:
+    post:
+      tags:
+        - auth
+      summary: Send reset password for user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: user@example.com
+      responses:
+        '201':
+          description: Email sent successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Email sent successfully
+        '400':
+          description: Email is empty
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Email is required
+        '404':
+          description: User's email is not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User not found
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Failed to generate token and send email
+
+
+
   /api/users/{id}:
     get:
       tags:

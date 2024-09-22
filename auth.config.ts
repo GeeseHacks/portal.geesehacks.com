@@ -10,7 +10,7 @@ export const authConfig = {
 
       console.log("Next URL: ", nextUrl.pathname);
       
-      const isOnLoginOrSignUp = nextUrl.pathname.startsWith('/login') || nextUrl.pathname.startsWith('/signup');
+      const isOnLoginOrSignUp = nextUrl.pathname.startsWith('/login') || nextUrl.pathname.startsWith('/signup') || nextUrl.pathname.startsWith('/forgot-password') || nextUrl.pathname.startsWith('/reset-password');
       if (isLoggedIn && isOnLoginOrSignUp) {
         return Response.redirect(new URL('/dashboard', nextUrl));
       }
