@@ -22,8 +22,8 @@ import React from "react";
 
 const LeaderBoard = () => {
   return (
-    <div>
-      <Card className="flex-1 flex w-full h-full min-w-0 overflow-hidden bg-opacity-5 bg-white boarder-none">
+    <div >
+      <Card className="flex-1 flex w-full h-full min-w-0 overflow-hidden bg-opacity-5 bg-white ">
         <Table>
           {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
           <TableHeader>
@@ -51,9 +51,9 @@ const LeaderBoard = () => {
             </TableRow>
             <TableRow>
               <TableCell className="text-[20px] text-[#D175FA] font-bold">
-                1
+                2
               </TableCell>
-              <TableCell className="text-[20px] font-bold">Team 1</TableCell>
+              <TableCell className="text-[20px] font-bold">Team 2</TableCell>
               <TableCell className="text-[#F1D2FF] text-lg">
                 $1,000,000
               </TableCell>
@@ -61,9 +61,9 @@ const LeaderBoard = () => {
             </TableRow>
             <TableRow>
               <TableCell className="text-[20px] text-[#D175FA] font-bold">
-                1
+                3
               </TableCell>
-              <TableCell className="text-[20px] font-bold">Team 1</TableCell>
+              <TableCell className="text-[20px] font-bold">Team 3</TableCell>
               <TableCell className="text-[#F1D2FF] text-lg">
                 $1,000,000
               </TableCell>
@@ -71,9 +71,9 @@ const LeaderBoard = () => {
             </TableRow>
             <TableRow>
               <TableCell className="text-[20px] text-[#D175FA] font-bold">
-                1
+                4
               </TableCell>
-              <TableCell className="text-[20px] font-bold">Team 1</TableCell>
+              <TableCell className="text-[20px] font-bold">Team 4</TableCell>
               <TableCell className="text-[#F1D2FF] text-lg">
                 $1,000,000
               </TableCell>
@@ -81,59 +81,9 @@ const LeaderBoard = () => {
             </TableRow>
             <TableRow>
               <TableCell className="text-[20px] text-[#D175FA] font-bold">
-                1
+                5
               </TableCell>
-              <TableCell className="text-[20px] font-bold">Team 1</TableCell>
-              <TableCell className="text-[#F1D2FF] text-lg">
-                $1,000,000
-              </TableCell>
-              <TableCell className="text-right text-lg">+50%</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className="text-[20px] text-[#D175FA] font-bold">
-                1
-              </TableCell>
-              <TableCell className="text-[20px] font-bold">Team 1</TableCell>
-              <TableCell className="text-[#F1D2FF] text-lg">
-                $1,000,000
-              </TableCell>
-              <TableCell className="text-right text-lg">+50%</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className="text-[20px] text-[#D175FA] font-bold">
-                1
-              </TableCell>
-              <TableCell className="text-[20px] font-bold">Team 1</TableCell>
-              <TableCell className="text-[#F1D2FF] text-lg">
-                $1,000,000
-              </TableCell>
-              <TableCell className="text-right text-lg">+50%</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className="text-[20px] text-[#D175FA] font-bold">
-                1
-              </TableCell>
-              <TableCell className="text-[20px] font-bold">Team 1</TableCell>
-              <TableCell className="text-[#F1D2FF] text-lg">
-                $1,000,000
-              </TableCell>
-              <TableCell className="text-right text-lg">+50%</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className="text-[20px] text-[#D175FA] font-bold">
-                1
-              </TableCell>
-              <TableCell className="text-[20px] font-bold">Team 1</TableCell>
-              <TableCell className="text-[#F1D2FF] text-lg">
-                $1,000,000
-              </TableCell>
-              <TableCell className="text-right text-lg">+50%</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className="text-[20px] text-[#D175FA] font-bold">
-                1
-              </TableCell>
-              <TableCell className="text-[20px] font-bold">Team 1</TableCell>
+              <TableCell className="text-[20px] font-bold">Team 5</TableCell>
               <TableCell className="text-[#F1D2FF] text-lg">
                 $1,000,000
               </TableCell>
