@@ -237,7 +237,7 @@ const RegistrationForm: React.FC = () => {
         <div className="grid grid-cols-1 gap-x-12 gap-y-14">
           <TextAreaField
             id="q1"
-            label="Why are you running for HACKATHON?"
+            label="Why are you running *"
             registerOptions={register("q1")}
             placeholder="Your answer..."
             maxLength={1000}
@@ -245,7 +245,7 @@ const RegistrationForm: React.FC = () => {
           />
           <TextAreaField
             id="q2"
-            label="How are you running for HACKATHON?"
+            label="How are you running *"
             registerOptions={register("q2")}
             placeholder="Your answer..."
             maxLength={1000}
@@ -253,7 +253,7 @@ const RegistrationForm: React.FC = () => {
           />
           <TextAreaField
             id="q3"
-            label="Where are you running for HACKATHON?"
+            label="Where are you running *"
             registerOptions={register("q3")}
             placeholder="Your answer..."
             maxLength={1000}
