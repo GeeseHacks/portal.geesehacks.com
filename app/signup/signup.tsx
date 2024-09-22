@@ -1,15 +1,16 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation"; // Import from next/navigation
 import { signInActionGoogle } from "@/utils/signInActionGoogle";
 import { signInActionDiscord } from "@/utils/signInActionDiscord";
-import { validatePassword } from '@/lib/passwordUtils';
-import { validateEmail } from '@/lib/emailUtils';
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
-import toast from 'react-hot-toast';
+import { validatePassword } from "@/lib/passwordUtils";
+import { validateEmail } from "@/lib/emailUtils";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import toast from "react-hot-toast";
 import { BiHide } from "react-icons/bi";
 import { BiShow } from "react-icons/bi";
 
@@ -48,39 +49,41 @@ const SignUp: React.FC = () => {
       setVerifyPasswordError("");
 
       // Show a promise toast while waiting for the API response
-      const promise = fetch('/api/auth/signup', {
-        method: 'POST',
+      const promise = fetch("/api/auth/signup", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
-      })
-      .then(async response => {
+      }).then(async (response) => {
         if (!response.ok) {
           const data = await response.json();
-          throw new Error(data.message || 'Failed to register user');
+          throw new Error(data.message || "Failed to register user");
         }
         return response.json();
       });
 
-      toast.promise(promise, {
-        loading: 'Registering user...',
-        success: 'User registered successfully!',
-        error: (err) => err.message,
-      })
-      .then(data => {
-        console.log('Success:', data);
-        router.push('/login'); // Redirect to the login page on success
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
+      toast
+        .promise(promise, {
+          loading: "Registering user...",
+          success: "User registered successfully!",
+          error: (err) => err.message,
+        })
+        .then((data) => {
+          console.log("Success:", data);
+          router.push("/login"); // Redirect to the login page on success
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
     }
   };
 
   useEffect(() => {
     const arePasswordsMatching = password === verifyPassword;
-    setVerifyPasswordError(arePasswordsMatching ? "" : "Passwords do not match");
+    setVerifyPasswordError(
+      arePasswordsMatching ? "" : "Passwords do not match"
+    );
     setIsButtonActive(email !== "" && password !== "" && arePasswordsMatching);
   }, [email, password, verifyPassword]);
 
@@ -92,22 +95,24 @@ const SignUp: React.FC = () => {
           Make an account with us to continue!
         </p>
         <div className="flex flex-col gap-4 w-full mb-6">
-          <form className="bg-white text-black py-2 rounded-md flex items-center justify-center gap-2" action={signInActionGoogle}>
-            <button className="flex gap-2">
-              <img
+          <form action={signInActionGoogle}>
+            <button className="bg-white py-2 text-black rounded-md flex gap-2 w-full h-full justify-center">
+              <Image
                 src="/static/icons/google-icon.png"
                 alt="Google"
-                className="h-6 w-6"
+                width={24}
+                height={24}
               />
               Sign Up with Google
             </button>
           </form>
-          <form className="bg-white text-black py-2 rounded-md flex items-center justify-center gap-2" action={signInActionDiscord}>
-            <button className="flex gap-2">
-              <img
+          <form action={signInActionDiscord}>
+            <button className="bg-white py-2 text-black rounded-md flex gap-2 w-full h-full justify-center">
+              <Image
                 src="/static/icons/discord-icon.png"
-                alt="Google"
-                className="h-6 w-7"
+                alt="Discord"
+                width={24}
+                height={24}
               />
               Sign Up with Discord
             </button>
@@ -118,10 +123,12 @@ const SignUp: React.FC = () => {
           <span className="text-gray-500">OR</span>
           <div className="border-t border-gray-600 flex-grow ml-2"></div>
         </div>
-        <form className="flex flex-col gap-4 w-full" onSubmit={handleSubmit} noValidate>
-          <Label htmlFor="email">
-            Email
-          </Label>
+        <form
+          className="flex flex-col gap-4 w-full"
+          onSubmit={handleSubmit}
+          noValidate
+        >
+          <Label htmlFor="email">Email</Label>
           <Input
             type="email"
             id="email"
@@ -132,11 +139,11 @@ const SignUp: React.FC = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
           {emailError && (
-            <p className="text-red-500 text-sm mt-2">{emailError}</p>
+            <p role="alert" className="text-red-500 text-sm mt-2">
+              {emailError}
+            </p>
           )}
-          <Label htmlFor="password">
-            Password
-          </Label>
+          <Label htmlFor="password">Password</Label>
           <div className="relative">
             <Input
               type={passwordVisibility.password ? "text" : "password"}
@@ -149,22 +156,34 @@ const SignUp: React.FC = () => {
               className="pr-11"
             />
             <div
-              onClick={() => setPasswordVisibility(prev => ({ ...prev, password: !prev.password }))}
+
+              onClick={() =>
+                setPasswordVisibility((prev) => ({
+                  ...prev,
+                  password: !prev.password,
+                }))
+              }
               className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
             >
-              {passwordVisibility.password ?  <BiHide className="mr-1 text-xl"/> : <BiShow className="mr-1 text-xl"/>}
+              {passwordVisibility.password ? (
+                <BiHide className="mr-1 text-xl" />
+              ) : (
+                <BiShow className="mr-1 text-xl" />
+              )}
             </div>
           </div>
           {passwordErrors.length > 0 && (
-            <ul className="text-red-500 text-sm mt-2 list-disc list-inside">
+            <ul
+              role="alert"
+              className="text-red-500 text-sm mt-2 list-disc list-inside"
+            >
               {passwordErrors.map((error, index) => (
                 <li key={index}>{error}</li>
               ))}
             </ul>
           )}
-          <Label htmlFor="verify-password">
-            Verify Password
-          </Label>
+
+          <Label htmlFor="verify-password">Verify Password</Label>
           <div className="relative">
             <Input
               type={passwordVisibility.verifyPassword ? "text" : "password"}
@@ -177,14 +196,25 @@ const SignUp: React.FC = () => {
               className="pr-11"
             />
             <div
-              onClick={() => setPasswordVisibility(prev => ({ ...prev, verifyPassword: !prev.verifyPassword }))}
+              onClick={() =>
+                setPasswordVisibility((prev) => ({
+                  ...prev,
+                  verifyPassword: !prev.verifyPassword,
+                }))
+              }
               className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
             >
-              {passwordVisibility.verifyPassword ?  <BiHide className="mr-1 text-xl"/> : <BiShow className="mr-1 text-xl"/>}
+              {passwordVisibility.verifyPassword ? (
+                <BiHide className="mr-1 text-xl" />
+              ) : (
+                <BiShow className="mr-1 text-xl" />
+              )}
             </div>
           </div>
           {verifyPasswordError && (
-            <p className="text-red-500 text-sm mt-2">{verifyPasswordError}</p>
+            <p role="alert" className="text-red-500 text-sm mt-2">
+              {verifyPasswordError}
+            </p>
           )}
           <Button
             type="submit"
