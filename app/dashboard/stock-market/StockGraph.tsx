@@ -42,7 +42,7 @@ const chartConfig = {
 const StockGraph = () => {
   return (
     <div>
-      <Card className="flex-1 flex w-full h-full min-w-0 overflow-hidden bg-opacity-5 bg-white boarder-none">
+      <Card className="flex-1 flex w-full h-full min-w-0 overflow-hidden bg-opacity-5 bg-white">
         <CardContent className="flex-1 min-w-0">
           <ChartContainer config={chartConfig} className="w-full h-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -91,9 +91,10 @@ const StockGraph = () => {
                 <Line
                   dataKey="value"
                   type="linear"
-                  stroke="var(--color-time)"
-                  strokeWidth={2}
+                  stroke="#ffffff"
+                  strokeWidth={1.7}
                   dot={false}
+                  filter="drop-shadow(0px 0px 8px rgba(255, 255, 255, 0.8))"
                 />
               </LineChart>
             </ResponsiveContainer>
