@@ -34,7 +34,7 @@ model User {
   resume                     String?                 @db.VarChar(255)
   t_shirt_size               String?                 @db.VarChar(50)
   status                     UserStatus
-QRCodeRegistered[] // User can have multiple QR Codes
+
   application_responses      ApplicationResponse[]   // Relation to ApplicationResponse
   qrCodes                    QRCodeRegistered[]      // User can have multiple QR Codes
 }
@@ -59,7 +59,6 @@ model ApplicationResponse {
 }
 
 model UserAuth {
-
   id       String @id @default(uuid()) @db.VarChar(36)
   email    String @unique @db.VarChar(100)
   password String @db.VarChar(60)
@@ -70,14 +69,6 @@ model UserAuth {
 model QRCodeRegistered {
   qrCodeId  String @id @db.VarChar(255)
   userid    String
-  user      User   @relation(fields: [userid], references: [id])
-
-  @@index([userid])
-}
-
-model QRCodeRegistered {
-  qrCodeId  String @id @db.VarChar(255)
-  userid    Int
   user      User   @relation(fields: [userid], references: [id])
 
   @@index([userid])
