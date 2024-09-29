@@ -15,7 +15,6 @@ import ComplexInputWrapper from "./ComplexInputWrapper";
 import { formSchema, formSchemaType } from "../utils/formSchema";
 import { fetchCSVOptions } from "../utils/fetchCSVOptions";
 import { formSubmission } from "../utils/formSubmission";
-import { signOutAction } from "../utils/signOutAction";
 import { getAgeOptions } from "../utils/formAssets/formAssets";
 import { options } from "../utils/formAssets/formAssets";
 
@@ -68,12 +67,6 @@ const RegistrationForm: React.FC = () => {
 
   return (
     <div className="max-w-5xl mx-auto p-8 text-white">
-      {/* For debugging purposes */}
-      <form action={signOutAction}>
-        <Button className="flex h-12 items-center justify-center gap-2 rounded-md bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 p-3 text-sm font-medium text-white shadow-lg transition duration-200 ease-in-out hover:bg-gradient-to-r hover:from-purple-500 hover:via-pink-600 hover:to-red-600 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
-          Sign Out
-        </Button>
-      </form>
       <div>{session && <h1>{JSON.stringify(session.user)}</h1>}</div> 
       
       <h1 className="text-white text-4xl font-bold my-6">Hacker Information 🌟 </h1>
@@ -106,6 +99,7 @@ const RegistrationForm: React.FC = () => {
             id="email"
             label="Email *"
             registerOptions={register("email")}
+            defaultValue={session?.user?.email ? session.user.email : ""}
             placeholder="Enter email"
             type="email"
             error={errors.email}
@@ -200,7 +194,7 @@ const RegistrationForm: React.FC = () => {
               {...register("resume")}
               className="focus:border-none h-15"
             />
-            {errors.resume && <p className="text-red-500 text-s italic mt-2">{errors.resume.message?.toString()}</p>}
+            {errors.resume && <p role="alert" className="text-red-500 text-s italic mt-2">{errors.resume.message?.toString()}</p>}
           </div>
           <InputField
             id="githubProfile"
@@ -341,7 +335,7 @@ const RegistrationForm: React.FC = () => {
             )}
           />
           {errors.mlhCodeOfConduct && (
-            <p className="text-red-500 text-s italic">
+            <p role="alert" className="text-red-500 text-s italic">
               {errors.mlhCodeOfConduct.message}
             </p>
           )}
@@ -375,7 +369,7 @@ const RegistrationForm: React.FC = () => {
             )}
           />
           {errors.mlhPrivacyPolicy && (
-            <p className="text-red-500 text-s italic">
+            <p role="alert" className="text-red-500 text-s italic">
               {errors.mlhPrivacyPolicy.message}
             </p>
           )}

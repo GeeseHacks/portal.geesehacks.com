@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { signOutAction } from "@/utils/signOutAction";
+import { Button } from "@/components/ui/button"
 
 
 const sideNavLinks = [
@@ -32,6 +34,13 @@ const sideNavLinks = [
 ];
 
 const SideNav: React.FC = () => {
+  const shouldShowStockMarketLink = () => {
+    const now = new Date();
+    const targetDate = new Date(2024, 8, 2, 16, 20, 0); // modify this with exact time and date
+
+    return now >= targetDate;
+  };
+
   const [selectedNav, setSelectedNav] = useState<string>("Home");
 
   return (
@@ -77,15 +86,25 @@ const SideNav: React.FC = () => {
             </div>
           </Link>
         ))}
+
+          {/* Conditionally render the Stock Market link */}
+          {shouldShowStockMarketLink() && (
+            <Link className="flex space-x-8 hover:opacity-35" key="Stock Market" href="/dashboard/stock-market">
+              <Image src="/static/icons/stock-market.png" height={0} width={0} sizes="100vw" alt="Stock Market" style={{ height: 24, width: 'auto' }} />
+              <h2>Stock Market</h2>
+            </Link>
+          )}
+
         </div>
 
-
-        {/* Log Out Button */}
-        <div className="h-1/6 flex-shrink-0 flex items-center justify-start w-full">
-          <button className="flex items-center space-x-3 text-lg font-medium text-white hover:opacity-75">
-            <img src="/static/icons/arrow-right.svg" alt="Right Arrow" className="transform rotate-180 w-7 h-7 mr-1" />
-            <span>Sign Out</span>
-          </button>
+        {/* Log Out Button (Switch the style a bit—maybe use shadcn buttons?) */}
+        <div className="h-1/6 flex-shrink-0">
+          <form action={signOutAction}> 
+            <Button className="flex w-36 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-purple-300 via-pink-500 to-red-400 p-3 text-sm font-medium text-white shadow-lg transition duration-200 ease-in-out hover:bg-gradient-to-r hover:from-purple-500 hover:via-pink-600 hover:to-red-600 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
+              <img src="/static/icons/arrow-right.svg" alt="Right Arrow" className="transform rotate-180 w-7 h-7 mr-1" />
+              Sign Out
+            </Button>
+          </form>
         </div>
       </div>
     </nav>
