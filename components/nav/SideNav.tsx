@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { signOutAction } from "@/utils/signOutAction";
 import { Button } from "@/components/ui/button";
+import { FaAngleLeft } from "react-icons/fa";
 
 const sideNavLinks = [
   {
@@ -101,7 +102,7 @@ const SideNav: React.FC = () => {
         <div className="h-1/6 flex-shrink-0">
           <form action={signOutAction}>
             <Button className="flex w-36 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-purple-300 via-pink-500 to-red-400 p-3 text-sm font-medium text-white shadow-lg transition duration-200 ease-in-out hover:bg-gradient-to-r hover:from-purple-500 hover:via-pink-600 hover:to-red-600 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
-              <img src="/static/icons/arrow-right.svg" alt="Right Arrow" className="transform rotate-180 w-7 h-7 mr-1" />
+              <FaAngleLeft size={22}/>
               Sign Out
             </Button>
           </form>

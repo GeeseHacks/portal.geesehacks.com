@@ -2,6 +2,8 @@
 import SideNav from "@/components/nav/SideNav";
 import { Filter } from "lucide-react";
 import Link from "next/link";
+import { FaAngleRight } from "react-icons/fa";
+
 
 const Home: React.FC = () => {
   return (
@@ -59,8 +61,8 @@ const Home: React.FC = () => {
           <h2 className="font-light text-lg drop-shadow-[0_0px_5px_rgba(0,0,0,0.5)]">Application Status</h2>
           <h2 className="font-semibold text-4xl drop-shadow-[0_0px_10px_rgba(0,0,0,0.5)]">NOT SUBMITTED</h2>
           <button className="mt-2 bg-transparent py-2 flex items-center">
-            Apply Now
-            <img src="static/icons/arrow-right.svg" alt="Right Arrow" className="ml-2 w-7 h-7" />
+            Apply 
+            <FaAngleRight size={22} className="ml-1" />
           </button>
         </div>
 
