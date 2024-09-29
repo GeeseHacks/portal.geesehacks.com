@@ -7,19 +7,22 @@ import Google from "next-auth/providers/google";
 import Discord from "next-auth/providers/discord";
 import { validateEmail } from '@/lib/emailUtils';
 import { validatePassword } from '@/lib/passwordUtils';
+import prisma from '@lib/prisma'; // Import the initialized Prisma client
 
 async function getUser(email: string): Promise<AuthUser | null> {
+  
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/users`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email }),
+    // Find the unique user by email using Prisma
+    const user = await prisma.userAuth.findUnique({
+      where: { email: email },
     });
 
-    if (response.ok) {
-      return await response.json();
+    if (user) {
+      // Convert id to string to match the AuthUser type
+      return {
+        ...user,
+        id: user.id.toString(),
+      } as AuthUser;
     } else {
       return null;
     }

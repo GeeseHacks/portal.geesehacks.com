@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Type assertion to assure TypeScript that session.user is defined
-    const userId = Number(session.user.id);
+    const userId = session.user.id;
 
     // Parse and validate the request body using the custom Zod schema
     const body = await request.json();
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
     
     // Create a new user in a transaction
     const newUser = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-      const createdUser = await tx.users.create({
+      const createdUser = await tx.user.create({
         data: {
           id: userId,
           firstname: validatedData.firstname,
@@ -91,6 +91,7 @@ export async function POST(request: NextRequest) {
       });
       return createdUser;
     });
+
 
     // Return the newly created user as JSON
     return new NextResponse(JSON.stringify(newUser), { status: 201 });

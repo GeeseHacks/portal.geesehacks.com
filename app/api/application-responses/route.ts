@@ -22,8 +22,7 @@ export async function POST(request: NextRequest) {
       return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
     }
 
-    // Convert user ID to number
-    const userId = Number(session.user.id);
+    const userId = session.user.id;
     
     // Parse the request body to get the application response data
     const body = await request.json();
@@ -44,7 +43,7 @@ export async function POST(request: NextRequest) {
     // Create a new application responses in a transaction
     const newAppResp = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       // Create the new application response
-      const createdAppResp = await tx.application_responses.create({
+      const createdAppResp = await tx.applicationResponse.create({
         data: {
           userid: userId,
           ...validationResult.data // Use the validated data

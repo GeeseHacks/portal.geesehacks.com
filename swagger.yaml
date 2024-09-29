@@ -1,11 +1,11 @@
 openapi: 3.0.0
 info:
   title: Registration Portal API
-  version: 1.0.0
+  version: 1.1.0
   description: API Documentation for the Registration Portal
 servers:
   - url: http://localhost:3000
-    description: Would require other production server
+    description: Local server for development
 tags:
   - name: auth
     description: Authentication related endpoints
@@ -15,28 +15,9 @@ tags:
     description: Application responses related endpoints
   - name: resumes
     description: Resume related endpoints
+  - name: qr-codes
+    description: QR Code registration related endpoints
 paths:
-  /api/auth/users:
-    post:
-      tags:
-        - auth
-      summary: Get a user's login details
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  example: test@example.com
-      responses:
-        '200':
-          description: Login details
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/users_auth'
   /api/auth/signup:
     post:
       tags:
@@ -46,14 +27,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  example: user@example.com
-                password:
-                  type: string
-                  example: secret_password
+              $ref: '#/components/schemas/UserAuth'
       responses:
         '201':
           description: User created successfully
@@ -95,6 +69,64 @@ paths:
                   message:
                     type: string
                     example: Failed to create user
+  /api/auth/send-reset-email:
+    post:
+      tags:
+        - auth
+      summary: Send reset password for user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: user@example.com
+      responses:
+        '201':
+          description: Email sent successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Email sent successfully
+        '400':
+          description: Email is empty
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Email is required
+        '404':
+          description: User's email is not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User not found
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Failed to generate token and send email
+
+
+
   /api/users/{id}:
     get:
       tags:
@@ -112,7 +144,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/users'
+                $ref: '#/components/schemas/User'
   /api/users:
     post:
       tags:
@@ -122,7 +154,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/users'
+              $ref: '#/components/schemas/User'
       responses:
         '201':
           description: User created
@@ -143,17 +175,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/application_responses'
+                $ref: '#/components/schemas/ApplicationResponse'
   /api/application-responses:
     post:
       tags:
         - application-responses
-      summary: Create a new application response in the application_responses table
+      summary: Create a new application response
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/application_responses'
+              $ref: '#/components/schemas/ApplicationResponse'
       responses:
         '201':
           description: Application response created
@@ -180,7 +212,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/resume'
+                $ref: '#/components/schemas/Resume'
         '400':
           description: Invalid input
           content:
@@ -223,16 +255,16 @@ paths:
                     example: Error fetching user
 components:
   schemas:
-    users_auth:
+    UserAuth:
       type: object
       properties:
-        id:
-          type: integer
         email:
           type: string
+          example: user@example.com
         password:
           type: string
-    users:
+          example: secret_password
+    User:
       type: object
       properties:
         id:
@@ -247,98 +279,108 @@ components:
         age:
           type: integer
           minimum: 0
-          description: The user's age. Must be a non-negative integer.
+          description: The user's age.
         email:
           type: string
           description: The user's email address.
         phone_number:
           type: string
-          description: The user's telephone number.
+          description: The user's phone number.
         school:
           type: string
-          description: The name of the school or university the user attends or attended.
+          description: The school the user attends.
         level_of_study:
           type: string
-          description: The user's current level of study (e.g., undergraduate, graduate).
-        field_of_study:
-          type: string
-          description: The user's major or primary field of study.
+          description: The user's level of study.
         country_of_residence:
           type: string
-          description: The country in which the user currently resides.
+          description: The user's country of residence.
         address:
           type: string
-          description: The user's full mailing address.
+          description: The user's address.
         dietary_restrictions:
           type: string
-          description: Any dietary restrictions the user has that should be considered at events.
+          description: The user's dietary restrictions.
         github:
           type: string
-          description: The user's GitHub username or URL.
+          description: The user's GitHub profile URL.
         linkedin:
           type: string
           description: The user's LinkedIn profile URL.
         personal_website:
           type: string
-          description: URL to the user's personal or professional website.
-        optional_underrepresented:
-          type: string
-          description: If the user identifies as part of an underrepresented group.
-        optional_gender:
-          type: string
-          description: The gender identity of the user.
-        optional_pronouns:
-          type: string
-          description: The pronouns the user prefers to be used in communication.
-        optional_race:
-          type: string
-          description: The user's racial or ethnic background.
-        optional_consider:
-          type: string
-          description: The question "Do you consider yourself to be any of the following? (Select all that apply)"
+          description: The user's personal website.
         MLH_authorize:
           type: boolean
-          description: Consent given by the user for Major League Hacking (MLH) to use their data (and send email).
+          description: MLH authorization status.
+        field_of_study:
+          type: string
+          description: The user's field of study.
+        optional_consider:
+          type: string
+          description: Optional considerations.
+        optional_gender:
+          type: string
+          description: The user's gender.
+        optional_pronouns:
+          type: string
+          description: The user's pronouns.
+        optional_race:
+          type: string
+          description: The user's race.
+        optional_underrepresented:
+          type: string
+          description: Optional underrepresented group.
+        other_dietary_restrictions:
+          type: string
+          description: Other dietary restrictions.
         resume:
           type: string
           format: uri
-          description: A URL linking to the user's resume.
+          description: The user's resume URL.
         t_shirt_size:
           type: string
-          description: The user's t-shirt size (S, M, L, XL, etc.)
-        other_dietary_restrictions:
+          description: The user's t-shirt size.
+        status:
           type: string
-          description: Additional dietary restrictions not captured under 'dietary_restrictions'.
-      required:
-        - id
-        - firstname
-        - lastname
-        - email
-        - age
-        - phone_number
-        - school
-        - level_of_study
-        - field_of_study
-        - country_of_residence
-        - dietary_restrictions
-
-    application_responses:
+          enum:
+            - ACCEPTED
+            - REJECTED
+            - WAITLIST
+            - APPLIED
+            - NOT_APPLIED
+          description: The user's application status.
+    ApplicationResponse:
       type: object
       properties:
+        id:
+          type: integer
+          description: The unique identifier for the application response.
         userid:
           type: integer
+          description: The ID of the user associated with this response.
         q1:
           type: string
+          description: Answer to question 1.
         q2:
           type: string
+          description: Answer to question 2.
         q3:
           type: string
-    resume:
+          description: Answer to question 3.
+    Resume:
       type: object
       properties:
         url:
           type: string
           format: uri
           description: URL to the uploaded resume
-      required:
-        - url
+    QRCodeRegistered:
+      type: object
+      properties:
+        qrCodeId:
+          type: string
+          description: The unique identifier for the QR Code.
+        userid:
+          type: integer
+          description: The ID of the user associated with this QR Code.
