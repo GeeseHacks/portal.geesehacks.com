@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { signOutAction } from "@/utils/signOutAction";
@@ -46,7 +47,16 @@ const sideNavLinks = [
 ];
 
 const SideNav: React.FC = () => {
+  const pathname = usePathname();
   const [selectedNav, setSelectedNav] = useState<string>("Home");
+
+  useEffect(() => {
+    const currentLink = sideNavLinks.find((link) => pathname === link.href);
+    if (currentLink) {
+      setSelectedNav(currentLink.name);
+    }
+    console.log(pathname);
+  }, [pathname]);
 
   return (
     <nav className="bg-gray-950 h-screen min-h-96 w-80 xl:w-96 hidden lg:block overflow-y-auto">
@@ -69,7 +79,6 @@ const SideNav: React.FC = () => {
                 }`}
                 key={link.name}
                 href={link.href}
-                onClick={() => setSelectedNav(link.name)}
               >
                 {/* Left Colored Bar */}
                 {selectedNav === link.name && (
