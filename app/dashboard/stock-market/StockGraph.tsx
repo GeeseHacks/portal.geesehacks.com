@@ -32,6 +32,14 @@ const chartData = [
   { time: "1:30 PM", value: 214 },
 ];
 
+const dataForTeams: Record<string, { time: string; value: number }[]> = {
+  "Team 1": [{ time: "11:00 AM", value: 186 }, { time: "11:15 AM", value: 305 }, { time: "11:30 AM", value: 256 }, { time: "11:45 AM", value: 305 }],
+  "Team 2": [{ time: "11:00 AM", value: 186 }, { time: "11:15 AM", value: 305 }, { time: "11:30 AM", value: 256 }, { time: "11:45 AM", value: 305 }],
+  "Team 3": [{ time: "11:00 AM", value: 186 }, { time: "11:15 AM", value: 305 }, { time: "11:30 AM", value: 256 }, { time: "11:45 AM", value: 305 }],
+  "Team 4": [{ time: "11:00 AM", value: 186 }, { time: "11:15 AM", value: 305 }, { time: "11:30 AM", value: 256 }, { time: "11:45 AM", value: 305 }],
+  "Team 5": [{ time: "11:00 AM", value: 186 }, { time: "11:15 AM", value: 305 }, { time: "11:30 AM", value: 256 }, { time: "11:45 AM", value: 305 }],
+};
+
 const chartConfig = {
   time: {
     label: "Time",
@@ -39,7 +47,9 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-const StockGraph = () => {
+const StockGraph  = ({ teamName }: { teamName: string }) => {
+  const chartData = dataForTeams[teamName] || [];
+
   return (
     <div>
       <Card className="flex-1 flex w-full h-full min-w-0 overflow-hidden bg-opacity-5 bg-white">
