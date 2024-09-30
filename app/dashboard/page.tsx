@@ -30,7 +30,6 @@ const Dashboard: React.FC = () => {
     fetchApplicationStatus(); // Call the function to fetch data
   }, []); // Empty dependency array means this runs once on component mount
 
-
   return (
     <div className="h-screen w-screen flex overflow-y-scroll">
       {/* SideNav */}
@@ -49,19 +48,15 @@ const Dashboard: React.FC = () => {
           <h2 className="font-light text-lg">Application Status</h2>
           <h2 className="font-semibold text-4xl">{applicationStatus}</h2>
           {/* Link to Application Page */}
-          <Link href="/application">
-            <a className="mt-2 bg-purple-500 px-4 py-2 rounded-full inline-block">
-              {applicationStatus === "NOT SUBMITTED" ? "Apply Now" : "View Application"}
-            </a>
+          <Link href="/application" className="mt-2 bg-purple-500 px-4 py-2 rounded-full inline-block">
+            {applicationStatus === "NOT SUBMITTED" ? "Apply Now" : "View Application"}
           </Link>
         </div>
 
         <div className="grid grid-cols-2 gap-10 min-h-52">
           <div className="bg-cpurple p-8 rounded-xl">FAQ</div>
           <div className="bg-cpurple p-8 rounded-xl">
-            <Link href="/another-page">
-              <a>Jumps to another page?</a>
-            </Link>
+            <Link href="/another-page">Jumps to another page?</Link>
           </div>
         </div>
       </div>
