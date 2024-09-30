@@ -7,6 +7,14 @@ import Image from "next/image";
 import LeaderBoard from "./LeaderBoard";
 import StockGraph from "./StockGraph";
 
+const categories = [
+  { name: "General", component: <LeaderBoard /> },
+  { name: "Category 1", component: <LeaderBoard /> },
+  { name: "Category 2", component: <LeaderBoard /> },
+  { name: "Category 3", component: <LeaderBoard /> },
+  { name: "My Project", component: <StockGraph /> },
+];
+
 const StockMarket: React.FC = () => {
   const [activeTab, setActiveTab] = useState("General");
 
@@ -29,37 +37,26 @@ const StockMarket: React.FC = () => {
           Some description here
         </p>
         <div className="flex space-x-4 pb-8">
-          <button
-            onClick={() => setActiveTab("General")}
-            className={`${
-              activeTab === "General"
-                ? "text-[#D175FA] bg-[#3E2B65]"
-                : "text-white"
-            } px-4 py-2 rounded-lg`}
-          >
-            General
-          </button>
-          <button
-            onClick={() => setActiveTab("My Project")}
-            className={`${
-              activeTab === "My Project"
-                ? "text-[#D175FA] bg-[#3E2B65]"
-                : "text-white"
-            } px-4 py-2 rounded-lg`}
-          >
-            My Project
-          </button>
+          {categories.map((category) => (
+            <button
+              key={category.name}
+              onClick={() => setActiveTab(category.name)}
+              className={`${
+                activeTab === category.name
+                  ? "text-[#D175FA] bg-[#3E2B65]"
+                  : "text-white"
+              } px-4 py-2 rounded-lg`}
+            >
+              {category.name}
+            </button>
+          ))}
         </div>
+
         <div>
-          {activeTab === "General" && (
-            <>
-              <LeaderBoard />
-            </>
-          )}
-          {activeTab === "My Project" && (
-            <>
-              <StockGraph />
-            </>
+          {categories.map((category) =>
+            activeTab === category.name ? (
+              <div key={category.name}>{category.component}</div>
+            ) : null
           )}
         </div>
       </div>

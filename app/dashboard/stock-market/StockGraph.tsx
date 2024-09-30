@@ -100,7 +100,7 @@ const StockGraph = () => {
             </ResponsiveContainer>
           </ChartContainer>
         </CardContent>
-      </Card>
+      </Card> 
     </div>
   );
 };
