@@ -85,9 +85,9 @@ const Home: React.FC = () => {
             hover:drop-shadow-[0_0px_15px_rgba(48,133,159,0.5)]
           ">
             <div className="">
+              <img src="/static/images/CameraFrame.png" alt="QR Code" className="absolute right-10 bottom-8 z-0 scale-75"/>
               <h2 className="text-[30px] font-semibold">QR Code</h2>
               <p className="text-white-500">Your ID at Geesehacks</p>
-              <img src="static/images/CameraFrame.png" className="absolute right-10 bottom-8 z-0 scale-75"/>
             </div>
           </div>
         </div>
