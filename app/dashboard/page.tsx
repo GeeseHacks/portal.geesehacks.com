@@ -1,4 +1,4 @@
-"use client";
+"use client"; // Add this line to mark the component as a client component
 
 import SideNav from "@/components/nav/SideNav";
 import Head from "next/head";
