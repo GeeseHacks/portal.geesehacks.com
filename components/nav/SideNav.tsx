@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { signOutAction } from "@/utils/signOutAction";
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 
 
 const sideNavLinks = [
@@ -87,5 +87,6 @@ const SideNav: React.FC<SideNavProps> = ({ className }) => {
       </div>
     </nav>
   );
-}
+};
+
 export default SideNav;
