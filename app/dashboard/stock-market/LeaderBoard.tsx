@@ -44,10 +44,12 @@ const LeaderBoard = () => {
         <Table>
           {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
           <TableHeader>
-              <TableHead className="w-[100px] pb-4"></TableHead>
-              <TableHead className="text-xl font-bold text-white pb-4">ID</TableHead>
-              <TableHead className="text-xl font-bold text-white pb-4">Value</TableHead>
-              <TableHead className="text-right text-xl font-bold text-white pb-4">% Change</TableHead>
+            <TableRow>
+                <TableHead className="w-[100px] pb-4"></TableHead>
+                <TableHead className="text-xl font-bold text-white pb-4">ID</TableHead>
+                <TableHead className="text-xl font-bold text-white pb-4">Value</TableHead>
+                <TableHead className="text-right text-xl font-bold text-white pb-4">% Change</TableHead>
+              </TableRow>
           </TableHeader>
           <TableBody>
             {teamsData.map((team) => (
