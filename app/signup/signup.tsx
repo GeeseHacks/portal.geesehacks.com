@@ -156,6 +156,7 @@ const SignUp: React.FC = () => {
               className="pr-11"
             />
             <div
+
               onClick={() =>
                 setPasswordVisibility((prev) => ({
                   ...prev,
@@ -181,6 +182,7 @@ const SignUp: React.FC = () => {
               ))}
             </ul>
           )}
+
           <Label htmlFor="verify-password">Verify Password</Label>
           <div className="relative">
             <Input
