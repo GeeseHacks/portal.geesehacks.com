@@ -50,7 +50,7 @@ const StockMarket: React.FC = () => {
         <p className="pb-7 text-md md:text-lg pt-3 text-gray-500">
           Some description here
         </p>
-        <div className="flex space-x-4 pb-8">
+        <div className="flex space-x-4 pb-8 text-lg font-semibold">
           {categories.map((category) => (
             <button
               key={category.name}
