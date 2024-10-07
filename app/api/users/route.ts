@@ -34,6 +34,38 @@ const userSchema = z.object({
   status: UserStatus.optional().default('APPLIED'),
 });
 
+
+// Handle GET request to retrieve user status
+export async function GET(request: NextRequest) {
+  try {
+    // Get the session
+    const session = await auth();
+
+    // Check if the session exists and get the user ID
+    if (!session?.user?.id) {
+      return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+    }
+
+    const userId = Number(session.user.id);
+
+    // Fetch the user's status from the database
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { status: true }, // Select only the status field
+    });
+
+    if (!user) {
+      return new NextResponse(JSON.stringify({ error: 'User not found' }), { status: 404 });
+    }
+
+    // Return the user's status as JSON
+    return new NextResponse(JSON.stringify({ status: user.status }), { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return new NextResponse(JSON.stringify({ error: 'Error fetching user status' }), { status: 500 });
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     // Get the session

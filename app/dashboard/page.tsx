@@ -12,20 +12,19 @@ const Dashboard: React.FC = () => {
   // Fetch the application status from the API
   useEffect(() => {
     const fetchApplicationStatus = async () => {
-      try {
-        const response = await fetch("/api/users");
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-
-        // Assuming the status is within the data object
-        setApplicationStatus(data.status || "Not Available");
-      } catch (error) {
-        console.error('Error fetching application status:', error);
-        setApplicationStatus("Error fetching status");
-      }
-    };
+  try {
+    const response = await fetch('/api/users', { method: 'GET' });
+    const data = await response.json();
+    if (response.ok) {
+      console.log('User status:', data.status);
+      // Do something with the user's status, like setting it in a state
+    } else {
+      console.error('Error fetching user status:', data.error);
+    }
+  } catch (error) {
+    console.error('Network error:', error);
+  }
+};
 
     fetchApplicationStatus(); // Call the function to fetch data
   }, []); // Empty dependency array means this runs once on component mount
