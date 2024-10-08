@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { signOutAction } from "@/utils/signOutAction";
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 
 
 const sideNavLinks = [
@@ -32,10 +32,21 @@ const sideNavLinks = [
   },
 ];
 
-const SideNav: React.FC = () => {
+interface SideNavProps {
+  className?: string;
+}
+
+const SideNav: React.FC<SideNavProps> = ({ className }) => {
+  const shouldShowStockMarketLink = () => {
+    const now = new Date();
+    const targetDate = new Date(2024, 8, 2, 16, 20, 0); // modify this with exact time and date
+
+    return now >= targetDate;
+  };
+
   // TODO: On mobile screens, show a hamburger menu
   return (
-    <nav className="bg-gray-950 bg-opacity-25 h-screen min-h-96 w-80 xl:w-96 hidden lg:block overflow-y-auto">
+    <nav className={`bg-gray-950 bg-opacity-25 h-screen min-h-96 w-80 xl:w-96 hidden lg:block overflow-y-auto ${className}`}>
       <div className="flex flex-col items-center justify-center px-12 xl:px-20 py-2 h-full space-y-4 w-full">
         {/* Nav Logo */}
         <div className="flex items-center space-x-3 h-1/5">
@@ -51,6 +62,15 @@ const SideNav: React.FC = () => {
               <h2>{link.name}</h2>
             </Link>
           )}
+
+          {/* Conditionally render the Stock Market link */}
+          {shouldShowStockMarketLink() && (
+            <Link className="flex space-x-8 hover:opacity-35" key="Stock Market" href="/dashboard/stock-market">
+              <Image src="/static/icons/stock-market.png" height={0} width={0} sizes="100vw" alt="Stock Market" style={{ height: 24, width: 'auto' }} />
+              <h2>Stock Market</h2>
+            </Link>
+          )}
+
         </div>
 
         {/* Log Out Button (Switch the style a bit—maybe use shadcn buttons?) */}
@@ -67,5 +87,6 @@ const SideNav: React.FC = () => {
       </div>
     </nav>
   );
-}
+};
+
 export default SideNav;

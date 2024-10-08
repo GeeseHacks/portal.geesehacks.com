@@ -1,11 +1,11 @@
-"use client"; // Add this line to mark the component as a client component
-
+"use client"
 import SideNav from "@/components/nav/SideNav";
-import Head from "next/head";
-import Link from "next/link"; // Import Link from Next.js
-import { useState, useEffect } from "react"; // Import useState and useEffect for state management
+import { Filter } from "lucide-react";
+import Link from "next/link";
+import { FaAngleRight } from "react-icons/fa";
 
-const Dashboard: React.FC = () => {
+
+const Home: React.FC = () => {
   // State to hold application status
   const [applicationStatus, setApplicationStatus] = useState<string>("Loading...");
 
@@ -23,30 +23,90 @@ const Dashboard: React.FC = () => {
 
     fetchApplicationStatus(); // Call the function to fetch data
   }, []); // Empty dependency array means this runs once on component mount
-
+  
   return (
     <div className="h-screen w-screen flex overflow-y-scroll">
+      {/* Glow Effect (Currently extremely laggy performance on Safari due to "4xl" */}
+      {/* <div className="absolute inset-0 -z-50">
+        <div className="absolute top-48 left-48 m-20 w-1/4 h-1/4 bg-purple-700 rounded-full blur-3xl opacity-20"></div>
+        <div className="absolute bottom-48 right-48 m-20 w-1/4 h-1/4 bg-teal-700 rounded-full blur-3xl opacity-5"></div>
+      </div> */}
+
+      {/* Glow Effect */}
+      <div className="fixed inset-0 -z-50">
+        <div className="absolute top-60 left-60 m-20 w-1/2 h-1/2 bg-gradient-to-r from-purple-700 via-purple-800 to-purple-900 rounded-full blur-4xl opacity-25"></div>
+        <div className="absolute bottom-60 right-60 m-20 w-1/2 h-1/2 bg-gradient-to-r from-teal-700 via-teal-800 to-teal-900 rounded-full blur-4xl opacity-20"></div>
+      </div>
+
+      <div className="absolute inset-0 -z-50">
+        {[...Array(120)].map((_, i) => { 
+          const size = `${Math.random() + 1}px`;
+          return (
+            <div
+              key={i}
+              className="absolute bg-white rounded-full opacity-35"
+              style={{
+                width: size,
+                height: size,
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                boxShadow: `0 0 10px 2px rgba(255, 255, 255, 0.1)`,
+              }}
+            ></div>
+          );
+        })}
+      </div>
+
       {/* SideNav */}
       <SideNav />
 
       {/* Home Content */}
       <div className="flex flex-col py-24 space-y-10 px-12 xl:px-32 h-screen min-h-96 flex-grow">
-        <h1 className="text-4xl my-2">Home</h1>
-        <p className="text-gray-500">Welcome fellow Geese [something a Geese would say]</p>
+        <div>
+          <h1 className="text-4xl my-2">Home</h1>
+          <p className="text-gray-500">Welcome fellow Geese [something a Geese would say]</p>
+        </div>
 
-        <div className="bg-cpurple p-8 rounded-xl w-full min-h-52 space-y-4">
-          <h2 className="font-light text-lg">Application Status</h2>
-          <h2 className="font-semibold text-4xl">{applicationStatus}</h2>
-          {/* Link to Application Page */}
-          <Link href="/application" className="mt-2 bg-purple-500 px-4 py-2 rounded-full inline-block">
-            {applicationStatus === "NOT SUBMITTED" ? "Apply Now" : "View Application"}
-          </Link>
+        <div className="
+          bg-gradient-to-r from-darkpurple to-darkteal 
+          p-12 rounded-xl w-full min-h-52 space-y-4 
+          relative overflow-hidden 
+          hover:scale-102 transition-transform duration-300 
+          hover:drop-shadow-[0_0px_15px_rgba(48,133,159,0.5)]
+          flex flex-col justify-center
+        ">
+          <img src="/static/images/status-notsubmitted.png" alt="Not Submitted" className="absolute right-48 -top-10 z-0" />
+          <h2 className="font-light text-lg drop-shadow-[0_0px_5px_rgba(0,0,0,0.5)]">Application Status</h2>
+          <h2 className="font-semibold text-4xl drop-shadow-[0_0px_10px_rgba(0,0,0,0.5)]">NOT SUBMITTED</h2>
+          <button className="mt-2 bg-transparent py-2 flex items-center">
+            Apply 
+            <FaAngleRight size={22} className="ml-1" />
+          </button>
         </div>
 
         <div className="grid grid-cols-2 gap-10 min-h-52">
-          <div className="bg-cpurple p-8 rounded-xl">FAQ</div>
-          <div className="bg-cpurple p-8 rounded-xl">
-            <Link href="/another-page">Jumps to another page?</Link>
+          <div className="
+            bg-gradient-to-r from-darkpurple to-darkteal 
+            p-12 rounded-xl
+            relative overflow-hidden 
+            hover:scale-102 transition-transform duration-300 
+            hover:drop-shadow-[0_0px_15px_rgba(48,133,159,0.5)]
+          ">
+            <img src="/static/images/faq.png" alt="FAQ" className="absolute -right-10 bottom-0 z-0 scale-75" />
+            <h2 className="font-semibold text-4xl">FAQ</h2>
+          </div>
+          <div className="
+            bg-gradient-to-r from-darkpurple to-darkteal 
+            p-12 rounded-xl
+            relative overflow-hidden 
+            hover:scale-102 transition-transform duration-800
+            hover:drop-shadow-[0_0px_15px_rgba(48,133,159,0.5)]
+          ">
+            <div className="">
+              <img src="/static/images/CameraFrame.png" alt="QR Code" className="absolute right-10 bottom-8 z-0 scale-75"/>
+              <h2 className="text-[30px] font-semibold">QR Code</h2>
+              <p className="text-white-500">Your ID at Geesehacks</p>
+            </div>
           </div>
         </div>
       </div>
@@ -54,4 +114,4 @@ const Dashboard: React.FC = () => {
   );
 };
 
-export default Dashboard;
+export default Home;
