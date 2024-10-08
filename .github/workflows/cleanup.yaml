@@ -1,3 +1,5 @@
+# This workflow is a cron job which runs once a week to clean up old deployments on Vercel
+
 name: Cleanup Old Deployments
 
 env:

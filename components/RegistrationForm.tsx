@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import React, { useState, useEffect } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
@@ -17,10 +17,9 @@ import { fetchCSVOptions } from "../utils/fetchCSVOptions";
 import { formSubmission } from "../utils/formSubmission";
 import { getAgeOptions } from "../utils/formAssets/formAssets";
 import { options } from "../utils/formAssets/formAssets";
-
-import { Checkbox } from "@/components/ui/checkbox"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 const RegistrationForm: React.FC = () => {
   const { data: session } = useSession();
@@ -99,6 +98,7 @@ const RegistrationForm: React.FC = () => {
             id="email"
             label="Email *"
             registerOptions={register("email")}
+            defaultValue={session?.user?.email ? session.user.email : ""}
             placeholder="Enter email"
             type="email"
             error={errors.email}
@@ -193,7 +193,7 @@ const RegistrationForm: React.FC = () => {
               {...register("resume")}
               className="focus:border-none h-15"
             />
-            {errors.resume && <p className="text-red-500 text-s italic mt-2">{errors.resume.message?.toString()}</p>}
+            {errors.resume && <p role="alert" className="text-red-500 text-s italic mt-2">{errors.resume.message?.toString()}</p>}
           </div>
           <InputField
             id="githubProfile"
@@ -233,27 +233,30 @@ const RegistrationForm: React.FC = () => {
             Copy Questions to Clipboard
           </Button>
         </div>
-        <hr className="border-white pb-6" />
-        <div className="grid grid-cols-1 gap-x-12 gap-y-10">
+        <hr className="border-white mb-12" />
+        <div className="grid grid-cols-1 gap-x-12 gap-y-14">
           <TextAreaField
             id="q1"
             label="Why are you running *"
             registerOptions={register("q1")}
-            placeholder="Type your answer"
+            placeholder="Your answer..."
+            maxLength={1000}
             error={errors.q1}
           />
           <TextAreaField
             id="q2"
             label="How are you running *"
             registerOptions={register("q2")}
-            placeholder="Type your answer"
+            placeholder="Your answer..."
+            maxLength={1000}
             error={errors.q2}
           />
           <TextAreaField
             id="q3"
             label="Where are you running *"
             registerOptions={register("q3")}
-            placeholder="Type your answer"
+            placeholder="Your answer..."
+            maxLength={1000}
             error={errors.q3}
           />
         </div>
@@ -334,7 +337,7 @@ const RegistrationForm: React.FC = () => {
             )}
           />
           {errors.mlhCodeOfConduct && (
-            <p className="text-red-500 text-s italic">
+            <p role="alert" className="text-red-500 text-s italic">
               {errors.mlhCodeOfConduct.message}
             </p>
           )}
@@ -368,7 +371,7 @@ const RegistrationForm: React.FC = () => {
             )}
           />
           {errors.mlhPrivacyPolicy && (
-            <p className="text-red-500 text-s italic">
+            <p role="alert" className="text-red-500 text-s italic">
               {errors.mlhPrivacyPolicy.message}
             </p>
           )}
@@ -391,11 +394,13 @@ const RegistrationForm: React.FC = () => {
           />
         </div>
 
-        <Button type="submit" className="w-full py-2 text-white mt-10">
-          Submit
-        </Button>
+        <Button type="submit" className="w-full py-2 text-white mt-10"> Submit </Button>
+        
       </form>
     </div>
+
+
+    
   );
 };
 
