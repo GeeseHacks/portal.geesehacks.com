@@ -12,19 +12,14 @@ const Dashboard: React.FC = () => {
   // Fetch the application status from the API
   useEffect(() => {
     const fetchApplicationStatus = async () => {
-  try {
-    const response = await fetch('/api/users', { method: 'GET' });
-    const data = await response.json();
-    if (response.ok) {
-      console.log('User status:', data.status);
-      // Do something with the user's status, like setting it in a state
-    } else {
-      console.error('Error fetching user status:', data.error);
-    }
-  } catch (error) {
-    console.error('Network error:', error);
-  }
-};
+      const response = await fetch('/api/users');
+      const data = await response.json();
+      if (response.ok) {
+        setApplicationStatus(data.status); // Update state with fetched status
+      } else {
+        setApplicationStatus('Error fetching status'); // Handle error state
+      }
+    };
 
     fetchApplicationStatus(); // Call the function to fetch data
   }, []); // Empty dependency array means this runs once on component mount
@@ -36,12 +31,8 @@ const Dashboard: React.FC = () => {
 
       {/* Home Content */}
       <div className="flex flex-col py-24 space-y-10 px-12 xl:px-32 h-screen min-h-96 flex-grow">
-        <div>
-          <h1 className="text-4xl my-2">Home</h1>
-          <p className="text-gray-500">
-            Welcome fellow Geese [something a Geese would say]
-          </p>
-        </div>
+        <h1 className="text-4xl my-2">Home</h1>
+        <p className="text-gray-500">Welcome fellow Geese [something a Geese would say]</p>
 
         <div className="bg-cpurple p-8 rounded-xl w-full min-h-52 space-y-4">
           <h2 className="font-light text-lg">Application Status</h2>
