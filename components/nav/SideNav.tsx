@@ -4,7 +4,7 @@ import { signOutAction } from "@/utils/signOutAction";
 import { Button } from "@/components/ui/button";
 
 
-const sideNavLinks = [
+export const sideNavLinks = [
   {
     name: "Home",
     href: "/dashboard",
@@ -32,7 +32,7 @@ const sideNavLinks = [
   },
 ];
 
-interface SideNavProps {
+export interface SideNavProps {
   className?: string;
 }
 
@@ -46,7 +46,7 @@ const SideNav: React.FC<SideNavProps> = ({ className }) => {
 
   // TODO: On mobile screens, show a hamburger menu
   return (
-    <nav className={`bg-gray-950 bg-opacity-25 h-screen min-h-96 w-80 xl:w-96 hidden lg:block overflow-y-auto ${className}`}>
+    <nav className={`bg-gray-950 bg-opacity-25 min-h-screen w-80 xl:w-96 hidden lg:block overflow-y-auto ${className}`}>
       <div className="flex flex-col items-center justify-center px-12 xl:px-20 py-2 h-full space-y-4 w-full">
         {/* Nav Logo */}
         <div className="flex items-center space-x-3 h-1/5">
