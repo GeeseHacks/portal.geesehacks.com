@@ -1,3 +1,4 @@
+"use client"
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,7 +10,8 @@ import { sideNavLinks, SideNavProps } from "./SideNav";
 
 const Hamburger: React.FC<SideNavProps> = ({ className }) => {
   const [isOpen, setIsOpen] = useState(false); // State to track whether the menu is open
-
+  const sideNavLinksFiltered = sideNavLinks.filter((link) => link.show);
+  
   const shouldShowStockMarketLink = () => {
     const now = new Date();
     const targetDate = new Date(2024, 8, 2, 16, 20, 0); // Modify with the exact time and date
@@ -49,11 +51,12 @@ const Hamburger: React.FC<SideNavProps> = ({ className }) => {
 
           {/* Nav Content */}
           <div className="flex flex-col grow w-full text-xl font-light space-y-10">
-            {sideNavLinks.map((link) => (
+            {sideNavLinksFiltered.map((link) => (
               <Link
                 className="flex space-x-8 hover:opacity-35"
                 key={link.name}
-                href={link.href}
+                href={`/dashboard${link.href}`}
+                onClick={toggleMenu}
               >
                 <Image
                   src={link.icon}
