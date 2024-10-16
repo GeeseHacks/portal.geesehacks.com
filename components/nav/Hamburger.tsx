@@ -31,11 +31,11 @@ const Hamburger: React.FC<SideNavProps> = ({ className }) => {
 
       {/* Side Navigation */}
       <nav
-        className={`bg-gray-950 bg-opacity-95 h-screen w-80 xl:w-96 overflow-y-auto fixed z-40 top-0 transition-transform transform pb-8 ${
+        className={`bg-gray-950 bg-opacity-95 h-screen w-screen xl:w-96 overflow-y-auto fixed z-40 top-0 transition-transform transform pb-8 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0 lg:relative lg:block ${className}`}
       >
-        <div className="flex flex-col items-center justify-center px-12 xl:px-20 py-2 h-full space-y-4 w-full">
+        <div className="flex flex-col items-center justify-center px-20 xl:px-32 py-2 h-full space-y-4 w-full">
           {/* Nav Logo */}
           <div className="flex items-center space-x-3 h-1/5">
             <Image
@@ -48,7 +48,7 @@ const Hamburger: React.FC<SideNavProps> = ({ className }) => {
           </div>
 
           {/* Nav Content */}
-          <div className="flex flex-col grow w-full text-xl font-light space-y-10">
+          <div className="flex flex-col grow w-full font-light space-y-10 text-lg">
             {sideNavLinks.map((link) => (
               <Link
                 className="flex space-x-8 hover:opacity-35"
@@ -88,7 +88,7 @@ const Hamburger: React.FC<SideNavProps> = ({ className }) => {
           </div>
 
           {/* Log Out Button */}
-          <div className="h-1/6 flex-shrink-0">
+          <div className="h-1/6 flex-shrink-0 flex flex-col justify-center">
             <form action={signOutAction}>
               <Button className="flex w-36 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-purple-300 via-pink-500 to-red-400 p-3 text-sm font-medium text-white shadow-lg transition duration-200 ease-in-out hover:bg-gradient-to-r hover:from-purple-500 hover:via-pink-600 hover:to-red-600 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
                 Sign Out
