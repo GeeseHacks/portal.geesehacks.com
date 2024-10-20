@@ -5,13 +5,37 @@ type EventCardProps = {
   event: HackerEvent;
 };
 
+const getPosition = (startTime: Date) => {
+  const hour = startTime.getHours();
+  const minutes = startTime.getMinutes();
+  console.log(hour * 128 + (minutes / 60) * 128);
+  return (hour * 128 + (minutes / 60) * 128) * 1.02; // 128px per hour
+};
+
+const getHeight = (startTime: Date, endTime: Date) => {
+  const duration = (endTime.getTime() - startTime.getTime()) / (1000 * 60); // Minutes
+  return (duration / 60) * 128; // 128px per hour
+};
+
 const EventCard: React.FC<EventCardProps> = ({ event }) => {
+  const { name, startTime, endTime, location, details } = event;
+
   return (
-    <div className="absolute bg-purple-500 p-4 rounded-lg w-40 left-0" style={{ top: `${event.date.getHours() * 10}px` }}>
-      <p className="font-bold">{event.title}</p>
-      <p className="text-xs">{event.location}</p>
-      <p className="text-xs">{event.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
-      <p className="text-xs">{event.details}</p>
+    <div
+      className="bg-purple-500 p-4 border border-solid border-purple-500 rounded-lg w-full text-white"
+      style={{
+        position: 'absolute',
+        top: `${getPosition(startTime)}px`,
+        height: `${getHeight(startTime, endTime)}px`,
+      }}
+    >
+      <p className="font-bold">{name}</p>
+      <p className="text-xs">{location}</p>
+      <p className="text-xs">
+        {startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} -{' '}
+        {endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+      </p>
+      <p className="text-xs">{details}</p>
     </div>
   );
 };
