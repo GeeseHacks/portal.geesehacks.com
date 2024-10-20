@@ -9,12 +9,12 @@ const getPosition = (startTime: Date) => {
   const hour = startTime.getHours();
   const minutes = startTime.getMinutes();
   console.log(hour * 128 + (minutes / 60) * 128);
-  return (hour * 128 + (minutes / 60) * 128) * 1.02; // 128px per hour
+  return (hour * 128 + (minutes / 60) * 128); // 128px per hour
 };
 
 const getHeight = (startTime: Date, endTime: Date) => {
   const duration = (endTime.getTime() - startTime.getTime()) / (1000 * 60); // Minutes
-  return (duration / 60) * 128; // 128px per hour
+  return (duration / 60) * 128 - 5; // 128px per hour
 };
 
 const EventCard: React.FC<EventCardProps> = ({ event }) => {
@@ -22,7 +22,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
 
   return (
     <div
-      className="bg-purple-500 p-4 border border-solid border-purple-500 rounded-lg w-full text-white"
+      className="bg-purple-500 p-4 border-2 border-solid border-purple-400 rounded-lg w-full text-white"
       style={{
         position: 'absolute',
         top: `${getPosition(startTime)}px`,

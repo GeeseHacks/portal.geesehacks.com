@@ -8,6 +8,8 @@ const HOURS = Array.from({ length: 24 }, (_, i) => i); // Array [0, 1, ..., 23]
 const SchedulePage: React.FC = () => {
   const [events, setEvents] = useState<HackerEvent[]>([]);
   const [selectedDay, setSelectedDay] = useState<string>('Saturday');
+  // Loading state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -19,6 +21,7 @@ const SchedulePage: React.FC = () => {
         endTime: new Date(event.endTime),
       }));
       setEvents(fetchedEvents);
+      setLoading(false);
     };
     fetchEvents();
   }, []);
@@ -73,34 +76,36 @@ const SchedulePage: React.FC = () => {
           </div> */}
 
           {/* Gridlines and Events */}
-          <div className="relative h-full">
-            {/* Background Hour Lines */}
+          {loading ? <div>Loading...</div> :
+            <div className="relative h-full">
+              {/* Background Hour Lines */}
 
-            {HOURS.map(hour => (
-              <>
-                {hour % 2 === 0 &&
+              {HOURS.map(hour => (
+                <>
+                  {hour % 2 === 0 &&
+                    <div
+                      key={hour}
+                      className="absolute left-0 flex-none w-32 text-center text-sm font-semibold text-gray-300"
+                      style={{ top: `${hour * 128}px`, left: -40 }}
+                    >
+                      {`${hour}:00`}
+                    </div>}
                   <div
                     key={hour}
-                    className="absolute left-0 flex-none w-32 text-center text-sm font-semibold text-gray-300"
-                    style={{ top: `${hour * 4}rem` }}
-                  >
-                    {`${hour}:00`}
-                  </div>}
-                <div
-                  key={hour}
-                  className="absolute top-0 left-0 w-full border-t border-gray-500"
-                  style={{ top: `${hour * 4}rem` }}
-                />
-              </>
-            ))}
-
-            {/* Events Positioned on Timeline */}
-            <div className="relative">
-              {filteredEvents.map(event => (
-                <EventCard key={event.id} event={event} />
+                    className="absolute top-0 left-0 w-full border-t border-gray-500"
+                    style={{ top: `${hour * 128}px` }}
+                  />
+                </>
               ))}
+
+              {/* Events Positioned on Timeline */}
+              <div className="relative">
+                {filteredEvents.map(event => (
+                  <EventCard key={event.id} event={event} />
+                ))}
+              </div>
             </div>
-          </div>
+          }
         </div>
       </div>
     </>
