@@ -1,7 +1,4 @@
 "use client"
-import SideNav from "@/components/nav/SideNav";
-import { Filter } from "lucide-react";
-import Link from "next/link";
 import { FaAngleRight } from "react-icons/fa";
 
 
