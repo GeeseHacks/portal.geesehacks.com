@@ -22,7 +22,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
 
   return (
     <div
-      className="bg-purple-500 p-4 border-2 border-solid border-purple-400 rounded-lg w-full text-white"
+      className="bg-purple-500 p-4 border-2 border-solid border-purple-400 rounded-lg w-full text-white hover:z-10"
       style={{
         position: 'absolute',
         top: `${getPosition(startTime)}px`,
