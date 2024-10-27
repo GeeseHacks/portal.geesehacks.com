@@ -34,18 +34,19 @@ const getEventColor = (eventType: string) => {
 
 // Define subtle background color shifts for the container
 const getContainerBgColor = (eventType: string) => {
-  switch (eventType) {
-    case 'Ceremonies':
-      return 'bg-teal-900';
-    case 'Activities':
-      return 'bg-indigo-900';
-    case 'Food':
-      return 'bg-red-900';
-    case 'Workshop':
-      return 'bg-purple-900';
-    default:
-      return 'bg-gray-800'; // Default background color shift for unrecognized types
-  }
+  return 'bg-slate-800';
+  // switch (eventType) {
+  //   case 'Ceremonies':
+  //     return 'bg-teal-900';
+  //   case 'Activities':
+  //     return 'bg-indigo-900';
+  //   case 'Food':
+  //     return 'bg-red-900';
+  //   case 'Workshop':
+  //     return 'bg-purple-900';
+  //   default:
+  //     return 'bg-gray-800'; // Default background color shift for unrecognized types
+  // }
 };
 
 const EventCard: React.FC<EventCardProps> = ({ event }) => {
@@ -67,7 +68,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
 
       {/* Event details container with color shift */}
       <div
-        className={` bg-opacity-45 hover:bg-opacity-100 flex-grow p-4 rounded-r-lg text-white shadow-xl hover:shadow-2xl transition-shadow duration-200 ${containerBgColor}`}
+        className={` bg-opacity-65 hover:bg-opacity-100 flex-grow p-4 rounded-r-lg text-white shadow-xl hover:shadow-2xl transition-shadow duration-200 ${containerBgColor}`}
       >
         <p className="font-bold text-sm mb-1">{name}</p>
         <div className="flex justify-between text-xs">

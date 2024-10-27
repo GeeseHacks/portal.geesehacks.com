@@ -85,7 +85,7 @@ const SchedulePage: React.FC = () => {
                   {hour % 2 === 0 &&
                     <div
                       key={hour}
-                      className="absolute left-0 flex-none mt-2 w-32 text-center text-md font-semibold text-gray-300"
+                      className="absolute left-0 flex-none mt-2 w-32 text-center text-xs font-semibold text-gray-300"
                       style={{ top: `${hour * 128}px`, left: -40 }}
                     >
                       {`${hour}:00`}
