@@ -8,8 +8,7 @@ type EventCardProps = {
 const getPosition = (startTime: Date) => {
   const hour = startTime.getHours();
   const minutes = startTime.getMinutes();
-  console.log(hour * 128 + (minutes / 60) * 128);
-  return (hour * 128 + (minutes / 60) * 128); // 128px per hour
+  return hour * 128 + (minutes / 60) * 128; // 128px per hour
 };
 
 const getHeight = (startTime: Date, endTime: Date) => {
@@ -17,25 +16,69 @@ const getHeight = (startTime: Date, endTime: Date) => {
   return (duration / 60) * 128 - 5; // 128px per hour
 };
 
+// Define color mapping for event types
+const getEventColor = (eventType: string) => {
+  switch (eventType) {
+    case 'Ceremonies':
+      return 'bg-teal-400';
+    case 'Activities':
+      return 'bg-indigo-300';
+    case 'Food':
+      return 'bg-red-500';
+    case 'Workshop':
+      return 'bg-purple-500';
+    default:
+      return 'bg-gray-500'; // Error color for unrecognized types
+  }
+};
+
+// Define subtle background color shifts for the container
+const getContainerBgColor = (eventType: string) => {
+  switch (eventType) {
+    case 'Ceremonies':
+      return 'bg-teal-900';
+    case 'Activities':
+      return 'bg-indigo-900';
+    case 'Food':
+      return 'bg-red-900';
+    case 'Workshop':
+      return 'bg-purple-900';
+    default:
+      return 'bg-gray-800'; // Default background color shift for unrecognized types
+  }
+};
+
 const EventCard: React.FC<EventCardProps> = ({ event }) => {
-  const { name, startTime, endTime, location, details } = event;
+  const { name, startTime, endTime, location, details, eventType } = event;
+  const eventColor = getEventColor(eventType);
+  const containerBgColor = getContainerBgColor(eventType);
 
   return (
     <div
-      className="bg-purple-500 p-4 border-2 border-solid border-purple-400 rounded-lg w-full text-white hover:z-10"
+      className={`relative flex lg:ml-24 ml-0 lg:w-11/12 w-full hover:z-10 transition-transform duration-200`}
       style={{
         position: 'absolute',
         top: `${getPosition(startTime)}px`,
         height: `${getHeight(startTime, endTime)}px`,
       }}
     >
-      <p className="font-bold">{name}</p>
-      <p className="text-xs">{location}</p>
-      <p className="text-xs">
-        {startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} -{' '}
-        {endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-      </p>
-      <p className="text-xs">{details}</p>
+      {/* Colored bar */}
+      <div className={`w-2 ${eventColor} rounded-l-lg`} />
+
+      {/* Event details container with color shift */}
+      <div
+        className={` bg-opacity-45 hover:bg-opacity-100 flex-grow p-4 rounded-r-lg text-white shadow-xl hover:shadow-2xl transition-shadow duration-200 ${containerBgColor}`}
+      >
+        <p className="font-bold text-sm mb-1">{name}</p>
+        <div className="flex justify-between text-xs">
+          <span className="text-gray-300">{location}</span>
+          <span>{`${details}`}</span>
+        </div>
+        <p className="text-xs mt-1">
+          {startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} -{' '}
+          {endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        </p>
+      </div>
     </div>
   );
 };
