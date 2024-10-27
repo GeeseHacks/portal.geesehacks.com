@@ -1,72 +1,114 @@
-import React from 'react';
+"use client";
+import { useState, useEffect } from 'react';
 import EventCard from '@/components/events/EventCard';
 import { HackerEvent } from '@utils/types/HackerEvent';
 
-const events: HackerEvent[] = [
-  {
-    id: '1',
-    title: 'Lunch Time',
-    location: 'Cafeteria',
-    date: new Date(2024, 8, 30, 11, 0), // 11:00 AM
-    details: 'Enjoy some delicious food!',
-  },
-  {
-    id: '2',
-    title: 'Workshop',
-    location: 'Room 204',
-    date: new Date(2024, 8, 30, 13, 0), // 1:00 PM
-    details: 'Learn how to build an app!',
-  },
-  {
-    id: '3',
-    title: 'Panel Discussion',
-    location: 'Main Hall',
-    date: new Date(2024, 8, 30, 15, 0), // 3:00 PM
-    details: 'Listen to industry leaders.',
-  },
-  // Add more events as needed
-];
+const HOURS = Array.from({ length: 24 }, (_, i) => i); // Array [0, 1, ..., 23]
 
 const SchedulePage: React.FC = () => {
+  const [events, setEvents] = useState<HackerEvent[]>([]);
+  const [selectedDay, setSelectedDay] = useState<string>('Saturday');
+  // Loading state
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      const response = await fetch('/api/events');
+      const data = await response.json();
+      const fetchedEvents = data.map((event: HackerEvent) => ({
+        ...event,
+        startTime: new Date(event.startTime),
+        endTime: new Date(event.endTime),
+      }));
+      setEvents(fetchedEvents);
+      setLoading(false);
+    };
+    fetchEvents();
+  }, []);
+
+  const filteredEvents = events.filter(
+    event => event.startTime.getDay() === (selectedDay === 'Saturday' ? 6 : 0)
+  );
+
   return (
-    <div className="p-8 bg-gradient-to-br from-gray-800 to-indigo-900 min-h-screen text-white">
-      {/* Title */}
-      <h1 className="text-3xl font-bold mb-4">Schedule</h1>
-      <h2 className="text-lg mb-8">When's the food dropping?</h2>
-
-      {/* Day Tabs */}
-      <div className="flex space-x-4 mb-6">
-        <button className="bg-purple-700 py-2 px-4 rounded-md text-sm">Friday</button>
-        <button className="bg-gray-600 py-2 px-4 rounded-md text-sm">Saturday</button>
-        <button className="bg-gray-600 py-2 px-4 rounded-md text-sm">Sunday</button>
+    <>
+      <div>
+        <h1 className="text-4xl mt-5 mb-2">Schedule</h1>
+        <p className="text-gray-500">When is the food dropping?</p>
       </div>
 
-      {/* Scrollable Timeline */}
-      <div className="relative flex space-x-8 overflow-x-auto h-96">
-        <div className="relative w-64">
-          <div className="text-center mb-2">Friday</div>
-          <div className="relative border-l-2 border-gray-400 h-full">
-            {events.map((event) => (
-              <EventCard key={event.id} event={event} />
+      <div className="bg-gradient-to-br text-white w-full h-full mb-4">
+        {/* Day Tabs */}
+        <div className="flex space-x-4 mb-6">
+          {['Saturday', 'Sunday'].map(day => (
+            <button
+              key={day}
+              className={`py-2 px-4 rounded-md text-md ${selectedDay === day 
+                ? "text-[#D175FA] bg-[#3E2B65] font-semibold"
+                : "text-white"
+                }`}
+              onClick={() => setSelectedDay(day)}
+            >
+              {day}
+            </button>
+          ))}
+        </div>
+
+        {/* Timeline with Scrollable Content */}
+        <div className="
+          bg-gradient-to-r from-darkpurple to-darkteal 
+          p-8 lg:p-12 rounded-xl w-full h-5/6 space-y-4 
+          relative
+          flex flex-col justify-center
+          overflow-x-scroll
+        ">
+          {/* THIS IS COMMENTED OUT BECAUSE ITS GIVING UNINTENDED BEHAVIOUR */}
+          {/* Hour Annotations
+          <div className="flex">
+            {HOURS.map(hour => (
+              <div
+                key={hour}
+                className="flex-none w-32 text-center text-sm font-semibold text-gray-300"
+              >
+                {`${hour}:00`}
+              </div>
             ))}
-          </div>
-        </div>
+          </div> */}
 
-        <div className="relative w-64">
-          <div className="text-center mb-2">Saturday</div>
-          <div className="relative border-l-2 border-gray-400 h-full">
-            {/* You can add Saturday's events similarly */}
-          </div>
-        </div>
+          {/* Gridlines and Events */}
+          {loading ? <div>Loading...</div> :
+            <div className="relative h-full">
+              {/* Background Hour Lines */}
 
-        <div className="relative w-64">
-          <div className="text-center mb-2">Sunday</div>
-          <div className="relative border-l-2 border-gray-400 h-full">
-            {/* You can add Sunday's events similarly */}
-          </div>
+              {HOURS.map(hour => (
+                <>
+                  {hour % 2 === 0 &&
+                    <div
+                      key={hour}
+                      className="absolute left-0 flex-none mt-2 w-32 text-center text-xs font-semibold text-gray-300"
+                      style={{ top: `${hour * 128}px`, left: -40 }}
+                    >
+                      {`${hour}:00`}
+                    </div>}
+                  <div
+                    key={hour}
+                    className="absolute top-0 left-0 w-full border-t border-gray-500"
+                    style={{ top: `${hour * 128}px` }}
+                  />
+                </>
+              ))}
+
+              {/* Events Positioned on Timeline */}
+              <div className="relative">
+                {filteredEvents.map(event => (
+                  <EventCard key={event.id} event={event} />
+                ))}
+              </div>
+            </div>
+          }
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
