@@ -43,7 +43,9 @@ const SchedulePage: React.FC = () => {
           {['Saturday', 'Sunday'].map(day => (
             <button
               key={day}
-              className={`py-2 px-4 rounded-md text-sm ${selectedDay === day ? 'bg-purple-700' : 'bg-gray-600'
+              className={`py-2 px-4 rounded-md text-md ${selectedDay === day 
+                ? "text-[#D175FA] bg-[#3E2B65] font-semibold"
+                : "text-white"
                 }`}
               onClick={() => setSelectedDay(day)}
             >
@@ -57,8 +59,6 @@ const SchedulePage: React.FC = () => {
           bg-gradient-to-r from-darkpurple to-darkteal 
           p-8 lg:p-12 rounded-xl w-full h-5/6 space-y-4 
           relative
-          hover:scale-102 transition-transform duration-300
-          hover:drop-shadow-[0_0px_15px_rgba(48,133,159,0.5)]
           flex flex-col justify-center
           overflow-x-scroll
         ">
@@ -85,7 +85,7 @@ const SchedulePage: React.FC = () => {
                   {hour % 2 === 0 &&
                     <div
                       key={hour}
-                      className="absolute left-0 flex-none w-32 text-center text-sm font-semibold text-gray-300"
+                      className="absolute left-0 flex-none mt-2 w-32 text-center text-md font-semibold text-gray-300"
                       style={{ top: `${hour * 128}px`, left: -40 }}
                     >
                       {`${hour}:00`}
