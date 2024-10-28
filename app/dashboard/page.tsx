@@ -42,7 +42,7 @@ const Home: React.FC = () => {
       </div>
 
       <div className="grid lg:grid-cols-2 gap-8 max-h-4/6 lg:min-h-48 mb-8">
-        <Link href="/faq">
+        <Link href="https://geesehacks.com#faq">
           <div
             className="
               bg-gradient-to-r from-darkpurple to-darkteal 
