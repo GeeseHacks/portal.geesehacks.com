@@ -1,7 +1,10 @@
 export type HackerEvent = {
-  id: string;
-  title: string;
+  id: number;
+  startTime: Date;
+  endTime: Date;
+  name: string;
+  eventType: string;
   location: string;
-  date: Date;
   details: string;
+  needsScanning?: boolean;
 };
