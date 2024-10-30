@@ -33,10 +33,8 @@ const Home: React.FC = () => {
       </div>
 
       <div className="grid lg:grid-cols-2 gap-8 max-h-4/6 lg:min-h-48 mb-8">
-        <Link legacyBehavior href="https://geesehacks.com#faq" passHref >
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
+        <Link href="https://geesehacks.com#faq" target="_blank" rel="noopener noreferrer">
+          <div
             className="
               bg-gradient-to-r from-darkpurple to-darkteal 
               p-8 lg:p-12 rounded-xl
@@ -48,7 +46,7 @@ const Home: React.FC = () => {
             <img src="/static/images/faq.png" alt="FAQ" className="absolute -right-8 bottom-0 z-0 scale-75" />
             <h2 className="text-[30px] font-semibold">FAQ</h2>
             <p className="text-white-500">Common Questions</p>
-          </a>
+          </div>
         </Link>
 
         <Link href="/qr-code">
@@ -71,4 +69,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home
+export default Home;
