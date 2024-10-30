@@ -1,21 +1,12 @@
-"use client"
+"use client";
 import SideNav from "@/components/nav/SideNav";
 import { Filter } from "lucide-react";
 import Link from 'next/link';
 import { FaAngleRight } from "react-icons/fa";
 
-
 const Home: React.FC = () => {
   return (
     <>
-      {/* Glow Effect (Currently extremely laggy performance on Safari due to "4xl" */}
-      {/* <div className="absolute inset-0 -z-50">
-        <div className="absolute top-48 left-48 m-20 w-1/4 h-1/4 bg-purple-700 rounded-full blur-3xl opacity-20"></div>
-        <div className="absolute bottom-48 right-48 m-20 w-1/4 h-1/4 bg-teal-700 rounded-full blur-3xl opacity-5"></div>
-      </div> */}
-
-
-
       {/* Home Content */}
       <div>
         <h1 className="text-4xl mt-5 mb-2">Home</h1>
@@ -34,16 +25,18 @@ const Home: React.FC = () => {
         <h2 className="font-light text-lg drop-shadow-[0_0px_5px_rgba(0,0,0,0.5)]">Application Status</h2>
         <h2 className="font-semibold text-4xl drop-shadow-[0_0px_10px_rgba(0,0,0,0.5)]">NOT SUBMITTED</h2>
         <Link href="/apply">
-          <button className="mt-2 bg-transparent py-2 flex items-center z-10 cursor-pointer">
+          <span className="mt-2 bg-transparent py-2 flex items-center z-10 cursor-pointer">
             Apply
             <FaAngleRight size={22} className="ml-1" />
-          </button>
+          </span>
         </Link>
       </div>
 
       <div className="grid lg:grid-cols-2 gap-8 max-h-4/6 lg:min-h-48 mb-8">
-        <Link href="https://geesehacks.com#faq">
-          <div
+        <Link legacyBehavior href="https://geesehacks.com#faq" passHref >
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
             className="
               bg-gradient-to-r from-darkpurple to-darkteal 
               p-8 lg:p-12 rounded-xl
@@ -55,7 +48,7 @@ const Home: React.FC = () => {
             <img src="/static/images/faq.png" alt="FAQ" className="absolute -right-8 bottom-0 z-0 scale-75" />
             <h2 className="text-[30px] font-semibold">FAQ</h2>
             <p className="text-white-500">Common Questions</p>
-          </div>
+          </a>
         </Link>
 
         <Link href="/qr-code">
@@ -78,4 +71,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default Home
