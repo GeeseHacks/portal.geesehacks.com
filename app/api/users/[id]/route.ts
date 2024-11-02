@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 // Define the schema for your params using Zod
 const paramsSchema = z.object({
-  id: z.string().regex(/^\d+$/, "ID must be a numeric string"),
+  id: z.string(),
 });
 
 // Handler for GET requests
