@@ -20,6 +20,7 @@ import { options } from "../utils/formAssets/formAssets";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { redirect, RedirectType } from 'next/navigation'
 
 const RegistrationForm: React.FC = () => {
   const { data: session } = useSession();
@@ -42,8 +43,12 @@ const RegistrationForm: React.FC = () => {
 
   const onSubmit: SubmitHandler<formSchemaType> = async (data) => {
     try {
-      await formSubmission(data, session);
+      formSubmission(data, session)
       reset();
+
+      // NOT YET IMPLEMENTED: navigate to dashboard page after form submission
+      // redirect("/dashboard", RedirectType.replace);
+      
     } catch (error) {
       console.error("Error during form submission: ", error);
     }
