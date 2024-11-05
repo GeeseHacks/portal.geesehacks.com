@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { FaAngleRight } from "react-icons/fa";
 
 const Home: React.FC = () => {
+
   return (
     <>
       {/* Home Content */}
@@ -24,12 +25,13 @@ const Home: React.FC = () => {
         <img src="/static/images/status-notsubmitted.png" alt="Not Submitted" className="absolute right-0 -top-10 z-0" />
         <h2 className="font-light text-lg drop-shadow-[0_0px_5px_rgba(0,0,0,0.5)]">Application Status</h2>
         <h2 className="font-semibold text-4xl drop-shadow-[0_0px_10px_rgba(0,0,0,0.5)]">NOT SUBMITTED</h2>
-        <Link href="/apply">
-          <span className="mt-2 bg-transparent py-2 flex items-center z-10 cursor-pointer">
-            Apply
-            <FaAngleRight size={22} className="ml-1" />
-          </span>
-        </Link>
+        <a 
+          href="/apply" 
+          className="mt-2 bg-transparent py-2 flex items-center z-10 cursor-pointer"
+        >
+          Apply
+          <FaAngleRight size={22} className="ml-1" />
+        </a>
       </div>
 
       <div className="grid lg:grid-cols-2 gap-8 max-h-4/6 lg:min-h-48 mb-8">
@@ -70,3 +72,7 @@ const Home: React.FC = () => {
 };
 
 export default Home;
+function useCallback(arg0: () => void, arg1: never[]) {
+  throw new Error("Function not implemented.");
+}
+
