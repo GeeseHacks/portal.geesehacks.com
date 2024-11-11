@@ -1,19 +1,40 @@
 "use client";
-import SideNav from "@/components/nav/SideNav";
-import { Filter } from "lucide-react";
-import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import { FaAngleRight } from "react-icons/fa";
+import Link from 'next/link';
 
 const Home: React.FC = () => {
+  const [status, setStatus] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchStatus = async () => {
+      try {
+        const response = await fetch('/api/user/status');
+        if (!response.ok) {
+          throw new Error("Failed to fetch application status");
+        }
+        const data = await response.json();
+        setStatus(data.status);
+      } catch (err) {
+        setError("Error loading application status");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStatus();
+  }, []);
 
   return (
     <>
-      {/* Home Content */}
       <div>
         <h1 className="text-4xl mt-5 mb-2">Home</h1>
         <p className="text-gray-500">Welcome fellow Geese. Here's everything you'll need for the event!</p>
       </div>
 
+      {/* Application Status Card */}
       <div className="
           bg-gradient-to-r from-darkpurple to-darkteal 
           p-8 lg:p-12 rounded-xl w-full min-h-56 h-2/6 space-y-4 
@@ -22,18 +43,36 @@ const Home: React.FC = () => {
           hover:drop-shadow-[0_0px_15px_rgba(48,133,159,0.5)]
           flex flex-col justify-center
         ">
-        <img src="/static/images/status-notsubmitted.png" alt="Not Submitted" className="absolute right-0 -top-10 z-0" />
+        {/* Status Image */}
+        <img src={`/static/images/status-${status ? status.toLowerCase() : 'notsubmitted'}.png`} 
+             alt={status || "Loading"} 
+             className="absolute right-0 -top-10 z-0" 
+        />
+        
         <h2 className="font-light text-lg drop-shadow-[0_0px_5px_rgba(0,0,0,0.5)]">Application Status</h2>
-        <h2 className="font-semibold text-4xl drop-shadow-[0_0px_10px_rgba(0,0,0,0.5)]">NOT SUBMITTED</h2>
-        <a 
-          href="/apply" 
-          className="mt-2 bg-transparent py-2 flex items-center z-10 cursor-pointer"
-        >
-          Apply
-          <FaAngleRight size={22} className="ml-1" />
-        </a>
+
+        {/* Status or Loading/Error Message */}
+        {loading ? (
+          <h2 className="font-semibold text-4xl drop-shadow-[0_0px_10px_rgba(0,0,0,0.5)]">Loading...</h2>
+        ) : error ? (
+          <h2 className="font-semibold text-4xl drop-shadow-[0_0px_10px_rgba(0,0,0,0.5)] text-red-500">{error}</h2>
+        ) : (
+          <h2 className="font-semibold text-4xl drop-shadow-[0_0px_10px_rgba(0,0,0,0.5)]">{status}</h2>
+        )}
+
+        {/* Apply Button */}
+        {status !== 'APPLIED' && status !== 'ACCEPTED' && (
+          <a 
+            href="/apply" 
+            className="mt-2 bg-transparent py-2 flex items-center z-10 cursor-pointer"
+          >
+            Apply
+            <FaAngleRight size={22} className="ml-1" />
+          </a>
+        )}
       </div>
 
+      {/* Additional Cards */}
       <div className="grid lg:grid-cols-2 gap-8 max-h-4/6 lg:min-h-48 mb-8">
         <Link href="https://geesehacks.com#faq" target="_blank" rel="noopener noreferrer">
           <div
@@ -72,7 +111,3 @@ const Home: React.FC = () => {
 };
 
 export default Home;
-function useCallback(arg0: () => void, arg1: never[]) {
-  throw new Error("Function not implemented.");
-}
-
