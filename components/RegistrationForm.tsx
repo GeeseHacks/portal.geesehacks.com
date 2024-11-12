@@ -174,7 +174,7 @@ const RegistrationForm: React.FC = () => {
           />
           <div className="col-span-1">
             <label className="block my-4 text-xl font-semibold" htmlFor="resume">
-              Resume 
+              Resume *
             </label>
             <Input
               id="resume"
