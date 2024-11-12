@@ -86,7 +86,7 @@ const RegistrationForm: React.FC = () => {
           />
           <SelectField
             id="age"
-            label="Age *"
+            label="Age (at date of hackathon)*"
             control={control}
             options={getAgeOptions().map((age) => ({ label: age.toString(), value: age }))}
             className="col-span-1"
