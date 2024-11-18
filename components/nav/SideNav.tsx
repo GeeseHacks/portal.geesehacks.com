@@ -48,7 +48,7 @@ export const sideNavLinks = [
   },
   {
     name: "Stock Market",
-    href: "/dashboard/stock-market",
+    href: "/stock-market",
     icon: "/static/icons/stock-market.png",
     show: shouldShowStockMarketLink(),
   }

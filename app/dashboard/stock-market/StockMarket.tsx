@@ -36,7 +36,6 @@ const StockMarket: React.FC = () => {
     <div className="relative flex min-h-screen overflow-hidden">
       <div className="absolute top-24 left-80 w-[500px] h-[500px] rounded-full bg-[#7D14D0] opacity-15 blur-3xl z-[-10]"></div>
       <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full bg-[#119FCC] opacity-15 blur-3xl z-[-10]"></div>
-      <SideNav className="z-10"/>
       <div className="px-16 py-12 lg:px-32 lg:py-16 flex-1 flex flex-col">
         <div className="flex items-center space-x-4">
           <Image
