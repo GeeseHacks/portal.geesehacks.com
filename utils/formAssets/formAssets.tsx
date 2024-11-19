@@ -52,7 +52,7 @@ export const options = {
     "Kosher",
     "Halal",
   ],
-  tShirtSizes: ["Small", "Medium", "Large"],
+  tShirtSizes: ["Small", "Medium", "Large", "Extra Large", "2XL"],
   underrepresented: ["Yes", "No", "Unsure"],
   genders: [
     "Man",
