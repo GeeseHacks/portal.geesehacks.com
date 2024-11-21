@@ -56,11 +56,9 @@ const RegistrationForm: React.FC = () => {
 
   const copyQuestionsToClipboard = () => {
     const questions = `
-    1. Why are you running 
+    1. If Mr. Goose offered you unlimited funding for your startup idea, what venture would you pursue, and how would you bring it to life? Please keep your response between 500 and 1000 honks (characters)!
 
-    2. How are you running
-
-    3. Where are you running
+    2. If you were a Waterloo goose, where would you choose to migrate to when the weather turns cold? Feel free to let your imagination run wild! Please keep your response between 500 and 1000 flaps (characters)!
     `;
     navigator.clipboard.writeText(questions).then(() => {
       toast.success("Long answer questions copied to clipboard!");
@@ -71,7 +69,7 @@ const RegistrationForm: React.FC = () => {
 
   return (
     <div className="max-w-5xl mx-auto p-8 text-white">
-      <div>{session && <h1>{JSON.stringify(session.user)}</h1>}</div> 
+      {/* <div>{session && <h1>{JSON.stringify(session.user)}</h1>}</div>  */}
       
       <h1 className="text-white text-4xl font-bold my-6">Hacker Information 🌟 </h1>
       <hr className="border-white mb-12" />
@@ -93,7 +91,7 @@ const RegistrationForm: React.FC = () => {
           />
           <SelectField
             id="age"
-            label="Age *"
+            label="Age (at date of hackathon)*"
             control={control}
             options={getAgeOptions().map((age) => ({ label: age.toString(), value: age }))}
             className="col-span-1"
@@ -156,15 +154,6 @@ const RegistrationForm: React.FC = () => {
             className="col-span-1"
             error={errors.countryOfResidence}
           />
-          <ComplexInputWrapper>
-            <InputField
-              id="address"
-              label="Address"
-              registerOptions={register("address")}
-              placeholder="Enter address"
-              error={errors.address}
-            />
-          </ComplexInputWrapper>
           <SelectField
             id="dietaryRestrictions"
             label="Dietary Restrictions *"
@@ -190,7 +179,7 @@ const RegistrationForm: React.FC = () => {
           />
           <div className="col-span-1">
             <label className="block my-4 text-xl font-semibold" htmlFor="resume">
-              Resume 
+              Resume *
             </label>
             <Input
               id="resume"
@@ -242,7 +231,7 @@ const RegistrationForm: React.FC = () => {
         <div className="grid grid-cols-1 gap-x-12 gap-y-14">
           <TextAreaField
             id="q1"
-            label="Why are you running *"
+            label="If Mr. Goose offered you unlimited funding for your startup idea, what venture would you pursue, and how would you bring it to life? Please keep your response between 500 and 1000 honks (characters)! *"
             registerOptions={register("q1")}
             placeholder="Your answer..."
             maxLength={1000}
@@ -250,19 +239,11 @@ const RegistrationForm: React.FC = () => {
           />
           <TextAreaField
             id="q2"
-            label="How are you running *"
+            label="If you were a Waterloo goose, where would you choose to migrate to when the weather turns cold? Feel free to let your imagination run wild! Please keep your response between 500 and 1000 flaps (characters)! *"
             registerOptions={register("q2")}
             placeholder="Your answer..."
             maxLength={1000}
             error={errors.q2}
-          />
-          <TextAreaField
-            id="q3"
-            label="Where are you running *"
-            registerOptions={register("q3")}
-            placeholder="Your answer..."
-            maxLength={1000}
-            error={errors.q3}
           />
         </div>
 
