@@ -11,12 +11,13 @@ const passportPage: React.FC = () => {
 
   useEffect(() => {
     // Fetch user data from db 
-    // fetch(`/api/users/${session?.user?.id}`)
-    // .then(res => res.json())
-    // .then(data => {
-    //   setUser(data); 
-    //   setEvents(data.attendedEventIds)
-    // });
+    fetch(`/api/users/${session?.user?.id}`)
+    .then(res => res.json())
+    .then(data => {
+      console.log(data);
+      setUser(data); 
+      setEvents(data.attendedEventIds)
+    });
   }, [])
 
   // Next steps: 

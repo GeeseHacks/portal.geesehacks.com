@@ -16,7 +16,6 @@ export const formSchema = z.object({
     (val) => Number(val),
     z.number().min(1, { message: "Required" })
   ),
-  address: z.string().optional(),
   fieldOfStudy: z.string().min(1, { message: "Required" }),
   tShirtSize: z.string().min(1, { message: "Required" }),
   resume: z.any()
@@ -34,9 +33,6 @@ export const formSchema = z.object({
     message: "Your answer should not be longer than 1000 characters",
   }),
   q2: z.string().min(1, { message: "Please input your answer to this question" }).max(1000, {
-    message: "Your answer should not be longer than 1000 characters",
-  }),
-  q3: z.string().min(1, { message: "Please input your answer to this question" }).max(1000, {
     message: "Your answer should not be longer than 1000 characters",
   }),
   other: z.string().optional(),
