@@ -14,7 +14,6 @@ const Home: React.FC = () => {
     const fetchStatus = async () => {
       try {
         const response = await fetch('/api/users/status');
-        console.log(response);
         const data = await response.json();
         setStatus(data.status);
       } catch (err) {
