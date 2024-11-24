@@ -84,7 +84,17 @@ const SignUp: React.FC = () => {
     setVerifyPasswordError(
       arePasswordsMatching ? "" : "Passwords do not match"
     );
-    setIsButtonActive(email !== "" && password !== "" && arePasswordsMatching);
+    
+    if (emailError) {
+      const emailValidationError = validateEmail(email);
+      setEmailError(emailValidationError);
+    }
+    if (passwordErrors.length > 0) {
+      const passwordValidationErrors = validatePassword(password);
+      setPasswordErrors(passwordValidationErrors);
+    }
+
+    setIsButtonActive(!emailError && passwordErrors.length === 0 && arePasswordsMatching);
   }, [email, password, verifyPassword]);
 
   return (
