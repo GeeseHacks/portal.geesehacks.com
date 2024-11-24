@@ -1,7 +1,8 @@
-import { UserStatus } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@lib/prisma'; // Import the initialized Prisma client
 import { auth } from '@/auth'; // Assuming `auth` retrieves the user's session
+import { z } from 'zod';
+import { UserStatus } from '@prisma/client';
 
 export async function GET(request: NextRequest) {
   try {
