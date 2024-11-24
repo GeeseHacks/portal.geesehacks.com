@@ -24,21 +24,21 @@ const passportPage: React.FC = () => {
         setLoading(false); // Ensure loading stops even on error
       });
   }, []);
-  
+
 
   const flipBookProps = {
-    width: 450, 
-    height: 550, 
+    width: 350,
+    height: 500,
     size: 'fixed' as 'fixed' | 'stretch',
-    minWidth: 0,
-    maxWidth: 0,
-    minHeight: 0,
-    maxHeight: 0,
+    minWidth: 250,
+    maxWidth: 550,
+    minHeight: 350,
+    maxHeight: 800,
     drawShadow: true,
     flippingTime: 1000,
     usePortrait: false,
     startZIndex: 0,
-    autoSize: false,
+    autoSize: true,
     maxShadowOpacity: 1,
     showCover: false,
     mobileScrollSupport: true,
@@ -65,7 +65,7 @@ const passportPage: React.FC = () => {
     <div className="bg-gradient-to-br text-white w-full h-full mb-4">
       <div className="
           bg-gradient-to-r from-darkpurple to-darkteal 
-          p-8 pt-12 lg:p-12 rounded-xl w-full h-[800px] 
+          p-2 lg:p-8 rounded-xl w-full h-full
           relative
           flex flex-col items-center justify-center
           overflow-hidden
@@ -73,46 +73,65 @@ const passportPage: React.FC = () => {
         {loading ? (
           <div>Loading...</div>
         ) : (
-          <div className=""> {/* Scaling container to ensure fit */}
+          <div className="">
             <HTMLFlipBook {...flipBookProps}>
               {/* Cover Pages (Left and Right) */}
-              <div className="page flex flex-col justify-center items-center bg-white text-center p-8">
-                <h2 className="text-3xl font-bold mb-4 text-gray-800">GeeseHacks</h2>
-                <p className="text-gray-500">Digital Passport</p>
-              </div>
-              <div className="page flex flex-col justify-center items-center bg-white text-center p-8">
-                <p className="text-gray-500 italic">This passport belongs to:</p>
-                {/* <h3 className="text-2xl text-gray-700 mt-4">{user?.name || 'Hacker'}</h3> */}
+              <div className="flex flex-col justify-center items-center bg-white text-center p-8">
+                <h2 className="text-5xl font-bold mb-4 text-gray-800" style={{ fontFamily: 'Just Another Hand, cursive' }}>GeeseHacks</h2>
+                <p className="text-gray-500 font-semibold">Digital Passport</p>
               </div>
 
+              <div className="flex flex-col justify-center items-center bg-white text-center p-8">
+                <p className="text-gray-500 font-semibold">Click or swipe to flip pages</p>
+              </div>
               {/* Event Pages */}
               {events.map((event, index) => (
                 <div
                   key={event.id}
-                  className="page flex flex-col bg-white justify-between items-center px-8 py-6"
+                  className="page flex flex-col bg-white px-8 py-12 text-center h-full"
                 >
-                  <div className="w-full text-center">
-                    <h2 className="text-2xl font-medium text-gray-800 mb-4">
-                      {event.name}
-                    </h2>
-                    <p className="text-gray-600 mb-2">{event.details}</p>
-                    <p className="text-gray-600 mb-2">{event.location}</p>
-                    <p className="text-gray-500 text-sm">
-                      {new Date(event.startTime).toLocaleTimeString()} - {new Date(event.endTime).toLocaleTimeString()}
-                    </p>
-                  </div>
-                  
-                  <div className="w-20 h-20 border-4 border-dashed rounded-full flex items-center justify-center text-gray-400 my-4">
-                    Stamp
-                  </div>
+                  {/* Icon */}
+                  <img
+                    src={`/static/icons/${event.eventType.toLowerCase()}.svg`}
+                    alt={`${event.eventType} icon`}
+                    className="mx-auto mb-4"
+                    style={{ width: '100px', height: '100px' }} // Adjust size as needed
+                  />
 
-                  <p className="text-sm text-gray-400">GeeseHacks Passport</p>
+                  {/* Event Title */}
+                  <h2
+                    className="text-4xl font-medium text-gray-800 mb-4"
+                    style={{ fontFamily: 'Just Another Hand, cursive' }}
+                  >
+                    {event.name}
+                  </h2>
+
+                  {/* Event Details */}
+                  <p
+                    className="text-2xl text-gray-600 mb-2"
+                    style={{ fontFamily: 'Just Another Hand, cursive' }}
+                  >
+                    {event.details}
+                  </p>
+
+                  {/* Stamp */}
+                  {/* <div className="w-20 h-20 border-4 border-dashed rounded-full flex items-center justify-center text-gray-400 my-4">
+                    Stamp
+                  </div> */}
+
+                  {/* Spacer to push the footer to the bottom */}
+                  <div className="flex-grow"></div>
+
+                  {/* "GeeseHacks Passport" Aligned to Bottom */}
+                  <p className="text-xs text-gray-400 mt-auto">GeeseHacks Passport</p>
                 </div>
               ))}
 
+
+
               {/* Back Cover Pages */}
               <div className="page flex flex-col justify-center items-center bg-gray-100 text-center p-8">
-                <p className="text-gray-600 italic">Thank you for participating!</p>
+                <p className="text-gray-600 text-3xl italic" style={{ fontFamily: 'Just Another Hand, cursive' }}>Thank you for participating!</p>
               </div>
               <div className="page flex flex-col justify-center items-center bg-gray-100 text-center p-8">
                 <h2 className="text-xl font-bold mb-4 text-gray-800">GeeseHacks 2024</h2>
