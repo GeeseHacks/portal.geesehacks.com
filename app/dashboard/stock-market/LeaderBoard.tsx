@@ -18,24 +18,44 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import StockGraph from "./StockGraph";
 
 
-const teamsData = [
-  { id: 1, name: "Team 1", value: "$1,000,000", change: "+50%" },
-  { id: 2, name: "Team 2", value: "$1,000,000", change: "+50%" },
-  { id: 3, name: "Team 3", value: "$1,000,000", change: "+50%" },
-  { id: 4, name: "Team 4", value: "$1,000,000", change: "+50%" },
-  { id: 5, name: "Team 5", value: "$1,000,000", change: "+50%" },
-];
+// const teamsData = [
+//   { id: 1, name: "Team 1", value: "$1,000,000", change: "+50%" },
+//   { id: 2, name: "Team 2", value: "$1,000,000", change: "+50%" },
+//   { id: 3, name: "Team 3", value: "$1,000,000", change: "+50%" },
+//   { id: 4, name: "Team 4", value: "$1,000,000", change: "+50%" },
+//   { id: 5, name: "Team 5", value: "$1,000,000", change: "+50%" },
+// ];
+
+interface Team {
+  id: number;
+  name: string;
+  value: string;
+  change: string;
+}
 
 const LeaderBoard = () => {
+  const [teamsData, setTeams] = useState<Team[]>([]);
+  
+  useEffect(() => {
+    const fetchTeams = async () => {
+      const response = await fetch('/api/teamData');
+      const data = await response.json();
+      setTeams(data);
+    };
+
+    fetchTeams();
+  }, []);
+
   const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
 
   const handleRowClick = (teamName: string) => {
     setSelectedTeam(teamName); // Set the selected team
   };
+  
   
   return (
     <div >
