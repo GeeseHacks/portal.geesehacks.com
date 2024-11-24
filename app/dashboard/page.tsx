@@ -11,10 +11,8 @@ const Home: React.FC = () => {
   useEffect(() => {
     const fetchStatus = async () => {
       try {
-        const response = await fetch('/api/user/status');
-        if (!response.ok) {
-          throw new Error("Failed to fetch application status");
-        }
+        const response = await fetch('/api/users/status');
+        console.log(response);
         const data = await response.json();
         setStatus(data.status);
       } catch (err) {
@@ -44,7 +42,7 @@ const Home: React.FC = () => {
           flex flex-col justify-center
         ">
         {/* Status Image */}
-        <img src={`/static/images/status-${status ? status.toLowerCase() : 'notsubmitted'}.png`} 
+        <img src={`/static/images/status-${status === "APPLIED" ? "submitted" : 'notsubmitted'}.png`} 
              alt={status || "Loading"} 
              className="absolute right-0 -top-10 z-0" 
         />

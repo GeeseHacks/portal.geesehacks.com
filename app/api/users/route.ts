@@ -5,7 +5,7 @@ import { auth } from '@/auth';
 import { z } from 'zod';
 
 // Define the UserStatus enum
-const UserStatus = z.enum(['ACCEPTED', 'REJECTED', 'WAITLIST', 'APPLIED', 'NOT_APPLIED']);
+export const UserStatus = z.enum(['ACCEPTED', 'REJECTED', 'WAITLIST', 'APPLIED', 'NOT_APPLIED']);
 
 // Define a custom validation schema using Zod
 const userSchema = z.object({
