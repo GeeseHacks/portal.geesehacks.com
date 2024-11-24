@@ -1,7 +1,9 @@
 "use client";
+
 import { useEffect, useState } from 'react';
 import { FaAngleRight } from "react-icons/fa";
 import Link from 'next/link';
+import Image from 'next/image';
 
 const Home: React.FC = () => {
   const [status, setStatus] = useState<string | null>(null);
@@ -31,7 +33,7 @@ const Home: React.FC = () => {
     <>
       <div>
         <h1 className="text-4xl mt-5 mb-2">Home</h1>
-        <p className="text-gray-500">Welcome fellow Geese. Here's everything you'll need for the event!</p>
+        <p className="text-gray-500">Welcome fellow Geese. Here&apos;s everything you&apos;ll need for the event!</p>
       </div>
 
       {/* Application Status Card */}
@@ -84,7 +86,13 @@ const Home: React.FC = () => {
               hover:drop-shadow-[0_0px_15px_rgba(48,133,159,0.5)]
             "
           >
-            <img src="/static/images/faq.png" alt="FAQ" className="absolute -right-8 bottom-0 z-0 scale-75" />
+            <Image 
+              src="/static/images/faq.png" 
+              alt="FAQ" 
+              layout="fill"
+              objectFit="cover"
+              className="absolute -right-8 bottom-0 z-0 scale-75" 
+            />
             <h2 className="text-[30px] font-semibold">FAQ</h2>
             <p className="text-white-500">Common Questions</p>
           </div>
@@ -100,7 +108,13 @@ const Home: React.FC = () => {
               hover:drop-shadow-[0_0px_15px_rgba(48,133,159,0.5)]
             "
           >
-            <img src="/static/images/CameraFrame.png" alt="QR Code" className="absolute right-4 z-0 scale-75 top-1/2 transform -translate-y-1/2" />
+            <Image 
+              src="/static/images/CameraFrame.png" 
+              alt="QR Code" 
+              layout="fill"
+              objectFit="cover"
+              className="absolute right-4 z-0 scale-75 top-1/2 transform -translate-y-1/2" 
+            />
             <h2 className="text-[30px] font-semibold">QR Code</h2>
             <p className="text-white-500">Your ID at Geesehacks</p>
           </div>
