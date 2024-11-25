@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 // Define password validation schema
-const passwordSchema = z.string()
+export const passwordSchema = z.string()
   .min(8, { message: 'Password must be at least 8 characters long' })
   .regex(/[A-Z]/, { message: 'Password must contain at least one uppercase letter' })
   .regex(/[a-z]/, { message: 'Password must contain at least one lowercase letter' })
