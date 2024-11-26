@@ -4,12 +4,15 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { HackerEvent } from "@utils/types/HackerEvent";
 import HTMLFlipBook from "react-pageflip";
+import { useMediaQuery } from 'react-responsive';
 
 const passportPage: React.FC = () => {
   const { data: session } = useSession();
   const [user, setUser] = useState(null);
   const [events, setEvents] = useState<HackerEvent[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
 
   useEffect(() => {
     fetch('/api/events')
@@ -44,6 +47,7 @@ const passportPage: React.FC = () => {
     mobileScrollSupport: true,
     className: 'flip-book',
     style: {
+      transform: isMobile ? 'scale(0.5)' : 'scale(1)'
     },
     startPage: 0,
     clickEventForward: true,
@@ -77,12 +81,13 @@ const passportPage: React.FC = () => {
             <HTMLFlipBook {...flipBookProps}>
               {/* Cover Pages (Left and Right) */}
               <div className="flex flex-col justify-center items-center bg-white text-center p-8">
-                <h2 className="text-5xl font-bold mb-4 text-gray-800" style={{ fontFamily: 'Just Another Hand, cursive' }}>GeeseHacks</h2>
-                <p className="text-gray-500 font-semibold">Digital Passport</p>
+                <h2 className="text-5xl font-bold mb-4 mt-16 text-gray-800" style={{ fontFamily: 'Just Another Hand, cursive' }}>GeeseHacks</h2>
+                <h2 className="text-4xl font-bold mb-4 mt-2 text-gray-800" style={{ fontFamily: 'Just Another Hand, cursive' }}>2025</h2>
+                <p className="text-gray-500 mt-24 font-semibold">Digital Passport</p>
               </div>
 
               <div className="flex flex-col justify-center items-center bg-white text-center p-8">
-                <p className="text-gray-500 font-semibold">Click or swipe to flip pages</p>
+                <p className="text-gray-500 mt-28 font-semibold">Click or swipe to flip pages</p>
               </div>
               {/* Event Pages */}
               {events.map((event, index) => (
@@ -131,10 +136,10 @@ const passportPage: React.FC = () => {
 
               {/* Back Cover Pages */}
               <div className="page flex flex-col justify-center items-center bg-gray-100 text-center p-8">
-                <p className="text-gray-600 text-3xl italic" style={{ fontFamily: 'Just Another Hand, cursive' }}>Thank you for participating!</p>
+                <p className="text-gray-600 mt-32 text-3xl italic" style={{ fontFamily: 'Just Another Hand, cursive' }}>Thank you for participating!</p>
               </div>
               <div className="page flex flex-col justify-center items-center bg-gray-100 text-center p-8">
-                <h2 className="text-xl font-bold mb-4 text-gray-800">GeeseHacks 2024</h2>
+                <h2 className="text-xl font-bold mb-4 text-gray-800 mt-32">GeeseHacks 2024</h2>
                 <p className="text-gray-500">See you next year!</p>
               </div>
             </HTMLFlipBook>
