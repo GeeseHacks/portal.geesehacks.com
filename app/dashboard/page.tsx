@@ -5,17 +5,33 @@ import { FaAngleRight } from "react-icons/fa";
 import Link from "next/link";
 
 const Home: React.FC = () => {
-  const [status, setStatus] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [status, setStatus] = useState<StatusType | null>(null);
   const [scheduleDisabled, setScheduleDisabled] = useState(true); // Change this when hackers are accepted
+
+  type StatusType = "ACCEPTED" | "REJECTED" | "WAITLIST" | "NOT_APPLIED" | "APPLIED";
+
+  const statusMapping: Record<StatusType, string> = {
+    ACCEPTED: "Accepted",
+    REJECTED: "Rejected",
+    WAITLIST: "Waitlisted",
+    NOT_APPLIED: "Not Applied",
+    APPLIED: "Applied",
+  };
 
   useEffect(() => {
     const fetchStatus = async () => {
       try {
         const response = await fetch("/api/users/status");
         const data = await response.json();
-        setStatus(data.status);
+
+        // Validate the status received from the API
+        if (data.status && Object.keys(statusMapping).includes(data.status)) {
+          setStatus(data.status as StatusType);
+        } else {
+          setError("Invalid application status received");
+        }
       } catch (err) {
         setError("Error loading application status");
       } finally {
@@ -71,7 +87,7 @@ const Home: React.FC = () => {
           </h2>
         ) : (
           <h2 className="font-semibold text-4xl drop-shadow-[0_0px_10px_rgba(0,0,0,0.5)]">
-            {status}
+          {status ? statusMapping[status] || "Unknown Status" : "Status is null"}
           </h2>
         )}
 
