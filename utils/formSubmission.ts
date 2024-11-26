@@ -44,7 +44,6 @@ export const formSubmission = async (data: formSchemaType, session: any) => {
           level_of_study: data.levelOfStudy,
           field_of_study: data.fieldOfStudy,
           country_of_residence: data.countryOfResidence,
-          address: data.address,
           dietary_restrictions: data.dietaryRestrictions,
           github: data.githubProfile,
           linkedin: data.linkedin,
@@ -74,7 +73,6 @@ export const formSubmission = async (data: formSchemaType, session: any) => {
           userid: userId,
           q1: data.q1,
           q2: data.q2,
-          q3: data.q3,
         }),
       });
 
