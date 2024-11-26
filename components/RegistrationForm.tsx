@@ -57,7 +57,7 @@ const RegistrationForm: React.FC = () => {
 
   const onSubmit: SubmitHandler<formSchemaType> = async (data) => {
     try {
-      formSubmission(data, session)
+      await formSubmission(data, session)
       reset();
 
       // NOT YET IMPLEMENTED: navigate to dashboard page after form submission
