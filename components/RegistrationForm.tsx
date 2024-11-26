@@ -20,10 +20,11 @@ import { options } from "../utils/formAssets/formAssets";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { redirect, RedirectType } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
 const RegistrationForm: React.FC = () => {
   const { data: session } = useSession();
+  const router = useRouter();
   const [applied, setApplied] = useState(false);
   const [countryOptions, setCountryOptions] = useState<{ label: string; value: string }[]>([]);
   const [schoolOptions, setSchoolOptions] = useState<{ label: string; value: string }[]>([]);
@@ -57,11 +58,13 @@ const RegistrationForm: React.FC = () => {
 
   const onSubmit: SubmitHandler<formSchemaType> = async (data) => {
     try {
-      await formSubmission(data, session)
+      await formSubmission(data, session);
       reset();
 
-      // NOT YET IMPLEMENTED: navigate to dashboard page after form submission
-      // redirect("/dashboard", RedirectType.replace);
+      // Delay 1 second before navigating to dashboard page after form submission
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 1000);
       
     } catch (error) {
       console.error("Error during form submission: ", error);
