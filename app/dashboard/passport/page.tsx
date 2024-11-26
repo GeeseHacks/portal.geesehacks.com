@@ -6,7 +6,8 @@ import { HackerEvent } from "@utils/types/HackerEvent";
 import HTMLFlipBook from "react-pageflip";
 import { useMediaQuery } from 'react-responsive';
 
-const passportPage: React.FC = () => {
+
+const PassportPage: React.FC = () => {
   const { data: session } = useSession();
   const [user, setUser] = useState(null);
   const [events, setEvents] = useState<HackerEvent[]>([]);
@@ -15,17 +16,28 @@ const passportPage: React.FC = () => {
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
 
   useEffect(() => {
-    fetch('/api/events')
+    fetch(`/api/users/${session?.user?.id}`)
       .then(res => res.json())
-      .then(eventsData => {
-        const filteredEvents = eventsData.filter((event: HackerEvent) => event.needsScanning);
-        setEvents(filteredEvents);
-        setLoading(false);
+      .then(data => {
+        // console.log(data);
+        // setUser(data);
+        // setEvents(data.attendedEventIds ? data.attendedEventIds : []);
+        return data.attendedEventIds ? data.attendedEventIds : [];
+      }).then((data) => {
+        fetch('/api/events')
+          .then(res => res.json())
+          .then(eventsData => {
+            const filteredEvents = eventsData.filter((event: HackerEvent) => data.includes(event.id));
+            setEvents(filteredEvents);
+            setLoading(false);
+          })
+          .catch((error) => {
+            console.error("Error fetching events:", error);
+            setLoading(false); // Ensure loading stops even on error
+          });
+          console.log("!!!!!!!!!!!!!!!!!!!!!");
+          console.log(data);
       })
-      .catch((error) => {
-        console.error("Error fetching events:", error);
-        setLoading(false); // Ensure loading stops even on error
-      });
   }, []);
 
 
@@ -147,7 +159,6 @@ const passportPage: React.FC = () => {
         )}
       </div>
     </div>
-  </>;
-};
-
-export default passportPage;
+  </>
+}
+export default PassportPage;
