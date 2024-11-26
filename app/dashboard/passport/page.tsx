@@ -4,19 +4,19 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
 
-const passportPage: React.FC = () => {
+const PassportPage: React.FC = () => {
   const { data: session } = useSession();
   const [user, setUser] = useState(null);
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
-    // Fetch user data from db 
+    // Fetch user data (every field) from db (slow but whatever...)
     fetch(`/api/users/${session?.user?.id}`)
     .then(res => res.json())
     .then(data => {
       console.log(data);
-      setUser(data); 
-      setEvents(data.attendedEventIds)
+      setUser(data);
+      setEvents(data.attendedEventIds ? data.attendedEventIds : []);
     });
   }, [])
 
@@ -45,4 +45,4 @@ const passportPage: React.FC = () => {
     </div>
   </>
 }
-export default passportPage;
+export default PassportPage;
