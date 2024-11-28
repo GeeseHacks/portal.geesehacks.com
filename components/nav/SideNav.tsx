@@ -49,7 +49,7 @@ export const sideNavLinks = [
   {
     name: "Stock Market",
     href: "/stock-market",
-    icon: "/static/icons/stock-market.png",
+    icon: "/static/icons/stock-market.svg",
     show: shouldShowStockMarketLink(),
   }
 ];
