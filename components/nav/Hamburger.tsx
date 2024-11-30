@@ -29,7 +29,13 @@ const Hamburger: React.FC<SideNavProps> = ({ className }) => {
     (pathname.split("/")[pathname.split("/").length - 1] !== "dashboard"
       ? pathname.split("/")[pathname.split("/").length - 1]
       : "");
+
   const [selectedNav, setSelectedNav] = useState<string>(pathHref);
+
+  const selectNavHandler = (pathHref: string) => {
+    setSelectedNav(pathHref);
+    toggleMenu();
+  }
 
   return (
     <div className="lg:hidden">
@@ -59,7 +65,7 @@ const Hamburger: React.FC<SideNavProps> = ({ className }) => {
           </div>
 
           {/* Nav Content */}
-          <div className="flex flex-col grow w-full text-xl font-light space-y-6">
+          <div className="flex flex-col grow w-full text-xl font-light space-y-6 ml-auto">
           {sideNavLinks.map((link) =>
             link.show ? (
               <Link
@@ -71,7 +77,7 @@ const Hamburger: React.FC<SideNavProps> = ({ className }) => {
                   ? link.href
                   : `/dashboard${link.href}`}
                 target={link.href.startsWith("https") ? "_blank" : "_self"}
-                onClick={() => setSelectedNav(link.href)}
+                onClick={() => selectNavHandler(link.href)}
               >
                 {/* Left Colored Bar */}
                 {selectedNav === link.href && (
