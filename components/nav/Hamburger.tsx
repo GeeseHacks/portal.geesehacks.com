@@ -6,6 +6,7 @@ import { signOutAction } from "@/utils/signOutAction";
 import { Button } from "@/components/ui/button";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai"; // Add icon library
 import { sideNavLinks, SideNavProps } from "./SideNav";
+import { usePathname } from "next/navigation";
 
 
 const Hamburger: React.FC<SideNavProps> = ({ className }) => {
@@ -21,6 +22,20 @@ const Hamburger: React.FC<SideNavProps> = ({ className }) => {
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+
+  const pathname = usePathname();
+  const pathHref =
+    "/" +
+    (pathname.split("/")[pathname.split("/").length - 1] !== "dashboard"
+      ? pathname.split("/")[pathname.split("/").length - 1]
+      : "");
+
+  const [selectedNav, setSelectedNav] = useState<string>(pathHref);
+
+  const selectNavHandler = (pathHref: string) => {
+    setSelectedNav(pathHref);
+    toggleMenu();
+  }
 
   return (
     <div className="lg:hidden">
@@ -50,54 +65,71 @@ const Hamburger: React.FC<SideNavProps> = ({ className }) => {
           </div>
 
           {/* Nav Content */}
-          <div className="flex flex-col grow w-full text-xl font-light space-y-10">
-            {sideNavLinksFiltered.map((link) => (
+          <div className="flex flex-col grow w-full text-xl font-light space-y-6 ml-auto">
+          {sideNavLinks.map((link) =>
+            link.show ? (
               <Link
-                className="flex space-x-8 hover:opacity-35"
+                className={`relative flex items-center hover:opacity-75 px-4 py-2 rounded-lg ${
+                  selectedNav === link.href ? "text-purple-500 font-semibold" : ""
+                }`}
                 key={link.name}
-                href={`/dashboard${link.href}`}
-                onClick={toggleMenu}
+                href={link.href.startsWith("https")
+                  ? link.href
+                  : `/dashboard${link.href}`}
+                target={link.href.startsWith("https") ? "_blank" : "_self"}
+                onClick={() => selectNavHandler(link.href)}
               >
-                <Image
-                  src={link.icon}
-                  height={0}
-                  width={0}
-                  sizes="100vw"
-                  alt={link.name}
-                  style={{ height: 24, width: "auto" }}
-                />
-                <h2>{link.name}</h2>
-              </Link>
-            ))}
+                {/* Left Colored Bar */}
+                {selectedNav === link.href && (
+                  <span className="absolute left-0 h-full w-1 bg-purple-500 rounded-r-md"></span>
+                )}
 
-            {/* Conditionally render the Stock Market link */}
-            {shouldShowStockMarketLink() && (
-              <Link
-                className="flex space-x-8 hover:opacity-35"
-                key="Stock Market"
-                href="/dashboard/stock-market"
+                <div className="flex items-center space-x-4">
+                  <Image
+                    src={link.icon}
+                    height={24}
+                    width={24}
+                    alt={link.name}
+                    style={{
+                      filter:
+                        selectedNav === link.href
+                          ? "invert(36%) sepia(67%) saturate(2915%) hue-rotate(230deg) brightness(105%) contrast(105%)"
+                          : "none",
+                    }}
+                  />
+                  <h2>{link.name}</h2>
+                </div>
+              </Link>
+            ) : (
+              <div
+                key={link.name}
+                className="relative flex items-center px-4 py-2 text-gray-400 cursor-not-allowed"
               >
-                <Image
-                  src="/static/icons/stock-market.png"
-                  height={0}
-                  width={0}
-                  sizes="100vw"
-                  alt="Stock Market"
-                  style={{ height: 24, width: "auto" }}
-                />
-                <h2>Stock Market</h2>
-              </Link>
-            )}
-          </div>
+                <div className="flex items-center space-x-4">
+                  <Image
+                    src={link.icon}
+                    height={24}
+                    width={24}
+                    alt={link.name}
+                    style={{
+                      filter: "grayscale(100%)",
+                    }}
+                  />
+                  <h2>{link.name}</h2>
+                </div>
+              </div>
+            )
+          )}
+        </div>
 
-          {/* Log Out Button */}
-          <div className="h-1/6 flex-shrink-0 flex flex-col justify-center">
-            <form action={signOutAction}>
-              <Button className="flex w-36 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-purple-300 via-pink-500 to-red-400 p-3 text-sm font-medium text-white shadow-lg transition duration-200 ease-in-out hover:bg-gradient-to-r hover:from-purple-500 hover:via-pink-600 hover:to-red-600 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
-                Sign Out
-              </Button>
-            </form>
-          </div>
+        {/* Log Out Button */}
+        <div className="h-1/6 flex-shrink-0">
+          <form action={signOutAction}>
+            <Button className="flex w-36 items-center justify-center gap-2 rounded-full bg-gradient-to-r p-3 text-sm font-medium text-white shadow-lg transition duration-200 ease-in-out hover:bg-slate-700">
+              Sign Out
+            </Button>
+          </form>
+        </div>
         </div>
       </nav>
 
