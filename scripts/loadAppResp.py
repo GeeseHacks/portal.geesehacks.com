@@ -39,20 +39,17 @@ async def main():
     await prisma.connect()
 
     # Query the database
-    users = await prisma.user.find_many(
-        # include={
-        #     "firstname": True,
-        #     "lastname": True,
-        #     "email": True,
-        #     "age": True,
-        #     "school": True,
-        #     "level_of_study": True,
-        #     "github": True,
-        #     "linkedin": True,
-        #     "resume": True,
-        #     "application_responses": True,
-        # }
-    )
+    users = await prisma.user.find_many()
+
+    application_responses = await prisma.applicationresponse.find_many()
+
+    # Map application responses to users by userid
+    response_map = {}
+    for response in application_responses:
+        if response.userid not in response_map:
+            response_map[response.userid] = {"q1": [], "q2": []}
+        response_map[response.userid]["q1"].append(response.q1)
+        response_map[response.userid]["q2"].append(response.q2)
 
     # Format the data for Google Sheets
     data = [
@@ -66,10 +63,13 @@ async def main():
             user.github or "N/A",
             user.linkedin or "N/A",
             user.resume or "N/A",
-            " | ".join([str(resp) for resp in user.application_responses]) if user.application_responses else "N/A",
+            " | ".join(response_map.get(user.id, {}).get("q1", ["N/A"])),  # Q1 responses
+            " | ".join(response_map.get(user.id, {}).get("q2", ["N/A"])),  # Q2 responses
         ]
         for user in users
     ]
+
+
 
     # Add headers
     headers = [
@@ -82,7 +82,8 @@ async def main():
         "GitHub",
         "LinkedIn",
         "Resume",
-        "Application Responses",
+        "Q1 Responses",
+        "Q2 Responses",
     ]
     data.insert(0, headers)
 
