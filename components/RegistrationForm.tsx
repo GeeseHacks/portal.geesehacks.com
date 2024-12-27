@@ -229,7 +229,7 @@ const RegistrationForm: React.FC = () => {
               />
               <InputField
                 id="additionalLinks"
-                label="Additional Links"
+                label="Refferal Provided By"
                 registerOptions={register("additionalLinks")}
                 placeholder=""
                 error={errors.additionalLinks}
