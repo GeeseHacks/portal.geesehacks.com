@@ -137,4 +137,5 @@ enum UserStatus {
   WAITLIST
   NOT_APPLIED
   APPLIED
+  CONFIRMED
 }
