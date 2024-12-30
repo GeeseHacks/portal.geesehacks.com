@@ -33,14 +33,16 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-const StockGraph  = ({ teamName, chartData }: { teamName?: string; chartData?: { time: string; value: number }[] }) => {
+const StockGraph  = ({ teamName}: { teamName?: string}) => {
   
   const [dataForTeams, setDataForTeams] = useState<Record<string, { time: string; value: number }[]>>({});
+
+
   useEffect(() => {
     async function fetchTeamData() {
       try {
         //gets all investments for EVERY TEAM, should follow the format above hopefully
-        const response = await fetch('/api/investments'); 
+        const response = teamName? await fetch (`/api/investments/${teamName}`) : await fetch('/api/investments'); 
         if (!response.ok) {
           throw new Error(`Error: ${response.status}`);
         }
@@ -52,11 +54,13 @@ const StockGraph  = ({ teamName, chartData }: { teamName?: string; chartData?: {
     }
 
     fetchTeamData();
-  }, [])
+  }, [teamName])
 
-  console.log(dataForTeams)
+  // console.log(dataForTeams)
 
-  const data = teamName ? dataForTeams[teamName] : chartData || [];
+  // const data = teamName ? dataForTeams[teamName] : chartData || [];
+
+  const data = [dataForTeams];
 
   return (
     <div>
@@ -98,7 +102,7 @@ const StockGraph  = ({ teamName, chartData }: { teamName?: string; chartData?: {
                   tickFormatter={(value) => `$${value}`}
                   stroke="gray"
                   tick={{
-                    fontSize: 14,
+                    fontSize: 12,
                     fill: "purple",
                   }}
                   domain = {[50000,150000]}
