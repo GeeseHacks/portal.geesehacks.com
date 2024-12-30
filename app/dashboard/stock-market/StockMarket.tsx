@@ -26,7 +26,7 @@ const categories = [
   { name: "Category 1", component: <LeaderBoard /> },
   { name: "Category 2", component: <LeaderBoard /> },
   { name: "Category 3", component: <LeaderBoard /> },
-  { name: "My Project", component: <StockGraph chartData={chartData}/> },
+  { name: "My Project", component: <StockGraph teamName = "mytest"/> },
 ];
 
 const StockMarket: React.FC = () => {
