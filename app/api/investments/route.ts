@@ -8,16 +8,32 @@ export async function GET(req: NextRequest) {
           include: {
             project: true, // Include project (team) details
           },
+          orderBy: {
+            createdAt: 'asc', // Ensure investments are processed in chronological order
+          },
         });
 
-        console.log(investments);
+        // console.log(investments);
     
         // Transform investments into the desired format
         const dataForTeams: Record<string, { time: string; value: number }[]> = {};
-    
+
+        const projectTrackers: Record<string, number> = {};
+
         // Iterate over the fetched investments
         investments.forEach((investment) => {
           const { project, amount, createdAt } = investment;
+
+          if (!(project.name in projectTrackers)) {
+            projectTrackers[project.name] = 100_000; // Start at 100k
+            dataForTeams[project.name] = []; // Initialize the team in the result object
+          }
+
+          // Update the cumulative value for the project
+          const prevValue = projectTrackers[project.name];
+          const newValue = prevValue + amount;
+          projectTrackers[project.name] = newValue;
+
     
           // Format the timestamp to a string like "11:00 AM"
           const time = createdAt.toLocaleTimeString('en-US', {
@@ -29,15 +45,18 @@ export async function GET(req: NextRequest) {
           if (!dataForTeams[project.name]) {
             dataForTeams[project.name] = [];
           }
-    
+          
+
           // Push investment data for that time and amount
           dataForTeams[project.name].push({
             time,
-            value: amount,
+            value: newValue,
           });
         });
     
         // Send the response back as JSON
+
+        console.log(dataForTeams);
         return NextResponse.json(dataForTeams, { status: 200 });
       } catch (error) {
         console.error('Error fetching investments:', error);

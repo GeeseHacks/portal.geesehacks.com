@@ -54,6 +54,8 @@ const StockGraph  = ({ teamName, chartData }: { teamName?: string; chartData?: {
     fetchTeamData();
   }, [])
 
+  console.log(dataForTeams)
+
   const data = teamName ? dataForTeams[teamName] : chartData || [];
 
   return (
@@ -99,6 +101,7 @@ const StockGraph  = ({ teamName, chartData }: { teamName?: string; chartData?: {
                     fontSize: 14,
                     fill: "purple",
                   }}
+                  domain = {[50000,150000]}
                 />
                 <ChartTooltip
                   cursor={false}
