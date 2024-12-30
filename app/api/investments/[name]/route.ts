@@ -1,14 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@lib/prisma';
 
-export async function GET(request: NextRequest, { params }: { params: { projectId: string } }) {
-  const { projectId } = params;
+export async function GET(request: NextRequest, { params }: { params: { name: string } }) {
+  const { name: projName } = params;
 
   try {
+
+    const proj = await prisma.project.findFirst({
+      where: {
+        name: projName,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!proj) {
+      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
+    }
+
+    const projectId = proj.id;
+    
     // Fetch investments for the given projectId
     const investments = await prisma.investment.findMany({
       where: {
-        projectId: parseInt(projectId), // Make sure projectId is an integer
+        projectId: projectId, // Make sure projectId is an integer
       },
       include: {
         project: true, // Include project details if needed
