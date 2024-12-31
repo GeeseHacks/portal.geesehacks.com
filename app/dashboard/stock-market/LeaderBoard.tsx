@@ -1,7 +1,6 @@
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -58,19 +57,17 @@ const LeaderBoard = () => {
   
   
   return (
-    <div >
-      <Card className="flex-1 flex w-full h-full min-w-0 overflow-hidden bg-opacity-5 bg-white ">
+    <div>
+      <Card className="flex-1 flex w-full h-full min-w-0 overflow-hidden bg-opacity-5 bg-white pt-7 sm:py-9 px-2 sm:px-10">
         <Table>
           {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[100px]"></TableHead>
-              <TableHead className="text-2xl text-white">ID</TableHead>
-              <TableHead className="text-2xl text-white">Value</TableHead>
-              <TableHead className="text-right text-2xl text-white">
-                % Change
-              </TableHead>
-            </TableRow>
+                <TableHead className="w-[100px] pb-4"></TableHead>
+                <TableHead className="text-lg sm:text-xl font-bold text-white pb-4">ID</TableHead>
+                <TableHead className="text-lg sm:text-xl font-bold text-white pb-4">Value</TableHead>
+                <TableHead className="text-right text-lg sm:text-xl font-bold text-white pb-4">% Change</TableHead>
+              </TableRow>
           </TableHeader>
           <TableBody>
             {teamsData.map((team) => (

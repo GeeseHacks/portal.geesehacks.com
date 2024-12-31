@@ -8,7 +8,6 @@ import { z } from 'zod';
 const requestBodySchema = z.object({
   q1: z.string().min(1, "Question 1 is required"),
   q2: z.string().min(1, "Question 2 is required"),
-  q3: z.string().min(1, "Question 3 is required"),
 });
 
 // Handler for POST requests

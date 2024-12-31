@@ -60,8 +60,10 @@ const Login: React.FC = () => {
         <h2 className="mt-2 mb-2 text-left text-4xl font-bold">Welcome</h2>
         <p className="mb-6 mt-3 text-left">Log in to GeeseHacks!</p>
         <div className="flex flex-col gap-4 w-full mb-6">
+          {/* Temporarily disabled until we can fix google signin on instagram */}
           <form action={signInActionGoogle}>
-            <button className="bg-white py-2 text-black rounded-md flex gap-2 w-full h-full justify-center">
+          <button className="bg-white py-2 text-black rounded-md flex gap-2 w-auto h-10 justify-center absolute top-0 opacity-0">
+            {/* <button className="bg-white py-2 text-black rounded-md flex gap-2 w-full h-full justify-center"> */}
               <Image
                 src="/static/icons/google-icon.png"
                 alt="Google"
@@ -132,6 +134,7 @@ const Login: React.FC = () => {
               onClick={() => setPasswordVisibility((prev) => !prev)}
               className="password-toggle-icon absolute inset-y-0 right-3 flex items-center cursor-pointer"
             >
+
               {passwordVisibility ? (
                 <BiHide className="mr-1 text-xl" />
               ) : (
