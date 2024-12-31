@@ -2,14 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@lib/prisma';
 import bcrypt from 'bcrypt';
 import { z } from 'zod';
-
-// Validation schemas for email and password, copied from lib/passwordUtils.ts
-const passwordSchema = z.string()
-  .min(8, { message: 'Password must be at least 8 characters long' })
-  .regex(/[A-Z]/, { message: 'Password must contain at least one uppercase letter' })
-  .regex(/[a-z]/, { message: 'Password must contain at least one lowercase letter' })
-  .regex(/[0-9]/, { message: 'Password must contain at least one digit' })
-  .regex(/[^a-zA-Z0-9]/, { message: 'Password must contain at least one special character' });
+import { passwordSchema } from '@lib/passwordUtils';
 
 const emailSchema = z.string().email({ message: 'Invalid email address' });
 

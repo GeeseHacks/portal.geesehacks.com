@@ -1,77 +1,71 @@
-"use client";
+"use client"
 import React, { useState } from "react";
-import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { signOutAction } from "@/utils/signOutAction";
 import { Button } from "@/components/ui/button";
+import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai"; // Add icon library
+import { sideNavLinks, SideNavProps } from "./SideNav";
+import { usePathname } from "next/navigation";
 
-export const sideNavLinks = [
-  {
-    name: "Home",
-    href: "/",
-    icon: "/static/icons/home.svg",
-    show: true,
-  },
-  {
-    name: "Schedule",
-    href: "/schedule",
-    icon: "/static/icons/calendar.svg",
-    show: false,
-  },
-  {
-    name: "Passport",
-    href: "/passport",
-    icon: "/static/icons/passport.svg",
-    show: false,
-  },
-  {
-    name: "Stock Market",
-    href: "/stock-market",
-    icon: "/static/icons/stock-market.svg",
-    show: false,
-  },
-  {
-    name: "FAQ",
-    href: "https://geesehacks.com/#faq",
-    icon: "/static/icons/game.svg",
-    show: true,
-  },
-];
 
-export interface SideNavProps {
-  className?: string;
-}
+const Hamburger: React.FC<SideNavProps> = ({ className }) => {
+  const [isOpen, setIsOpen] = useState(false); // State to track whether the menu is open
+  const sideNavLinksFiltered = sideNavLinks.filter((link) => link.show);
+  
+  const shouldShowStockMarketLink = () => {
+    const now = new Date();
+    const targetDate = new Date(2024, 8, 2, 16, 20, 0); // Modify with the exact time and date
+    return now >= targetDate;
+  };
 
-const SideNav: React.FC<SideNavProps> = ({ className }) => {
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
+
   const pathname = usePathname();
   const pathHref =
     "/" +
     (pathname.split("/")[pathname.split("/").length - 1] !== "dashboard"
       ? pathname.split("/")[pathname.split("/").length - 1]
       : "");
+
   const [selectedNav, setSelectedNav] = useState<string>(pathHref);
 
-  return (
-    <nav
-      className={`bg-gray-950 bg-opacity-25 min-h-screen w-80 xl:w-96 hidden lg:block overflow-y-auto ${className}`}
-    >
-      <div className="flex flex-col items-center justify-center px-6 xl:px-12 py-2 h-full space-y-4 w-full">
-        {/* Nav Logo */}
-        <div className="flex items-center space-x-3 h-1/5">
-          <Image
-            src="/static/icons/geesehacks.png"
-            height={38}
-            width={38}
-            alt="Geese Logo"
-          />
-          <div className="text-3xl font-semibold drop-shadow-[0_0px_5px_rgba(255,255,255,0.5)]">
-            GeeseHacks
-          </div>
-        </div>
+  const selectNavHandler = (pathHref: string) => {
+    setSelectedNav(pathHref);
+    toggleMenu();
+  }
 
-        {/* Nav Content */}
-        <div className="flex flex-col grow w-full text-xl font-light space-y-6">
+  return (
+    <div className="lg:hidden">
+      {/* Hamburger Button for Mobile View */}
+      <div className="lg:hidden fixed top-8 right-4 z-50">
+        <button onClick={toggleMenu} className="text-white focus:outline-none">
+          {isOpen ? <AiOutlineClose size={30} /> : <AiOutlineMenu size={30} />}
+        </button>
+      </div>
+
+      {/* Side Navigation */}
+      <nav
+        className={`bg-gray-950 bg-opacity-95 h-screen w-screen xl:w-96 overflow-y-auto fixed z-40 top-0 transition-transform transform pb-8 ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        } lg:translate-x-0 lg:relative lg:block ${className}`}
+      >
+        <div className="flex flex-col items-center justify-center px-20 xl:px-32 py-2 h-full space-y-4 w-full">
+          {/* Nav Logo */}
+          <div className="flex items-center space-x-3 h-1/5">
+            <Image
+              src="/static/icons/geesehacks.png"
+              height={38}
+              width={38}
+              alt="Geese Logo"
+            />
+            <div className="text-3xl font-semibold">GeeseHacks</div>
+          </div>
+
+          {/* Nav Content */}
+          <div className="flex flex-col grow w-full text-xl font-light space-y-6 ml-auto">
           {sideNavLinks.map((link) =>
             link.show ? (
               <Link
@@ -83,7 +77,7 @@ const SideNav: React.FC<SideNavProps> = ({ className }) => {
                   ? link.href
                   : `/dashboard${link.href}`}
                 target={link.href.startsWith("https") ? "_blank" : "_self"}
-                onClick={() => setSelectedNav(link.href)}
+                onClick={() => selectNavHandler(link.href)}
               >
                 {/* Left Colored Bar */}
                 {selectedNav === link.href && (
@@ -136,9 +130,18 @@ const SideNav: React.FC<SideNavProps> = ({ className }) => {
             </Button>
           </form>
         </div>
-      </div>
-    </nav>
+        </div>
+      </nav>
+
+      {/* Overlay for when menu is open on mobile */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black opacity-50 lg:hidden"
+          onClick={toggleMenu}
+        ></div>
+      )}
+    </div>
   );
 };
 
-export default SideNav;
+export default Hamburger;

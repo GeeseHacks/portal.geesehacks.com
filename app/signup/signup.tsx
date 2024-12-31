@@ -84,7 +84,17 @@ const SignUp: React.FC = () => {
     setVerifyPasswordError(
       arePasswordsMatching ? "" : "Passwords do not match"
     );
-    setIsButtonActive(email !== "" && password !== "" && arePasswordsMatching);
+    
+    if (emailError) {
+      const emailValidationError = validateEmail(email);
+      setEmailError(emailValidationError);
+    }
+    if (passwordErrors.length > 0) {
+      const passwordValidationErrors = validatePassword(password);
+      setPasswordErrors(passwordValidationErrors);
+    }
+
+    setIsButtonActive(!emailError && passwordErrors.length === 0 && arePasswordsMatching);
   }, [email, password, verifyPassword]);
 
   return (
@@ -95,8 +105,10 @@ const SignUp: React.FC = () => {
           Make an account with us to continue!
         </p>
         <div className="flex flex-col gap-4 w-full mb-6">
+          {/* Temporarily disabled until we can fix google signin on instagram */}
           <form action={signInActionGoogle}>
-            <button className="bg-white py-2 text-black rounded-md flex gap-2 w-full h-full justify-center">
+            <button className="bg-white py-2 text-black rounded-md flex gap-2 w-auto h-10 justify-center absolute top-0 opacity-0">
+            {/* <button className="bg-white py-2 text-black rounded-md flex gap-2 w-full h-full justify-center"> */}
               <Image
                 src="/static/icons/google-icon.png"
                 alt="Google"
@@ -156,6 +168,7 @@ const SignUp: React.FC = () => {
               className="pr-11"
             />
             <div
+
               onClick={() =>
                 setPasswordVisibility((prev) => ({
                   ...prev,
@@ -181,6 +194,7 @@ const SignUp: React.FC = () => {
               ))}
             </ul>
           )}
+
           <Label htmlFor="verify-password">Verify Password</Label>
           <div className="relative">
             <Input

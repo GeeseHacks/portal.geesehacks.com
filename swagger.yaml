@@ -329,9 +329,6 @@ components:
         country_of_residence:
           type: string
           description: The user's country of residence.
-        address:
-          type: string
-          description: The user's address.
         dietary_restrictions:
           type: string
           description: The user's dietary restrictions.
@@ -399,9 +396,6 @@ components:
         q2:
           type: string
           description: Answer to question 2.
-        q3:
-          type: string
-          description: Answer to question 3.
     Resume:
       type: object
       properties:

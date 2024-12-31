@@ -197,3 +197,4 @@ ALTER TABLE "_JudgePairTeams" ADD CONSTRAINT "_JudgePairTeams_A_fkey" FOREIGN KE
 
 -- AddForeignKey
 ALTER TABLE "_JudgePairTeams" ADD CONSTRAINT "_JudgePairTeams_B_fkey" FOREIGN KEY ("B") REFERENCES "Project"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
