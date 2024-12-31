@@ -27,7 +27,14 @@ export async function GET(request: NextRequest, { params }: { params: { name: st
         projectId: projectId, // Make sure projectId is an integer
       },
       include: {
-        project: true, // Include project details if needed
+        project: {
+          select:{
+            id:true,
+            name: true,
+            totalInvestment: true,
+          }
+
+        }
       },
     });
 

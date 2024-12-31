@@ -42,7 +42,7 @@ const StockGraph  = ({ teamName}: { teamName?: string}) => {
     async function fetchTeamData() {
       try {
         //gets all investments for EVERY TEAM, should follow the format above hopefully
-        const response = teamName? await fetch (`/api/investments/${teamName}`) : await fetch('/api/investments'); 
+        const response = await fetch('/api/investments'); 
         if (!response.ok) {
           throw new Error(`Error: ${response.status}`);
         }
@@ -58,9 +58,7 @@ const StockGraph  = ({ teamName}: { teamName?: string}) => {
 
   // console.log(dataForTeams)
 
-  // const data = teamName ? dataForTeams[teamName] : chartData || [];
-
-  const data = [dataForTeams];
+  const data = teamName ? dataForTeams[teamName] : [dataForTeams];
 
   return (
     <div>
