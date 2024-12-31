@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
         // Fetch all investments with related project (team) details
         const investments = await prisma.investment.findMany({
           include: {
-            project: true, // Include project (team) details
+            Project: true, // Include project (team) details
           },
           orderBy: {
             createdAt: 'asc', // Ensure investments are processed in chronological order
@@ -22,17 +22,17 @@ export async function GET(req: NextRequest) {
 
         // Iterate over the fetched investments
         investments.forEach((investment) => {
-          const { project, amount, createdAt } = investment;
+          const { Project, amount, createdAt } = investment;
 
-          if (!(project.name in projectTrackers)) {
-            projectTrackers[project.name] = 100_000; // Start at 100k
-            dataForTeams[project.name] = []; // Initialize the team in the result object
+          if (!(Project.name in projectTrackers)) {
+            projectTrackers[Project.name] = 100_000; // Start at 100k
+            dataForTeams[Project.name] = []; // Initialize the team in the result object
           }
 
           // Update the cumulative value for the project
-          const prevValue = projectTrackers[project.name];
+          const prevValue = projectTrackers[Project.name];
           const newValue = prevValue + amount;
-          projectTrackers[project.name] = newValue;
+          projectTrackers[Project.name] = newValue;
 
     
           // Format the timestamp to a string like "11:00 AM"
@@ -42,7 +42,7 @@ export async function GET(req: NextRequest) {
           })
           
           // Push investment data for that time and amount
-          dataForTeams[project.name].push({
+          dataForTeams[Project.name].push({
             time,
             value: newValue,
           });
