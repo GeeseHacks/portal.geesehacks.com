@@ -3,14 +3,37 @@
 import { useEffect, useState } from "react";
 import { FaAngleRight } from "react-icons/fa";
 import Link from "next/link";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+import { useSession } from "next-auth/react";
+import toast from "react-hot-toast";
 
 const Home: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<StatusType | null>(null);
   const [scheduleDisabled, setScheduleDisabled] = useState(true); // Change this when hackers are accepted
+  const [isSubmitting, setIsSubmitting] = useState(false); // Add loading state for RSVP submission
 
-  type StatusType = "ACCEPTED" | "REJECTED" | "WAITLIST" | "NOT_APPLIED" | "APPLIED";
+  const { data: session } = useSession();
+
+  type StatusType =
+    | "ACCEPTED"
+    | "REJECTED"
+    | "WAITLIST"
+    | "NOT_APPLIED"
+    | "APPLIED"
+    | "CONFIRMED";
 
   const statusMapping: Record<StatusType, string> = {
     ACCEPTED: "Accepted",
@@ -18,6 +41,7 @@ const Home: React.FC = () => {
     WAITLIST: "Waitlisted",
     NOT_APPLIED: "Not Applied",
     APPLIED: "Applied",
+    CONFIRMED: "RSVP Confirmed",
   };
 
   useEffect(() => {
@@ -42,6 +66,35 @@ const Home: React.FC = () => {
     fetchStatus();
   }, []);
 
+  const onRSVP = async () => {
+    try {
+      setIsSubmitting(true); // Start loading
+      const userId = session?.user?.id;
+  
+      const toastId = toast.loading("Submitting RSVP...");
+      const response = await fetch("/api/rsvp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: userId }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to confirm RSVP");
+      }
+  
+      const data = await response.json();
+      setStatus(data.status); // Optionally update the status if returned from API
+  
+      toast.success("RSVP successful!", { id: toastId });
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to RSVP. Please try again.");
+    } finally {
+      setIsSubmitting(false); // Stop loading
+    }
+  };  
+
+
   return (
     <>
       <div>
@@ -58,15 +111,13 @@ const Home: React.FC = () => {
           bg-gradient-to-r from-darkpurple to-darkteal 
           p-8 lg:p-12 rounded-xl w-full min-h-56 h-2/6 space-y-4 
           relative overflow-hidden 
-          hover:scale-102 transition-transform duration-300 
-          hover:drop-shadow-[0_0px_15px_rgba(48,133,159,0.5)]
           flex flex-col justify-center
         "
       >
         {/* Status Image */}
         <img
           src={`/static/images/status-${
-            status === "APPLIED" ? "submitted" : "notsubmitted"
+            status === "APPLIED"  || status === "ACCEPTED" || status === "CONFIRMED" ? "submitted" : "notsubmitted"
           }.png`}
           alt={status || "Loading"}
           className="absolute right-0 -top-10 z-0"
@@ -87,12 +138,14 @@ const Home: React.FC = () => {
           </h2>
         ) : (
           <h2 className="font-semibold text-4xl drop-shadow-[0_0px_10px_rgba(0,0,0,0.5)]">
-          {status ? statusMapping[status] || "Unknown Status" : "Status is null"}
+            {status
+              ? statusMapping[status] || "Unknown Status"
+              : "Status is null"}
           </h2>
         )}
 
         {/* Apply Button */}
-        {status !== "APPLIED" && status !== "ACCEPTED" && (
+        {status === "NOT_APPLIED" && (
           <a
             href="/apply"
             className="mt-2 bg-transparent py-2 flex items-center z-10 cursor-pointer"
@@ -100,6 +153,36 @@ const Home: React.FC = () => {
             Apply
             <FaAngleRight size={22} className="ml-1" />
           </a>
+        )}
+
+        {/* RSVP Button */}
+        {status === "ACCEPTED" && (
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button className="w-32">RSVP Now!</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>RSVP Confirmation</DialogTitle>
+                <DialogDescription>
+                  By clicking the RSVP button, you are agreeing to be
+                  photographed during the event.
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter className="sm:justify-start space-x-4">
+                <Button onClick={onRSVP} disabled={isSubmitting}>
+                  RSVP
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        )}
+
+        {/* Message for Confirmed Status */}
+        {status === "CONFIRMED" && (
+          <p className="text-green-500 font-bold">
+            See you soon!
+          </p>
         )}
       </div>
 
@@ -125,7 +208,7 @@ const Home: React.FC = () => {
               src="/static/images/faq.png"
               alt="FAQ"
               className="absolute -right-24 -bottom-8 -z-10 scale-50"
-              />
+            />
             <h2 className="text-[30px] font-semibold">FAQ</h2>
             <p className="text-white-500">Common Questions</p>
           </div>
@@ -145,7 +228,7 @@ const Home: React.FC = () => {
             src="/static/images/ScheduleIcon.png"
             alt="Schedule"
             className="absolute -right-24 -bottom-8 -z-10 scale-50"
-            />
+          />
           <h2 className="text-[30px] font-semibold">Schedule</h2>
           <p className="text-white-500">A list of fun events</p>
         </Link>
