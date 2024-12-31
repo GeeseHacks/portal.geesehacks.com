@@ -39,14 +39,8 @@ export async function GET(req: NextRequest) {
           const time = createdAt.toLocaleTimeString('en-US', {
             hour: '2-digit',
             minute: '2-digit',
-          });
-    
-          // Initialize the team in the result object if it doesn't exist
-          if (!dataForTeams[project.name]) {
-            dataForTeams[project.name] = [];
-          }
+          })
           
-
           // Push investment data for that time and amount
           dataForTeams[project.name].push({
             time,
