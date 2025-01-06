@@ -13,7 +13,7 @@ const getPosition = (startTime: Date) => {
 
 const getHeight = (startTime: Date, endTime: Date) => {
   const duration = (endTime.getTime() - startTime.getTime()) / (1000 * 60); // Minutes
-  return (duration / 60) * 128 - 5; // 128px per hour
+  return (duration / 60) * 128 - 8; // 128px per hour
 };
 
 // Define color mapping for event types

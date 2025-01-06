@@ -17,8 +17,8 @@ const SchedulePage: React.FC = () => {
       const data = await response.json();
       const fetchedEvents = data.map((event: HackerEvent) => ({
         ...event,
-        startTime: new Date(event.startTime),
-        endTime: new Date(event.endTime),
+        startTime: new Date(new Date(event.startTime).toLocaleString('en', {timeZone: 'America/Toronto'})),
+        endTime: new Date(new Date(event.endTime).toLocaleString('en', {timeZone: 'America/Toronto'})),
       }));
       setEvents(fetchedEvents);
       setLoading(false);
