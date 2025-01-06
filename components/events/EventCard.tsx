@@ -56,7 +56,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
 
   return (
     <div
-      className={`relative flex lg:ml-24 ml-0 lg:w-11/12 w-full hover:z-10 transition-transform duration-200`}
+      className={`relative flex lg:ml-24 ml-0 lg:w-11/12 w-full hover:z-10 transition-transform duration-200 hover:translate-x-1`}
       style={{
         position: 'absolute',
         top: `${getPosition(startTime)}px`,
