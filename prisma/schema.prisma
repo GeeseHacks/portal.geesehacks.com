@@ -128,7 +128,6 @@ model Tag {
   color     String  @db.VarChar(7)
   projectId Int
   Project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-
   @@index([projectId])
 }
 

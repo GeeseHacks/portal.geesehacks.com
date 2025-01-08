@@ -5,7 +5,7 @@ export async function GET(req: NextRequest) {
     try {
       const teams = await prisma.project.findMany();
       
-      const initialInvestment = 100000; //all change relative to initial value of 100k?
+      const initialInvestment = 100000; //change in dollars not percent
       
       const formattedTeams = teams.map((team) => {
         const change = team.totalInvestment >= initialInvestment 
