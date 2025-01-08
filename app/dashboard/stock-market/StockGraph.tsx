@@ -91,7 +91,7 @@ const StockGraph  = ({ teamName}: { teamName?: string}) => {
                   }
                   orientation="top"
                   stroke="white"
-                  tick={{ fontSize: 14 }}
+                  tick={{ fontSize: 12 }}
                 />
                 <YAxis
                   tickLine={false}
