@@ -43,7 +43,15 @@ export default function EmailSenderPage() {
 
   // Confirm Sending Emails
   const handleConfirmSend = () => {
-    setShowConfirm(true);
+    fetch('/api/email/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ 'to': emailList })
+    });
+
+    // setShowConfirm(true);
   };
 
   // Actual Email Sending Logic
