@@ -1,113 +1,216 @@
-import {
-  Html,
-  Head,
-  Body,
-  Container,
-  Section,
-  Row,
-  Column,
-  Img,
-  Text,
-  Preview,
-  Button,
-  Link,
-  Tailwind,
-} from '@react-email/components';
-import * as React from 'react';
+// components/AcceptanceEmail.tsx
+import { Html, Head, Preview, Body, Container, Section, Button, Text, Link, Img } from '@react-email/components';
+
 
 interface AcceptanceEmailProps {
   name: string;
   email: string;
-  instagramLink?: string;
-  linkedinLink?: string;
+  qrcode?: string
 }
 
-export const AcceptanceEmail = ({
-  name = 'John Doe',
-  email = 'test@example.com',
-  instagramLink = 'https://instagram.com/example',
-  linkedinLink = 'https://linkedin.com/example',
-}: AcceptanceEmailProps) => {
+export default function AcceptanceEmail({ name, email, qrcode }: AcceptanceEmailProps) {
   return (
     <Html>
       <Head />
-      <Preview>You’re Accepted to GeeseHacks 2025!</Preview>
-      <Tailwind
-        config={{
-          theme: {
-            extend: {
-              colors: {
-                background: '#0D0D1F',
-                card: '#1E1E2E',
-                gradientStart: '#A78BFA',
-                gradientEnd: '#8B5CF6',
-                buttonBg: '#A78BFA',
-              },
-            },
-          },
-        }}
-      >
-        <Body className="bg-background text-white font-sans">
-          {/* Header Section */}
-          <Section className="bg-gradient-to-r from-gradientStart to-gradientEnd text-center py-8">
-            <Text className="text-5xl font-bold mb-2">GeeseHacks 2025</Text>
-            <Text className="text-md">January 25-26, 2025 • Waterloo, Ontario</Text>
-          </Section>
+      <Preview>[ACTION REQUIRED] You're accepted to GeeseHacks 2025!</Preview>
+      <Body style={styles.body}>
+        <Container style={styles.container}>
+          {/* Header Image */}
+          <Img
+            src="/static/images/email-banner.png"
+            alt="GeeseHacks 2025"
+            style={styles.headerImage}
+          />
 
-          {/* Main Acceptance Card */}
-          <Container className="bg-card mx-auto rounded-lg p-8 my-10 w-[90%] max-w-lg shadow-md">
-            <Text className="text-3xl font-bold text-center mb-4">You’re accepted!</Text>
-            <Text className="text-md text-center mb-6">
-              Congratulations, {name}! We're excited to invite you to <strong>GeeseHacks 2025</strong> and see what innovative project you'll bring to the table.
+          {/* Acceptance Section */}
+          <Section style={styles.section}>
+            <Img
+              src="/static/images/accepted-message.png"
+              alt="GeeseHacks 2025"
+              style={styles.acceptedImage}
+            />
+            <Text style={styles.text}>
+              Congratulations! We're excited to invite you to <strong>GeeseHacks 2025</strong> and see what innovative project you'll bring to the table.
+            </Text>
+            <Text style={styles.text}>
+              Please confirm your attendance below. We will follow up with more details once you've accepted your offer.
             </Text>
 
-            <Section className="text-center">
-              <Button
-                href="https://portal.geesehacks.com/dashboard"
-                className="bg-buttonBg text-white font-semibold py-2 px-6 rounded-md shadow-md hover:opacity-90"
-              >
-                Accept your offer
-              </Button>
-            </Section>
-          </Container>
+          </Section>
 
+          <Section style={styles.centeredSection}>
+            <Button
+              style={styles.button}
+              href={"https://portal.geesehacks.com"}
+            >
+              RSVP Now
+            </Button>
+          </Section>
           {/* Event Details */}
-          <Container className="mx-auto text-center w-[90%] max-w-lg">
-            <Section className="bg-card rounded-lg p-4 shadow-md mb-4">
-              <Text className="text-lg font-bold">Event details</Text>
-              <Text className="text-md">
-                January 25-26, 2025<br />
+          <Section style={styles.centeredSection}>
+            <Section>
+              <Img
+                src="/static/images/event-message.png"
+                alt="GeeseHacks 2025"
+                style={styles.headingImage}
+              />
+              <Text style={styles.text}>
+                <strong>January 25–26, 2025</strong><br />
                 <strong>RCH Building, University of Waterloo</strong><br />
                 200 University Ave W,<br />
                 Waterloo, ON N2L 3G1
               </Text>
+              <Img
+                src="/static/images/RCH-Map.png"
+                alt="Event Location Map"
+                style={styles.mapImage}
+              />
             </Section>
-          </Container>
+
+
+
+          </Section>
+
+          {/* QR Code Section */}
+
+          {qrcode && (
+            <Section style={styles.centeredSection}>
+              <Text style={styles.subtitle}>Your QR Code</Text>
+              <Text style={styles.text}>
+                Please present this QR code at the event for a smooth check-in experience.
+              </Text>
+              <Img
+                src={qrcode}
+                alt="QR Code"
+                style={styles.qrcode}
+              />
+            </Section>
+          )}
+
 
           {/* Social Media Links */}
-          <Container className="mx-auto text-center w-[90%] max-w-lg">
-            <Text className="text-lg font-bold mb-2">Follow us for more updates!</Text>
-            <Section className="flex justify-center gap-4 mb-8">
-              <Link href={instagramLink} className="text-sm text-gradientStart underline">Instagram</Link>
-              <Link href={linkedinLink} className="text-sm text-gradientStart underline">LinkedIn</Link>
-            </Section>
-          </Container>
+          <Section style={styles.centeredSection}>
+            <Text style={styles.subtitle}>Follow us for more updates!</Text>
+            <Link href="https://www.instagram.com/geesehacks/" style={styles.socialLink}>Instagram</Link>
+            <Link href="https://www.linkedin.com/company/geesehacks/" style={styles.socialLink}>LinkedIn</Link>
+          </Section>
 
           {/* Footer */}
-          <Section className="text-center mt-8">
-            <Text className="text-lg font-bold">Mark the date!</Text>
-            <Text className="text-md mb-4">We can’t wait to see you in January</Text>
+          <Section style={styles.footer}>
             <Img
-              src="https://via.placeholder.com/50"
-              alt="GeeseHacks Logo"
-              className="mx-auto mb-2"
+              src="/static/icons/geesehacks-colorful.png"
+              alt="GeeseHacks Icon"
+              style={styles.footerIcon}
             />
-            <Text className="text-sm opacity-50">From the GeeseHacks team</Text>
+            <Text style={styles.footerText}>From the GeeseHacks team</Text>
           </Section>
-        </Body>
-      </Tailwind>
+        </Container>
+      </Body>
     </Html>
   );
-};
+}
 
-export default AcceptanceEmail;
+// Styles
+const styles = {
+  body: {
+    backgroundColor: '#0D0E1E',
+    fontFamily: 'Arial, sans-serif',
+    color: '#FFFFFF',
+  },
+  container: {
+    margin: '0 auto',
+    maxWidth: '600px',
+    backgroundColor: '#0D0E1E',
+  },
+  headerImage: {
+    width: '100%',
+  },
+  acceptedImage: {
+    width: '50%',
+    margin: '15px auto',
+  },
+  headingImage: {
+    width: '40%',
+    margin: '15px auto',
+  },
+  section: {
+    width: '100%',
+    display: 'flex',
+    backgroundColor: '#162447',
+    padding: '20px',
+  },
+  centeredSection: {
+    width: '100%',
+    display: 'flex',
+    backgroundColor: '#162447',
+    padding: '10px',
+    justifyContent: 'center',
+    textAlign: 'center' as const,
+  },
+  horizontalSection: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    backgroundColor: '#162447',
+    // padding: '20px',
+    justifyContent: 'space-between',
+  },
+  title: {
+    fontSize: '24px',
+    fontWeight: 'bold',
+    marginBottom: '10px',
+  },
+  subtitle: {
+    fontSize: '20px',
+    fontWeight: 'bold',
+    marginBottom: '10px',
+  },
+  text: {
+    fontSize: '14px',
+    lineHeight: '1.5',
+    width: '80%',
+    margin: '0px auto 10px',
+  },
+  button: {
+    backgroundColor: '#A082FF',
+    color: '#FFFFFF',
+    padding: '10px 20px',
+    borderRadius: '6px',
+    textDecoration: 'none',
+    fontWeight: 'bold',
+    // textAlign: 'center' as const,
+    margin: '10px auto',
+  },
+  mapImage: {
+    width: '50%',
+    marginTop: '15px',
+    borderRadius: '1px',
+    margin: '10px auto',
+  },
+  qrcode: {
+    width: '150px',
+    height: '150px',
+    margin: '10px auto',
+    border: '2px solid #FFFFFF',
+    borderRadius: '8px',
+  },
+  socialLink: {
+    color: '#A082FF',
+    margin: '0 10px',
+    textDecoration: 'none',
+    fontWeight: 'bold',
+  },
+  footer: {
+    textAlign: 'center' as const,
+    paddingTop: '20px',
+    backgroundColor: '#162447',
+  },
+  footerIcon: {
+    width: '50px',
+    margin: '10px auto',
+  },
+  footerText: {
+    fontSize: '14px',
+    marginTop: '10px',
+  },
+};
