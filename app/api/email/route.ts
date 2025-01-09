@@ -9,7 +9,7 @@ export async function POST(req: Request) {
 
   const { to, sender } = await req.json();
 
-  if (!ADMIN_EMAILS.includes(sender?.user?.email!)) {
+  if (!ADMIN_EMAILS.includes(sender)) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
