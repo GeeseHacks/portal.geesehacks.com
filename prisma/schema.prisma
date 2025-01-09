@@ -35,9 +35,9 @@ model User {
   status                     UserStatus
   attendedEventIds           Json?
   event_qr_code              String?               @unique @db.VarChar(255)
+  application_responses      ApplicationResponse[]
   team_id                    String?               @db.Uuid
   net_worth                  Int                   @default(0)
-  application_responses      ApplicationResponse[]
 }
 
 model ApplicationResponse {
