@@ -10,6 +10,9 @@ const SchedulePage: React.FC = () => {
   const [selectedDay, setSelectedDay] = useState<string>('Saturday');
   // Loading state
   const [loading, setLoading] = useState(true);
+  const [filterType, setFilterType] = useState<string>('All');
+
+
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -17,8 +20,8 @@ const SchedulePage: React.FC = () => {
       const data = await response.json();
       const fetchedEvents = data.map((event: HackerEvent) => ({
         ...event,
-        startTime: new Date(event.startTime),
-        endTime: new Date(event.endTime),
+        startTime: new Date(new Date(event.startTime).toLocaleString('en', { timeZone: 'America/Toronto' })),
+        endTime: new Date(new Date(event.endTime).toLocaleString('en', { timeZone: 'America/Toronto' })),
       }));
       setEvents(fetchedEvents);
       setLoading(false);
@@ -26,9 +29,10 @@ const SchedulePage: React.FC = () => {
     fetchEvents();
   }, []);
 
-  const filteredEvents = events.filter(
-    event => event.startTime.getDay() === (selectedDay === 'Saturday' ? 6 : 0)
-  );
+  const filteredEvents = events
+    .filter(event => event.startTime.getDay() === (selectedDay === 'Saturday' ? 6 : 0))
+    .filter(event => filterType === 'All' || event.eventType === filterType);;
+
 
   return (
     <>
@@ -37,13 +41,57 @@ const SchedulePage: React.FC = () => {
         <p className="text-gray-500">When is the food dropping?</p>
       </div>
 
+      {/* Filter Dropdown */}
+      <div className="flex items-center justify-start space-x-4 mb-4">
+        <label className="text-white text-md font-semibold">Filter by Type:</label>
+        <div className="relative">
+          <select
+            value={filterType}
+            onChange={(e) => setFilterType(e.target.value)}
+            className="
+        appearance-none
+        px-4 py-2
+        bg-[#1C1E29]
+        text-white
+        rounded-xl
+        shadow-md
+        focus:outline-none
+        focus:ring-2
+        focus:ring-[#A855F7]
+        hover:bg-[#2A2C3A]
+        transition-all
+        cursor-pointer
+      "
+          >
+            <option value="All">All</option>
+            <option value="Ceremonies">Ceremonies</option>
+            <option value="Activities">Activities</option>
+            <option value="Food">Food</option>
+            <option value="Workshop">Workshop</option>
+          </select>
+          {/* Custom Dropdown Arrow */}
+          <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+            <svg
+              className="w-4 h-4 text-[#A855F7]"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
       <div className="bg-gradient-to-br text-white w-full h-full mb-4">
         {/* Day Tabs */}
         <div className="flex space-x-4 mb-6">
           {['Saturday', 'Sunday'].map(day => (
             <button
               key={day}
-              className={`py-2 px-4 rounded-md text-md ${selectedDay === day 
+              className={`py-2 px-4 rounded-md text-md ${selectedDay === day
                 ? "text-[#D175FA] bg-[#3E2B65] font-semibold"
                 : "text-white"
                 }`}
