@@ -5,12 +5,12 @@ import { render } from "@react-email/render";
 
 
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+
 
 export async function POST(req: Request) {
   const { to } = await req.json();
 
-  console.log("TO", to);
+  const resend = new Resend(process.env.RESEND_API_KEY);
 
   const emailList = await Promise.all(
     to.map(async (email: string) => {
@@ -24,8 +24,6 @@ export async function POST(req: Request) {
     })
   );
 
-  console.log("EMAIL LIST:")
-  console.log(await emailList);
 
   try {
    
