@@ -13,7 +13,7 @@ const getPosition = (startTime: Date) => {
 
 const getHeight = (startTime: Date, endTime: Date) => {
   const duration = (endTime.getTime() - startTime.getTime()) / (1000 * 60); // Minutes
-  return (duration / 60) * 128 - 5; // 128px per hour
+  return (duration / 60) * 128 - 8; // 128px per hour
 };
 
 // Define color mapping for event types
@@ -56,7 +56,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
 
   return (
     <div
-      className={`relative flex lg:ml-24 ml-0 lg:w-11/12 w-full hover:z-10 transition-transform duration-200`}
+      className={`relative flex lg:ml-24 ml-0 lg:w-11/12 w-full hover:z-10 transition-transform duration-200 hover:translate-x-1`}
       style={{
         position: 'absolute',
         top: `${getPosition(startTime)}px`,
