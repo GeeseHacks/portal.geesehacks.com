@@ -32,6 +32,12 @@ export const sideNavLinks = [
     show: false,
   },
   {
+    name: "Qr Code",
+    href: "/qrcode",
+    icon: "/static/icons/qrcode.svg",
+    show: true,
+  },
+  {
     name: "FAQ",
     href: "https://geesehacks.com/#faq",
     icon: "/static/icons/game.svg",
