@@ -10,6 +10,7 @@ import { useMediaQuery } from 'react-responsive';
 const PassportPage: React.FC = () => {
   const { data: session } = useSession();
   const [user, setUser] = useState(null);
+  const [allEvents, setAllEvents] = useState<HackerEvent[]>([]);
   const [events, setEvents] = useState<HackerEvent[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -19,7 +20,7 @@ const PassportPage: React.FC = () => {
     fetch(`/api/users/${session?.user?.id}`)
       .then(res => res.json())
       .then(data => {
-        // console.log(data);
+        console.log("user!", data);
         // setUser(data);
         // setEvents(data.attendedEventIds ? data.attendedEventIds : []);
         return data.attendedEventIds ? data.attendedEventIds : [];
@@ -27,9 +28,12 @@ const PassportPage: React.FC = () => {
         fetch('/api/events')
           .then(res => res.json())
           .then(eventsData => {
+            const allEvents = eventsData;
+            setAllEvents(allEvents);
             const filteredEvents = eventsData.filter((event: HackerEvent) => data.includes(event.id));
             setEvents(filteredEvents);
             setLoading(false);
+            console.log(eventsData)
           })
           .catch((error) => {
             console.error("Error fetching events:", error);
@@ -67,8 +71,8 @@ const PassportPage: React.FC = () => {
     swipeDistance: 0,
     showPageCorners: true,
     disableFlipByClick: false,
-    orientation: 'landscape',
-    showDoublePage: true, // Enable double page display
+    orientation: 'portrait',
+    showDoublePage: false, // Enable double page display
     perspective: 2500
   };
 
@@ -102,11 +106,12 @@ const PassportPage: React.FC = () => {
                 <p className="text-gray-500 mt-28 font-semibold">Click or swipe to flip pages</p>
               </div>
               {/* Event Pages */}
-              {events.map((event, index) => (
-                <div
-                  key={event.id}
-                  className="page flex flex-col bg-white px-8 py-12 text-center h-full"
-                >
+              {allEvents.map((event, index) => (
+              <div
+                key={event.id}
+                className="page flex flex-col bg-white py-12 text-center h-full relative"
+              >
+                <div className="flex flex-col">
                   {/* Icon */}
                   <img
                     src={`/static/icons/${event.eventType.toLowerCase()}.svg`}
@@ -114,7 +119,6 @@ const PassportPage: React.FC = () => {
                     className="mx-auto mb-4"
                     style={{ width: '100px', height: '100px' }} // Adjust size as needed
                   />
-
                   {/* Event Title */}
                   <h2
                     className="text-4xl font-medium text-gray-800 mb-4"
@@ -122,7 +126,6 @@ const PassportPage: React.FC = () => {
                   >
                     {event.name}
                   </h2>
-
                   {/* Event Details */}
                   <p
                     className="text-2xl text-gray-600 mb-2"
@@ -130,18 +133,25 @@ const PassportPage: React.FC = () => {
                   >
                     {event.details}
                   </p>
-
-                  {/* Stamp */}
-                  {/* <div className="w-20 h-20 border-4 border-dashed rounded-full flex items-center justify-center text-gray-400 my-4">
-                    Stamp
-                  </div> */}
-
-                  {/* Spacer to push the footer to the bottom */}
-                  <div className="flex-grow"></div>
-
-                  {/* "GeeseHacks Passport" Aligned to Bottom */}
-                  <p className="text-xs text-gray-400 mt-auto">GeeseHacks Passport</p>
                 </div>
+                {/* Bottom part */}
+                <div className="absolute bottom-8 w-full flex flex-col justify-center items-center">
+                  {/* Stamp */}
+                  <div className="flex justify-center items-center w-full">
+                  {events.includes(event) ? (
+                    <div className="w-20 h-20 border-4 border-solid rounded-full flex items-center justify-center text-gray-400 my-4">
+                      Stamp
+                    </div>
+                  ) : (
+                    <div className="w-20 h-20 border-4 border-dashed rounded-full flex items-center justify-center text-gray-400 my-4">
+                      No Stamp
+                    </div>
+                  )}
+                  </div>
+                  {/* "GeeseHacks Passport" Aligned to Bottom */}
+                  <p className="text-xs text-gray-400 mt-8">GeeseHacks Passport</p>
+                </div>
+              </div>
               ))}
 
 
