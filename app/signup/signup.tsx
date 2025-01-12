@@ -105,10 +105,8 @@ const SignUp: React.FC = () => {
           Make an account with us to continue!
         </p>
         <div className="flex flex-col gap-4 w-full mb-6">
-          {/* Temporarily disabled until we can fix google signin on instagram */}
           <form action={signInActionGoogle}>
-            <button className="bg-white py-2 text-black rounded-md flex gap-2 w-auto h-10 justify-center absolute top-0 opacity-0">
-            {/* <button className="bg-white py-2 text-black rounded-md flex gap-2 w-full h-full justify-center"> */}
+            <button className="bg-white py-2 text-black rounded-md flex gap-2 w-full h-full justify-center">
               <Image
                 src="/static/icons/google-icon.png"
                 alt="Google"
