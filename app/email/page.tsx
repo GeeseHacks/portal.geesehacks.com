@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 
-const ADMIN_EMAILS = ['benny.wu.new@gmail.com']; // Admin check
+const ADMIN_EMAILS = ['benny.wu.new@gmail.com', 'chd-james@skillinsight.ca', 'riri.hong@gmail.com']; // Admin check
 
 export default function EmailSenderPage() {
   const [userEmail, setUserEmail] = useState('');
@@ -27,11 +27,16 @@ export default function EmailSenderPage() {
     try {
       const rows = csvInput.split('\n').map(row => row.trim()).filter(row => row !== '');
       const parsedEmails = rows.flatMap(row => row.split(',').map(email => email.trim()));
-      
+
       // Validate emails
       const invalidEmails = parsedEmails.filter(email => !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
       if (invalidEmails.length > 0) {
         setError(`Invalid email(s) detected: ${invalidEmails.join(', ')}`);
+        return;
+      }
+
+      if (parsedEmails.length > 100) {
+        setError('⚠️ You cannot send more than 100 emails at once. Please reduce the email count.');
         return;
       }
 
@@ -43,23 +48,27 @@ export default function EmailSenderPage() {
 
   // Confirm Sending Emails
   const handleConfirmSend = () => {
+    setShowConfirm(true);
+  };
+
+  // Actual Email Sending Logic
+  const handleSendEmails = () => {
     fetch('/api/email/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ 'to': emailList })
+      body: JSON.stringify({ 'to': emailList, 'sender': session?.user?.email })
+    }).then(res => {
+      setShowConfirm(false);
+      console.log('Sending emails to:', emailList);
+      alert(`✅ Emails sent to ${emailList.length} recipients.`);
+      setCsvInput('');
+      }
+    ).catch(err => {
+      alert('❌ Failed to send emails. Please try again.');
     });
 
-    // setShowConfirm(true);
-  };
-
-  // Actual Email Sending Logic
-  const handleSendEmails = () => {
-    setShowConfirm(false);
-    console.log('Sending emails to:', emailList);
-    alert(`✅ Emails sent to ${emailList.length} recipients.`);
-    setCsvInput('');
     setEmailList([]);
   };
 
@@ -79,7 +88,7 @@ export default function EmailSenderPage() {
   return (
     <div className='bg-cover h-screen flex flex-col justify-center items-center text-center p-4'>
       <h1 className='text-2xl mb-4'>Send Event Acceptance Emails</h1>
-      <p>Welcome, {userEmail}! You have admin access.</p>
+      <h2>Welcome, {userEmail}! You have admin access.</h2>
 
       {/* CSV Input */}
       <div className="mt-6 w-full max-w-md">
@@ -121,10 +130,21 @@ export default function EmailSenderPage() {
         </div>
       )}
 
+      <p style={{ marginTop: '20px' }}>
+        <b>Instructions:</b>
+        <ol>
+          <li> 1. Paste the comma or line separated email addresses above (e.g. directly from spreadsheet columns) </li>
+          <li> 2. Send up to 100 emails at once due to Resend limitations </li>
+          <li> 3. Test with your own email first for quality control. Also include your email in the official send </li>
+
+        </ol>
+
+      </p>
+
       {/* Confirmation Modal */}
       {showConfirm && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
-          <div className="bg-white p-6 rounded-lg text-center">
+          <div className="bg-gray-800 p-6 rounded-lg text-center">
             <h2 className="text-xl font-bold mb-4">⚠️ Confirm Sending Emails</h2>
             <p>Are you sure you want to send emails to {emailList.length} recipients?</p>
             <div className="flex justify-center mt-4 space-x-4">
