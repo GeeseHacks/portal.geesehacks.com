@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
 
     // if the user not found, just return "did not apply"
     if (!user) {
-      return new NextResponse(JSON.stringify({ status: UserStatus.NOT_APPLIED }), { status: 200 });
+      return new NextResponse(JSON.stringify({ status: UserStatus.NOT_APPLIED }), { status: 201 });
     }
     // Return the user's application status
     return new NextResponse(JSON.stringify({ status: user.status }), { status: 200 });
