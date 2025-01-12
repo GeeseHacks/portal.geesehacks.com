@@ -3,172 +3,254 @@
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { HackerEvent } from "@utils/types/HackerEvent";
-import HTMLFlipBook from "react-pageflip";
+// Removed: import HTMLFlipBook from "react-pageflip";
 import { useMediaQuery } from 'react-responsive';
-
 
 const PassportPage: React.FC = () => {
   const { data: session } = useSession();
-  const [user, setUser] = useState(null);
   const [allEvents, setAllEvents] = useState<HackerEvent[]>([]);
   const [events, setEvents] = useState<HackerEvent[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Determine if the device is mobile
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
 
+  // Track the current page index
+  const [currentPage, setCurrentPage] = useState(0);
+
   useEffect(() => {
-    fetch(`/api/users/${session?.user?.id}`)
+    if (!session?.user?.id) {
+      setLoading(false);
+      return;
+    }
+
+    // Fetch user data
+    fetch(`/api/users/${session.user.id}`)
       .then(res => res.json())
       .then(data => {
-        console.log("user!", data);
-        // setUser(data);
-        // setEvents(data.attendedEventIds ? data.attendedEventIds : []);
-        return data.attendedEventIds ? data.attendedEventIds : [];
-      }).then((data) => {
+        // console.log("User Data:", data);
+        const attendedEventIds = data.attendedEventIds || [];
+        return attendedEventIds;
+      })
+      .then((attendedEventIds) => {
+        // Fetch all events
         fetch('/api/events')
           .then(res => res.json())
           .then(eventsData => {
-            const allEvents = eventsData;
-            setAllEvents(allEvents);
-            const filteredEvents = eventsData.filter((event: HackerEvent) => data.includes(event.id));
+            const allEventsData = eventsData.filter((event: HackerEvent) => event.needsScanning);
+            setAllEvents(allEventsData);
+            const filteredEvents = allEventsData.filter((event: HackerEvent) => attendedEventIds.includes(event.id));
             setEvents(filteredEvents);
             setLoading(false);
-            console.log(eventsData)
           })
           .catch((error) => {
             console.error("Error fetching events:", error);
             setLoading(false); // Ensure loading stops even on error
           });
-          console.log("!!!!!!!!!!!!!!!!!!!!!");
-          console.log(data);
+        // console.log("Attended Event IDs:", attendedEventIds);
       })
-  }, []);
+      .catch((error) => {
+        console.error("Error fetching user:", error);
+        setLoading(false);
+      });
+  }, [session]);
 
+  // Define all pages of the passport
+  const allPages = [
 
-  const flipBookProps = {
-    width: 350,
-    height: 500,
-    size: 'fixed' as 'fixed' | 'stretch',
-    minWidth: 250,
-    maxWidth: 550,
-    minHeight: 350,
-    maxHeight: 800,
-    drawShadow: true,
-    flippingTime: 1000,
-    usePortrait: false,
-    startZIndex: 0,
-    autoSize: true,
-    maxShadowOpacity: 1,
-    showCover: false,
-    mobileScrollSupport: true,
-    className: 'flip-book',
-    style: {
-      transform: isMobile ? 'scale(0.5)' : 'scale(1)'
-    },
-    startPage: 0,
-    clickEventForward: true,
-    useMouseEvents: true,
-    swipeDistance: 0,
-    showPageCorners: true,
-    disableFlipByClick: false,
-    orientation: 'portrait',
-    showDoublePage: false, // Enable double page display
-    perspective: 2500
+    // Cover Page 1
+    <div className="flex flex-col justify-center items-center bg-white text-center p-8 h-full">
+      <h2 className="text-5xl font-bold mb-4 mt-16 text-gray-800" style={{ fontFamily: 'Just Another Hand, cursive' }}>GeeseHacks</h2>
+      <h2 className="text-4xl font-bold mb-4 mt-2 text-gray-800" style={{ fontFamily: 'Just Another Hand, cursive' }}>2025</h2>
+      <p className="text-gray-500 mt-24 font-semibold">Digital Passport</p>
+    </div>,
+
+    // Event Pages
+    ...allEvents.map((event) => (
+      <div
+        key={event.id}
+        className="page flex flex-col justify-between bg-white text-center h-full p-4 rounded-xl shadow-lg"
+      >
+        {/* Main Content */}
+        <div className="flex flex-col flex-1">
+          {/* Icon */}
+          <img
+            src={`/static/icons/${event.eventType.toLowerCase()}.svg`}
+            alt={`${event.eventType} icon`}
+            className="mx-auto mb-4"
+            style={{ width: '100px', height: '100px' }}
+          />
+          {/* Event Title */}
+          <h2
+            className="text-4xl font-medium text-gray-800 mb-4"
+            style={{ fontFamily: 'Just Another Hand, cursive' }}
+          >
+            {event.name}
+          </h2>
+          {/* Event Details */}
+          <p
+            className="text-2xl text-gray-600 mb-2"
+            style={{ fontFamily: 'Just Another Hand, cursive' }}
+          >
+            {event.details}
+          </p>
+        </div>
+
+        {/* Bottom Part */}
+        <div className="flex flex-col items-center">
+          {/* Stamp */}
+          <div className="flex justify-center items-center w-full">
+            {events.includes(event) ? (
+              
+                <img
+                  src="/static/images/geesestamp.png"
+                  alt="Stamp icon"
+                  className="w-32 mb-10"
+                />
+              
+            ) : (
+              <div className="w-20 h-20 border-4 border-dashed rounded-full flex items-center justify-center text-gray-400 my-4">
+                
+              </div>
+            )}
+          </div>
+          {/* Footer */}
+          <p className="text-xs text-gray-400 mt-2" style={{ fontFamily: 'Just Another Hand, cursive' }}>GeeseHacks Passport</p>
+        </div>
+      </div>
+    )),
+
+    // Back Cover Pages
+    <div className="page flex flex-col justify-center items-center bg-gray-100 text-center p-8 h-full">
+      <p className="text-gray-600 mt-32 text-3xl italic" style={{ fontFamily: 'Just Another Hand, cursive' }}>Thank you for participating!</p>
+    </div>,
+    <div className="page flex flex-col justify-center items-center bg-gray-100 text-center p-8 h-full">
+      <h2 className="text-xl font-bold mb-4 text-gray-800 mt-32" style={{ fontFamily: 'Just Another Hand, cursive' }}>GeeseHacks 2024</h2>
+      <p className="text-gray-500" style={{ fontFamily: 'Just Another Hand, cursive' }}>See you next year!</p>
+    </div>,
+  ];
+
+  // Responsive sizing for pages
+  const pageWidth = isMobile ? 'w-[300px]' : 'w-[350px]';
+  const pageHeight = isMobile ? 'h-[450px]' : 'h-[500px]';
+
+  // Handle Next Page
+  const handleNext = () => {
+    if (isMobile) {
+      if (currentPage < allPages.length - 1) {
+        setCurrentPage(currentPage + 1);
+      }
+    } else {
+      if (currentPage + 2 < allPages.length) {
+        setCurrentPage(currentPage + 2);
+      }
+    }
   };
 
-  return <>
-    <div>
-      <h1 className="text-4xl mt-5 mb-2">Passport</h1>
-      <p className="text-gray-500">See which events you've attended!</p>
-    </div>
+  // Handle Previous Page
+  const handlePrevious = () => {
+    if (isMobile) {
+      if (currentPage > 0) {
+        setCurrentPage(currentPage - 1);
+      }
+    } else {
+      if (currentPage - 2 >= 0) {
+        setCurrentPage(currentPage - 2);
+      }
+    }
+  };
 
-    <div className="bg-gradient-to-br text-white w-full h-full mb-4">
-      <div className="
-          bg-gradient-to-r from-darkpurple to-darkteal 
-          p-2 lg:p-8 rounded-xl w-full h-full
-          relative
-          flex flex-col items-center justify-center
-          overflow-hidden
-        ">
-        {loading ? (
-          <div>Loading...</div>
-        ) : (
-          <div className="">
-            <HTMLFlipBook {...flipBookProps}>
-              {/* Cover Pages (Left and Right) */}
-              <div className="flex flex-col justify-center items-center bg-white text-center p-8">
-                <h2 className="text-5xl font-bold mb-4 mt-16 text-gray-800" style={{ fontFamily: 'Just Another Hand, cursive' }}>GeeseHacks</h2>
-                <h2 className="text-4xl font-bold mb-4 mt-2 text-gray-800" style={{ fontFamily: 'Just Another Hand, cursive' }}>2025</h2>
-                <p className="text-gray-500 mt-24 font-semibold">Digital Passport</p>
-              </div>
-
-              <div className="flex flex-col justify-center items-center bg-white text-center p-8">
-                <p className="text-gray-500 mt-28 font-semibold">Click or swipe to flip pages</p>
-              </div>
-              {/* Event Pages */}
-              {allEvents.map((event, index) => (
-              <div
-                key={event.id}
-                className="page flex flex-col bg-white py-12 text-center h-full relative"
-              >
-                <div className="flex flex-col">
-                  {/* Icon */}
-                  <img
-                    src={`/static/icons/${event.eventType.toLowerCase()}.svg`}
-                    alt={`${event.eventType} icon`}
-                    className="mx-auto mb-4"
-                    style={{ width: '100px', height: '100px' }} // Adjust size as needed
-                  />
-                  {/* Event Title */}
-                  <h2
-                    className="text-4xl font-medium text-gray-800 mb-4"
-                    style={{ fontFamily: 'Just Another Hand, cursive' }}
-                  >
-                    {event.name}
-                  </h2>
-                  {/* Event Details */}
-                  <p
-                    className="text-2xl text-gray-600 mb-2"
-                    style={{ fontFamily: 'Just Another Hand, cursive' }}
-                  >
-                    {event.details}
-                  </p>
-                </div>
-                {/* Bottom part */}
-                <div className="absolute bottom-8 w-full flex flex-col justify-center items-center">
-                  {/* Stamp */}
-                  <div className="flex justify-center items-center w-full">
-                  {events.includes(event) ? (
-                    <div className="w-20 h-20 border-4 border-solid rounded-full flex items-center justify-center text-gray-400 my-4">
-                      Stamp
-                    </div>
-                  ) : (
-                    <div className="w-20 h-20 border-4 border-dashed rounded-full flex items-center justify-center text-gray-400 my-4">
-                      No Stamp
-                    </div>
-                  )}
-                  </div>
-                  {/* "GeeseHacks Passport" Aligned to Bottom */}
-                  <p className="text-xs text-gray-400 mt-8">GeeseHacks Passport</p>
-                </div>
-              </div>
-              ))}
-
-
-
-              {/* Back Cover Pages */}
-              <div className="page flex flex-col justify-center items-center bg-gray-100 text-center p-8">
-                <p className="text-gray-600 mt-32 text-3xl italic" style={{ fontFamily: 'Just Another Hand, cursive' }}>Thank you for participating!</p>
-              </div>
-              <div className="page flex flex-col justify-center items-center bg-gray-100 text-center p-8">
-                <h2 className="text-xl font-bold mb-4 text-gray-800 mt-32">GeeseHacks 2024</h2>
-                <p className="text-gray-500">See you next year!</p>
-              </div>
-            </HTMLFlipBook>
-          </div>
-        )}
+  return (
+    <>
+      {/* Header */}
+      <div>
+        <h1 className="text-4xl mt-5 mb-2">Passport</h1>
+        <p className="text-gray-500">See which events you've attended!</p>
       </div>
-    </div>
-  </>
+
+      {/* Flipbook Container */}
+      <div className="">
+        <div
+          className="
+              bg-gradient-to-r from-darkpurple to-darkteal 
+              p-2 lg:p-8 rounded-xl w-full h-full
+              relative
+              flex flex-col items-center justify-center
+              overflow-hidden
+            "
+        >
+          {loading ? (
+            <div>Loading...</div>
+          ) : (
+            <div className="w-full h-full flex flex-col items-center justify-center">
+              {/* Pages */}
+              <div
+                className={`w-full h-full flex ${
+                  isMobile ? 'flex-col' : 'flex-row'
+                } justify-center items-center`}
+              >
+                {/* Single Page for Mobile */}
+                {isMobile ? (
+                  <div
+                    className={`bg-gray-300 rounded-xl shadow-lg p-4 ${pageWidth} ${pageHeight} font-just-another-hand`}
+                  >
+                    {allPages[currentPage]}
+                  </div>
+                ) : (
+                  /* Two Pages Side-by-Side for Desktop */
+                  <div className="flex">
+                    {/* Left Page */}
+                    <div
+                      className={`bg-gray-300 rounded-xl shadow-lg p-4 mr-4 ${pageWidth} ${pageHeight} font-just-another-hand`}
+                    >
+                      {allPages[currentPage]}
+                    </div>
+                    {/* Right Page */}
+                    <div
+                      className={`bg-gray-300 rounded-xl shadow-lg p-4 ${pageWidth} ${pageHeight} font-just-another-hand`}
+                    >
+                      {allPages[currentPage + 1] || <div className={`${pageWidth} ${pageHeight}`}></div>}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Navigation Buttons */}
+              <div className="flex justify-center mt-4">
+                {/* Previous Button */}
+                <button
+                  onClick={handlePrevious}
+                  disabled={currentPage === 0}
+                  className={`px-4 py-2 mx-2 rounded-lg bg-darkpurple text-white ${
+                    currentPage === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-darkteal'
+                  }`}
+                >
+                  Previous
+                </button>
+                {/* Next Button */}
+                <button
+                  onClick={handleNext}
+                  disabled={
+                    isMobile
+                      ? currentPage >= allPages.length - 1
+                      : currentPage >= allPages.length - 2
+                  }
+                  className={`px-4 py-2 mx-2 rounded-lg bg-darkpurple text-white ${
+                    (isMobile && currentPage >= allPages.length - 1) ||
+                    (!isMobile && currentPage >= allPages.length - 2)
+                      ? 'opacity-50 cursor-not-allowed'
+                      : 'hover:bg-darkteal'
+                  }`}
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  )
 }
+
 export default PassportPage;
