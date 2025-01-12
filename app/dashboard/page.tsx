@@ -45,6 +45,7 @@ const Home: React.FC = () => {
     CONFIRMED: "RSVP Confirmed",
   };
 
+
   useEffect(() => {
     const fetchStatus = async () => {
       try {

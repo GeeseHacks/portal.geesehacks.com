@@ -56,8 +56,8 @@ export default function EmailSenderPage() {
   const acceptApplicants = async () => {
     try {
       await acceptApplicants(); // Ensure applicants are accepted before sending emails
-      
-      const response = await fetch('/api/accept-applicants', {
+
+      const response = await fetch('/api/users/accept', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
