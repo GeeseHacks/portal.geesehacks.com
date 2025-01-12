@@ -17,6 +17,8 @@ tags:
     description: Resume related endpoints
   - name: qr-codes
     description: QR Code registration related endpoints
+  - name: stock-sim
+    description: Stock simulator related endpoints
 paths:
   /api/auth/signup:
     post:
@@ -253,6 +255,38 @@ paths:
                   error:
                     type: string
                     example: Error fetching user
+  /api/investments/:
+    get:
+      tags: 
+        - stock-sim
+      summary: Get all investments
+      responses:
+        '200':
+          description: List of investments
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Investment'
+  /api/investments/{id}:
+    get:
+      tags: 
+        - stock-sim
+      summary: Get investments by projectID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of investments
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Investment'
+          
+
 components:
   schemas:
     UserAuth:
@@ -378,3 +412,15 @@ components:
         userid:
           type: integer
           description: The ID of the user associated with this QR Code.
+    Investment:
+      type: object
+      properties:
+        id:
+          type: integer
+        amount:
+          type: integer
+        judgeId:
+          type: integer
+        projectId: 
+          type: integer
+
