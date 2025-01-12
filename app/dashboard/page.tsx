@@ -23,6 +23,7 @@ const Home: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<StatusType | null>(null);
   const [scheduleDisabled, setScheduleDisabled] = useState(true); // Change this when hackers are accepted
+  const [qrcodeDisabled, setQrcodeDisabled] = useState(true); // Change this when hackers are accepted
   const [isSubmitting, setIsSubmitting] = useState(false); // Add loading state for RSVP submission
 
   const { data: session } = useSession();
@@ -56,6 +57,10 @@ const Home: React.FC = () => {
         } else {
           setError("Invalid application status received");
         }
+
+        if (data.status === "CONFIRMED" || data.status === "ACCEPTED") {
+          setQrcodeDisabled(false);
+        }
       } catch (err) {
         setError("Error loading application status");
       } finally {
@@ -70,21 +75,21 @@ const Home: React.FC = () => {
     try {
       setIsSubmitting(true); // Start loading
       const userId = session?.user?.id;
-  
+
       const toastId = toast.loading("Submitting RSVP...");
       const response = await fetch("/api/rsvp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: userId }),
       });
-  
+
       if (!response.ok) {
         throw new Error("Failed to confirm RSVP");
       }
-  
+
       const data = await response.json();
       setStatus(data.status); // Optionally update the status if returned from API
-  
+
       toast.success("RSVP successful!", { id: toastId });
     } catch (err) {
       console.error(err);
@@ -92,7 +97,7 @@ const Home: React.FC = () => {
     } finally {
       setIsSubmitting(false); // Stop loading
     }
-  };  
+  };
 
 
   return (
@@ -116,9 +121,8 @@ const Home: React.FC = () => {
       >
         {/* Status Image */}
         <img
-          src={`/static/images/status-${
-            status === "APPLIED"  || status === "ACCEPTED" || status === "CONFIRMED" ? "submitted" : "notsubmitted"
-          }.png`}
+          src={`/static/images/status-${status === "APPLIED" || status === "ACCEPTED" || status === "CONFIRMED" ? "submitted" : "notsubmitted"
+            }.png`}
           alt={status || "Loading"}
           className="absolute right-0 -top-10 z-0"
         />
@@ -188,29 +192,20 @@ const Home: React.FC = () => {
 
       {/* Additional Cards */}
       <div className="grid lg:grid-cols-2 gap-8 max-h-4/6 lg:min-h-48 mb-8">
-        {/* FAQ Card */}
+        {/* QR Card */}
         <Link
-          href="https://geesehacks.com#faq"
-          target="_blank"
-          rel="noopener noreferrer"
+          href={qrcodeDisabled ? "#" : "/dashboard/qrcode"}
+          className={`relative rounded-xl bg-gradient-to-r from-darkpurple to-darkteal p-8 lg:p-12 overflow-hidden transition-transform duration-300 
+      ${qrcodeDisabled
+              ? "pointer-events-none opacity-50"
+              : "hover:scale-102 hover:drop-shadow-[0_0px_15px_rgba(48,133,159,0.5)]"
+            } h-48`}
         >
-          <div
-            className="
-        bg-gradient-to-r from-darkpurple to-darkteal 
-        p-8 lg:p-12 rounded-xl
-        relative overflow-hidden 
-        hover:scale-102 transition-transform duration-300 
-        hover:drop-shadow-[0_0px_15px_rgba(48,133,159,0.5)]
-        h-48
-      "
-          >
-            <img
-              src="/static/images/faq.png"
-              alt="FAQ"
-              className="absolute -right-24 -bottom-8 -z-10 scale-50"
-            />
-            <h2 className="text-[30px] font-semibold">FAQ</h2>
-            <p className="text-white-500">Common Questions</p>
+
+          <div className="">
+            <img src="/static/images/CameraFrame.png" alt="QR Code" className="absolute right-10 bottom-8 z-0 scale-75" />
+            <h2 className="text-[30px] font-semibold">QR Code</h2>
+            <p className="text-white-500">Your ID at Geesehacks</p>
           </div>
         </Link>
 
@@ -218,11 +213,10 @@ const Home: React.FC = () => {
         <Link
           href={scheduleDisabled ? "#" : "/dashboard/schedule"}
           className={`relative rounded-xl bg-gradient-to-r from-darkpurple to-darkteal p-8 lg:p-12 overflow-hidden transition-transform duration-300 
-      ${
-        scheduleDisabled
-          ? "pointer-events-none opacity-50"
-          : "hover:scale-102 hover:drop-shadow-[0_0px_15px_rgba(48,133,159,0.5)]"
-      } h-48`}
+      ${scheduleDisabled
+              ? "pointer-events-none opacity-50"
+              : "hover:scale-102 hover:drop-shadow-[0_0px_15px_rgba(48,133,159,0.5)]"
+            } h-48`}
         >
           <img
             src="/static/images/ScheduleIcon.png"

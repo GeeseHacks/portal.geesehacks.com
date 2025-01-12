@@ -3,12 +3,15 @@ import AcceptanceEmail from "@/components/emails/AcceptedTemplate";
 import { Resend } from "resend";
 import { render } from "@react-email/render";
 
-
-
-
+const ADMIN_EMAILS = ['benny.wu.new@gmail.com', 'chd-james@skillinsight.ca', 'riri.hong@gmail.com'];
 
 export async function POST(req: Request) {
-  const { to } = await req.json();
+
+  const { to, sender } = await req.json();
+
+  if (!ADMIN_EMAILS.includes(sender)) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   const resend = new Resend(process.env.RESEND_API_KEY);
 
