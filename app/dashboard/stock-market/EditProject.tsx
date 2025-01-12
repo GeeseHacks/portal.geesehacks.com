@@ -1,0 +1,251 @@
+"use client";
+import React, { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "react-hot-toast";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { projectSchema, ProjectFormData } from "@/utils/projectSchema";
+import { Copy, RefreshCw } from "lucide-react";
+import { v4 as uuidv4 } from "uuid";
+import { useSession } from "next-auth/react";
+
+interface TeamMember {
+  firstname: string;
+  lastname: string;
+  email: string;
+}
+
+const EditProject = () => {
+  const { data: session } = useSession();
+  const userId = session?.user?.id;
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ProjectFormData>({
+    resolver: zodResolver(projectSchema),
+  });
+
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+
+  const [inviteUrl, setInviteUrl] = useState<string>("");
+  const [teamId, setTeamId] = useState<string | null>(null);
+
+  const getTeamInviteLink = async () => {
+    try {
+      // Fetch current user's team_id from the database
+      const response = await fetch("/api/users/teams?id=" + userId);
+      const data = await response.json();
+
+      let teamId = data.team_id;
+      console.log("Team ID: ", teamId);
+      if (!teamId) {
+        console.log("Team ID is null, generating new UUID");
+        // Generate new UUID if user doesn't have a team_id
+        teamId = uuidv4();
+
+        // Save the new team_id to the database
+        await fetch("/api/users/teams", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ user_id: userId, team_id: teamId }),
+        });
+      }
+      setTeamId(teamId);
+
+      // Set the invite URL using the team_id
+      setInviteUrl(`https://portal.geesehacks.com/team-invite?id=${teamId}`);
+    } catch (error) {
+      console.error("Failed to get team invite link:", error);
+      toast.error("Failed to generate team invite link");
+    }
+  };
+
+  useEffect(() => {
+    getTeamInviteLink();
+  }, []);
+
+  useEffect(() => {
+    if (teamId) {
+      refreshTeamList();
+    }
+  }, [teamId]);
+
+  const copyInviteLink = async () => {
+    try {
+      await navigator.clipboard.writeText(inviteUrl);
+      toast.success("Invite link copied to clipboard!");
+    } catch (error) {
+      toast.error("Failed to copy invite link");
+    }
+  };
+
+  const refreshTeamList = async () => {
+    try {
+      // Get current user's team_id first
+      const teamListResponse = await fetch("/api/users/teams/team-list?team_id=" + teamId);
+      const teamListData = await teamListResponse.json();
+      console.log("Team list: ", teamListData);
+      setTeamMembers(teamListData);
+      // toast.success("Team list refreshed!");
+    } catch (error) {
+      toast.error("Failed to refresh team list");
+    }
+  };
+
+  const onSubmit = async (data: ProjectFormData) => {
+    try {
+      // TODO: Implement your API call here
+      console.log(data);
+      toast.success("Project saved successfully!");
+    } catch (error) {
+      toast.error("Failed to save project");
+      console.error(error);
+    }
+  };
+
+  return (
+    <div className="space-y-6 pb-10">
+      {/* Team Management Card */}
+      <Card>
+        <CardHeader>
+          <div className="flex justify-between items-center">
+            <div>
+              <CardTitle>Team Management</CardTitle>
+              <CardDescription>
+                Manage your team members and invitations
+              </CardDescription>
+            </div>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={refreshTeamList}
+              title="Refresh team list"
+            >
+              <RefreshCw className="h-4 w-4" />
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-6">
+            <div className="space-y-2">
+              <Label>My Invite Link</Label>
+              <p className="text-sm text-muted-foreground">
+                Share this link to invite others to your team
+              </p>
+              <div className="flex gap-2">
+                <Input readOnly value={inviteUrl} className="flex-1" />
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={copyInviteLink}
+                  title="Copy invite link"
+                >
+                  <Copy className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>My Team</Label>
+              <div className="space-y-3">
+                {teamMembers.map((member, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-3 p-2 border rounded-lg"
+                  >
+                    <div>
+                      <p className="font-medium">
+                        {member.firstname} {member.lastname}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {member.email}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Project Information Card - Moved to bottom */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Project Information</CardTitle>
+          <CardDescription>
+            Fill out the details about your project
+          </CardDescription>
+        </CardHeader>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <CardContent>
+            <div className="grid gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">Project Name</Label>
+                <Input
+                  id="name"
+                  {...register("name")}
+                  placeholder="Enter project name"
+                />
+                {errors.name && (
+                  <p className="text-red-500 text-sm">{errors.name.message}</p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="description">
+                  Short Description (under 200 characters)
+                </Label>
+                <Textarea
+                  id="description"
+                  {...register("description")}
+                  placeholder="Feel free to copy your Devpost elevator pitch"
+                  rows={3}
+                />
+                {errors.description && (
+                  <p className="text-red-500 text-sm">
+                    {errors.description.message}
+                  </p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="devpostLink">Devpost Link</Label>
+                <Input
+                  id="devpostLink"
+                  {...register("devpostLink")}
+                  placeholder="Paste the link to your Devpost submission"
+                />
+                {errors.devpostLink && (
+                  <p className="text-red-500 text-sm">
+                    {errors.devpostLink.message}
+                  </p>
+                )}
+              </div>
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button type="submit" variant="default">
+              Save Project
+            </Button>
+          </CardFooter>
+        </form>
+      </Card>
+    </div>
+  );
+};
+
+export default EditProject;
