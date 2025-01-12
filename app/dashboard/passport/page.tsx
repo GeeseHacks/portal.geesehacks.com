@@ -78,11 +78,11 @@ const PassportPage: React.FC = () => {
             src={`/static/icons/${event.eventType.toLowerCase()}.svg`}
             alt={`${event.eventType} icon`}
             className="mx-auto mb-4"
-            style={{ width: '100px', height: '100px' }}
+            style={{ width: '80px', height: '80px' }}
           />
           {/* Event Title */}
           <h2
-            className="text-4xl font-medium text-gray-800 mb-4"
+            className="text-3xl font-medium text-gray-800 mb-4"
             style={{ fontFamily: 'Just Another Hand, cursive' }}
           >
             {event.name}
@@ -105,11 +105,11 @@ const PassportPage: React.FC = () => {
                 <img
                   src="/static/images/geesestamp.png"
                   alt="Stamp icon"
-                  className="w-32 mb-10"
+                  className="w-28 mb-10"
                 />
               
             ) : (
-              <div className="w-20 h-20 border-4 border-dashed rounded-full flex items-center justify-center text-gray-400 my-4">
+              <div className="w-20 h-20 mb-10 border-4 border-dashed rounded-full flex items-center justify-center text-gray-400 my-4">
                 
               </div>
             )}
@@ -131,8 +131,8 @@ const PassportPage: React.FC = () => {
   ];
 
   // Responsive sizing for pages
-  const pageWidth = isMobile ? 'w-[300px]' : 'w-[350px]';
-  const pageHeight = isMobile ? 'h-[450px]' : 'h-[500px]';
+  const pageWidth = isMobile ? 'w-[250px]' : 'w-[350px]';
+  const pageHeight = isMobile ? 'h-[400px]' : 'h-[450px]';
 
   // Handle Next Page
   const handleNext = () => {
@@ -177,6 +177,7 @@ const PassportPage: React.FC = () => {
               relative
               flex flex-col items-center justify-center
               overflow-hidden
+              
             "
         >
           {loading ? (
