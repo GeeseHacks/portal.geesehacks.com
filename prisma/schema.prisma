@@ -35,9 +35,9 @@ model User {
   status                     UserStatus
   attendedEventIds           Json?
   event_qr_code              String?               @unique @db.VarChar(255)
-  application_responses      ApplicationResponse[]
   team_id                    String?               @db.Uuid
   net_worth                  Int                   @default(0)
+  application_responses      ApplicationResponse[]
 }
 
 model ApplicationResponse {
@@ -93,10 +93,10 @@ model Judge {
   company        String?      @db.VarChar(255)
   isGuest        Boolean      @default(false)
   availableFunds Int          @default(10000)
-  Investment     Investment[]
-  projects       Project[]    @relation("JudgesOnProjects")
-  trackTag       CategoryTag? @relation(fields: [trackTagId], references: [id])
   trackTagId     Int?
+  Investment     Investment[]
+  trackTag       CategoryTag? @relation(fields: [trackTagId], references: [id])
+  projects       Project[]    @relation("JudgesOnProjects")
 
   @@index([name])
 }
@@ -105,16 +105,16 @@ model Project {
   id                 Int                  @id @default(autoincrement())
   name               String               @db.VarChar(255)
   totalInvestment    Int                  @default(0)
+  description        String?
   devpostLink        String?              @db.VarChar(255)
-  description        String?              @db.Text
   imageUrl           String?              @db.VarChar(255)
   EventParticipation EventParticipation[]
-  Investment         Investment[]
-  categoryTags       CategoryTag[]        @relation("CategoryTagsOnProjects")
-  judges             Judge[]              @relation("JudgesOnProjects")
   GeneralProject     GeneralProject[]
+  Investment         Investment[]
   SunlifeProject     SunlifeProject[]
   TeejLabProject     TeejLabProject[]
+  categoryTags       CategoryTag[]        @relation("CategoryTagsOnProjects")
+  judges             Judge[]              @relation("JudgesOnProjects")
 
   @@index([name])
 }
@@ -123,8 +123,8 @@ model CategoryTag {
   id       Int       @id @default(autoincrement())
   name     String    @db.VarChar(50)
   color    String    @db.VarChar(7)
-  projects Project[] @relation("CategoryTagsOnProjects")
   judges   Judge[]
+  projects Project[] @relation("CategoryTagsOnProjects")
 
   @@index([name])
 }
