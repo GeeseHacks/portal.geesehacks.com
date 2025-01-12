@@ -25,6 +25,7 @@ export default function EmailSenderPage() {
   const handleCsvInput = () => {
     setError('');
     try {
+      
       const rows = csvInput.split('\n').map(row => row.trim()).filter(row => row !== '');
       const parsedEmails = rows.flatMap(row => row.split(',').map(email => email.trim()));
 
@@ -50,6 +51,29 @@ export default function EmailSenderPage() {
   const handleConfirmSend = () => {
     setShowConfirm(true);
   };
+
+  // Accept applicants before sending emails
+  const acceptApplicants = async () => {
+    try {
+      await acceptApplicants(); // Ensure applicants are accepted before sending emails
+      
+      const response = await fetch('/api/accept-applicants', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ emails: emailList }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to accept applicants.');
+      }
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  };
+
 
   // Actual Email Sending Logic
   const handleSendEmails = () => {
