@@ -55,8 +55,6 @@ export default function EmailSenderPage() {
   // Accept applicants before sending emails
   const acceptApplicants = async () => {
     try {
-      await acceptApplicants(); // Ensure applicants are accepted before sending emails
-
       const response = await fetch('/api/users/accept', {
         method: 'POST',
         headers: {
@@ -76,22 +74,26 @@ export default function EmailSenderPage() {
 
 
   // Actual Email Sending Logic
-  const handleSendEmails = () => {
-    fetch('/api/email/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ 'to': emailList, 'sender': session?.user?.email })
-    }).then(res => {
+  const handleSendEmails = async () => {
+    try {
+      await acceptApplicants(); // Ensure applicants are accepted before sending emails
+
+      await fetch('/api/email/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 'to': emailList, 'sender': session?.user?.email }),
+      });
+
       setShowConfirm(false);
       console.log('Sending emails to:', emailList);
       alert(`✅ Emails sent to ${emailList.length} recipients.`);
       setCsvInput('');
-      }
-    ).catch(err => {
-      alert('❌ Failed to send emails. Please try again.');
-    });
+    } catch (err: any) {
+      alert(`❌ ${err.message}`);
+      setShowConfirm(false);
+    }
 
     setEmailList([]);
   };
