@@ -64,16 +64,6 @@ model ScannerUserAuth {
   password String @db.VarChar(60)
 }
 
-model EventParticipation {
-  id        Int     @id @default(autoincrement())
-  eventName String  @db.VarChar(255)
-  projectId Int
-  amount    Int     @default(0)
-  Project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-
-  @@index([projectId])
-}
-
 model Investment {
   id        Int      @id @default(autoincrement())
   amount    Int
@@ -108,11 +98,11 @@ model Project {
   description        String?
   devpostLink        String?              @db.VarChar(255)
   imageUrl           String?              @db.VarChar(255)
-  EventParticipation EventParticipation[]
   GeneralProject     GeneralProject[]
   Investment         Investment[]
   SunlifeProject     SunlifeProject[]
   TeejLabProject     TeejLabProject[]
+  CSCanProject       CSCanProject[]
   categoryTags       CategoryTag[]        @relation("CategoryTagsOnProjects")
   judges             Judge[]              @relation("JudgesOnProjects")
 
@@ -142,6 +132,12 @@ model SunlifeProject {
 }
 
 model TeejLabProject {
+  id        Int     @id @default(autoincrement())
+  projectId Int
+  Project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model CSCanProject {
   id        Int     @id @default(autoincrement())
   projectId Int
   Project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
