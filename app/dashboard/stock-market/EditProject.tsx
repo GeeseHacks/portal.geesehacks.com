@@ -15,16 +15,21 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { projectSchema, ProjectFormData } from "@/utils/projectSchema";
 import { Copy, RefreshCw } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { useSession } from "next-auth/react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface TeamMember {
   firstname: string;
   lastname: string;
   email: string;
+  net_worth: number;
 }
+
+const AVAILABLE_TRACKS = ["Sunlife", "TeejLab", "CS-CAN"] as const;
 
 const EditProject = () => {
   const { data: session } = useSession();
@@ -42,6 +47,22 @@ const EditProject = () => {
 
   const [inviteUrl, setInviteUrl] = useState<string>("");
   const [teamId, setTeamId] = useState<string | null>(null);
+  const [project, setProject] = useState<{
+    submitted?: boolean;
+    tracks?: string[];
+  }>({
+    submitted: false,
+    tracks: [],
+  });
+
+  const toggleTrack = (track: string) => {
+    setProject((prev) => ({
+      ...prev,
+      tracks: prev.tracks?.includes(track)
+        ? prev.tracks.filter((t) => t !== track)
+        : [...(prev.tracks || []), track],
+    }));
+  };
 
   const getTeamInviteLink = async () => {
     try {
@@ -97,7 +118,9 @@ const EditProject = () => {
   const refreshTeamList = async () => {
     try {
       // Get current user's team_id first
-      const teamListResponse = await fetch("/api/users/teams/team-list?team_id=" + teamId);
+      const teamListResponse = await fetch(
+        "/api/users/teams/team-list?team_id=" + teamId
+      );
       const teamListData = await teamListResponse.json();
       console.log("Team list: ", teamListData);
       setTeamMembers(teamListData);
@@ -109,8 +132,47 @@ const EditProject = () => {
 
   const onSubmit = async (data: ProjectFormData) => {
     try {
-      // TODO: Implement your API call here
+      // Calculate total team net worth
+      const totalNetWorth = teamMembers.reduce(
+        (sum, member) => sum + member.net_worth,
+        0
+      );
+
       console.log(data);
+      // Create the main project first
+      const projectResponse = await fetch("/api/projects", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...data,
+          totalTeamNetWorth: totalNetWorth,
+          tracks: project.tracks, // The selected tracks
+        }),
+      });
+
+      const savedProject = await projectResponse.json();
+      const projectId = savedProject.id;
+
+      // Create entries for each selected track
+      // const trackPromises = project.tracks?.map(async (track) => {
+      //   const endpoint = `/api/projects/tracks/${track.toLowerCase()}`;
+      //   return fetch(endpoint, {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify({
+      //       projectId: projectId,
+      //     }),
+      //   });
+      // });
+
+      // if (trackPromises) {
+      //   await Promise.all(trackPromises);
+      // }
+
       toast.success("Project saved successfully!");
     } catch (error) {
       toast.error("Failed to save project");
@@ -166,7 +228,7 @@ const EditProject = () => {
                 {teamMembers.map((member, index) => (
                   <div
                     key={index}
-                    className="flex items-center gap-3 p-2 border rounded-lg"
+                    className="flex items-center justify-between p-2 border rounded-lg"
                   >
                     <div>
                       <p className="font-medium">
@@ -174,6 +236,11 @@ const EditProject = () => {
                       </p>
                       <p className="text-sm text-muted-foreground">
                         {member.email}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">
+                        Net Worth: ${member.net_worth}
                       </p>
                     </div>
                   </div>
@@ -184,17 +251,24 @@ const EditProject = () => {
         </CardContent>
       </Card>
 
-      {/* Project Information Card - Moved to bottom */}
+      {/* Project Information Card */}
       <Card>
         <CardHeader>
-          <CardTitle>Project Information</CardTitle>
-          <CardDescription>
-            Fill out the details about your project
-          </CardDescription>
+          <div className="flex justify-between items-center">
+            <div>
+              <CardTitle>Project Information</CardTitle>
+              <CardDescription>
+                Fill out the details about your project
+              </CardDescription>
+            </div>
+            <Badge variant={project?.submitted ? "default" : "destructive"}>
+              {project?.submitted ? "Submitted" : "Not Submitted"}
+            </Badge>
+          </div>
         </CardHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardContent>
-            <div className="grid gap-4">
+            <div className="grid gap-6">
               <div className="space-y-2">
                 <Label htmlFor="name">Project Name</Label>
                 <Input
@@ -234,6 +308,26 @@ const EditProject = () => {
                     {errors.devpostLink.message}
                   </p>
                 )}
+              </div>
+              <div className="space-y-4">
+                <Label>Tracks</Label>
+                <div className="flex flex-row gap-6">
+                  {AVAILABLE_TRACKS.map((track) => (
+                    <div key={track} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={track.toLowerCase()}
+                        checked={project?.tracks?.includes(track)}
+                        onCheckedChange={() => toggleTrack(track)}
+                      />
+                      <Label
+                        htmlFor={track.toLowerCase()}
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        {track}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </CardContent>
