@@ -38,6 +38,8 @@ model User {
   team_id                    String?               @db.Uuid
   net_worth                  Int                   @default(0)
   application_responses      ApplicationResponse[]
+  
+  @@index([team_id])
 }
 
 model ApplicationResponse {
@@ -95,9 +97,10 @@ model Project {
   id                 Int                  @id @default(autoincrement())
   name               String               @db.VarChar(255)
   totalInvestment    Int                  @default(0)
-  description        String?
-  devpostLink        String?              @db.VarChar(255)
+  description        String               @db.VarChar(255)
+  devpostLink        String               @db.VarChar(255)
   imageUrl           String?              @db.VarChar(255)
+  team_id            String               @unique @db.Uuid 
   GeneralProject     GeneralProject[]
   Investment         Investment[]
   SunlifeProject     SunlifeProject[]
