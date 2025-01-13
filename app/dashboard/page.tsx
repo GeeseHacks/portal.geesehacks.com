@@ -151,13 +151,9 @@ const Home: React.FC = () => {
 
         {/* Apply Button */}
         {status === "NOT_APPLIED" && (
-          <a
-            href="/apply"
-            className="mt-2 bg-transparent py-2 flex items-center z-10 cursor-pointer"
-          >
-            Apply
-            <FaAngleRight size={22} className="ml-1" />
-          </a>
+          <div className="text-sm z-50">
+            If you've received an acceptance email, but you're seeing a Not Applied status, please follow the following steps before contacting us. We recently re-enabled Google sign-in. You probably used email sign-in to submit your application. Try logging out and then using email sign-in using the email which you received the acceptance email from. We apologize for the inconvenience.
+          </div>
         )}
 
         {/* RSVP Button */}
