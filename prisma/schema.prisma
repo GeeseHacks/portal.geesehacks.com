@@ -35,11 +35,11 @@ model User {
   status                     UserStatus
   attendedEventIds           Json?
   event_qr_code              String?               @unique @db.VarChar(255)
-  team_id                    String?               @db.Uuid
+  project_id                 String?               @db.Uuid
   net_worth                  Int                   @default(0)
   application_responses      ApplicationResponse[]
   
-  @@index([team_id])
+  @@index([project_id])
 }
 
 model ApplicationResponse {
@@ -100,7 +100,6 @@ model Project {
   description        String               @db.VarChar(255)
   devpostLink        String               @db.VarChar(255)
   imageUrl           String?              @db.VarChar(255)
-  team_id            String               @unique @db.Uuid 
   GeneralProject     GeneralProject[]
   Investment         Investment[]
   SunlifeProject     SunlifeProject[]
