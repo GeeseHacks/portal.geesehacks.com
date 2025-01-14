@@ -93,7 +93,7 @@ export default function AcceptanceEmail({
                   <p style={styles.subtitle}>Your QR Code</p>
                   <p style={styles.text}>
                     Please present this QR code at the event for a smooth
-                    check-in experience. If it doesn't load (probably due to mail service incompatability), it's also in <a href='http://localhost:3000/dashboard/qrcode'>your portal</a>
+                    check-in experience. If it doesn't load (probably due to mail service incompatability), it's also in <a href='http://portal.geesehacks.com/dashboard/qrcode'>your portal</a>
                   </p>
                   <Img
                     src={qrcode}
