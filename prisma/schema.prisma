@@ -70,7 +70,7 @@ model InvestmentHistory {
   id           Int       @id @default(autoincrement())
   projectValue Int        // The project's total value after the transaction
   judgeId      Int
-  projectId    Int
+  projectId    String    @db.Uuid
   createdAt    DateTime   @default(now())
   
   judge        Judge      @relation(fields: [judgeId], references: [id], onDelete: Cascade)
@@ -96,7 +96,7 @@ model Judge {
 
 model JudgeProject {
   judgeId    Int
-  projectId  Int
+  projectId  String    @db.Uuid
 
   judge      Judge          @relation(fields: [judgeId], references: [id], onDelete: Cascade)
   project    Project        @relation(fields: [projectId], references: [id], onDelete: Cascade)
@@ -106,7 +106,7 @@ model JudgeProject {
 }
 
 model Project {
-  id                 Int                  @id @default(autoincrement())
+  id                 String               @id @db.Uuid
   name               String               @db.VarChar(255)
   description        String               @db.VarChar(255)
   devpostLink        String               @db.VarChar(255)
@@ -122,14 +122,14 @@ model Category {
   id        Int             @id @default(autoincrement())
   name      String
   projects  ProjectCategory[]
-  judges  JudgeCategory[] // Many-to-many relationship with Judge
+  judges    JudgeCategory[] // Many-to-many relationship with Judge
 }
 
 model JudgeCategory {
-  judgeId  Int
+  judgeId    Int
   categoryId Int
 
-  judge    Judge        @relation(fields: [judgeId], references: [id], onDelete: Cascade)
+  judge      Judge        @relation(fields: [judgeId], references: [id], onDelete: Cascade)
   category   Category       @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@id([judgeId, categoryId]) // Composite primary key for uniqueness
@@ -138,11 +138,11 @@ model JudgeCategory {
 }
 
 model ProjectCategory {
-  projectId       Int
+  projectId         String    @db.Uuid
   categoryId        Int
-  investmentAmount Int
+  investmentAmount  Int
 
-  project         Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  project           Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
   category          Category      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@id([projectId, categoryId]) // Composite primary key for efficiency
