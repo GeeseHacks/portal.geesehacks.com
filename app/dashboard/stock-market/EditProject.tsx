@@ -46,7 +46,7 @@ const EditProject = () => {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
 
   const [inviteUrl, setInviteUrl] = useState<string>("");
-  const [teamId, setTeamId] = useState<string | null>(null);
+  const [projectId, setProjectId] = useState<string | null>(null);
   const [project, setProject] = useState<{
     submitted?: boolean;
     tracks?: string[];
@@ -64,47 +64,47 @@ const EditProject = () => {
     }));
   };
 
-  const getTeamInviteLink = async () => {
+  const getProjectInviteLink = async () => {
     try {
-      // Fetch current user's team_id from the database
+      // Fetch current user's project_id from the database
       const response = await fetch("/api/users/teams?id=" + userId);
       const data = await response.json();
 
-      let teamId = data.team_id;
-      console.log("Team ID: ", teamId);
-      if (!teamId) {
-        console.log("Team ID is null, generating new UUID");
-        // Generate new UUID if user doesn't have a team_id
-        teamId = uuidv4();
+      let projectId = data.project_id;
+      console.log("Project ID: ", projectId);
+      if (!projectId) {
+        console.log("Project ID is null, generating new UUID");
+        // Generate new UUID if user doesn't have a project_id
+        projectId = uuidv4();
 
-        // Save the new team_id to the database
+        // Save the new project_id to the database
         await fetch("/api/users/teams", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ user_id: userId, team_id: teamId }),
+          body: JSON.stringify({ user_id: userId, project_id: projectId }),
         });
       }
-      setTeamId(teamId);
+      setProjectId(projectId);
 
-      // Set the invite URL using the team_id
-      setInviteUrl(`https://portal.geesehacks.com/team-invite?id=${teamId}`);
+      // Set the invite URL using the project_id
+      setInviteUrl(`https://portal.geesehacks.com/team-invite?id=${projectId}`);
     } catch (error) {
-      console.error("Failed to get team invite link:", error);
-      toast.error("Failed to generate team invite link");
+      console.error("Failed to get project invite link:", error);
+      toast.error("Failed to generate project invite link");
     }
   };
 
   useEffect(() => {
-    getTeamInviteLink();
+    getProjectInviteLink();
   }, []);
 
   useEffect(() => {
-    if (teamId) {
+    if (projectId) {
       refreshTeamList();
     }
-  }, [teamId]);
+  }, [projectId]);
 
   const copyInviteLink = async () => {
     try {
@@ -117,9 +117,9 @@ const EditProject = () => {
 
   const refreshTeamList = async () => {
     try {
-      // Get current user's team_id first
+      // Get current user's project_id first
       const teamListResponse = await fetch(
-        "/api/users/teams/team-list?team_id=" + teamId
+        "/api/users/teams/team-list?project_id=" + projectId
       );
       const teamListData = await teamListResponse.json();
       console.log("Team list: ", teamListData);
