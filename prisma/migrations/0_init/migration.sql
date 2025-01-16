@@ -1,19 +1,58 @@
-/*
-  Warnings:
+-- CreateEnum
+CREATE TYPE "UserStatus" AS ENUM ('ACCEPTED', 'REJECTED', 'WAITLIST', 'NOT_APPLIED', 'APPLIED', 'CONFIRMED');
 
-  - You are about to drop the `QRCodeRegistered` table. If the table is not empty, all the data it contains will be lost.
-  - A unique constraint covering the columns `[event_qr_code]` on the table `User` will be added. If there are existing duplicate values, this will fail.
+-- CreateTable
+CREATE TABLE "User" (
+    "id" VARCHAR(36) NOT NULL,
+    "firstname" VARCHAR(50) NOT NULL,
+    "lastname" VARCHAR(50) NOT NULL,
+    "age" INTEGER NOT NULL,
+    "email" VARCHAR(100) NOT NULL,
+    "phone_number" VARCHAR(20) NOT NULL,
+    "school" VARCHAR(100) NOT NULL,
+    "level_of_study" VARCHAR(100) NOT NULL,
+    "country_of_residence" VARCHAR(255) NOT NULL,
+    "dietary_restrictions" VARCHAR(100) NOT NULL,
+    "github" VARCHAR(255),
+    "linkedin" VARCHAR(255),
+    "personal_website" VARCHAR(255),
+    "MLH_authorize" BOOLEAN,
+    "field_of_study" VARCHAR(100) NOT NULL,
+    "optional_consider" VARCHAR(255),
+    "optional_gender" VARCHAR(50),
+    "optional_pronouns" VARCHAR(50),
+    "optional_race" VARCHAR(50),
+    "optional_underrepresented" TEXT,
+    "other_dietary_restrictions" VARCHAR(100),
+    "resume" VARCHAR(255),
+    "t_shirt_size" VARCHAR(50),
+    "status" "UserStatus" NOT NULL,
+    "attendedEventIds" JSONB,
+    "event_qr_code" VARCHAR(255),
 
-*/
--- DropForeignKey
-ALTER TABLE "QRCodeRegistered" DROP CONSTRAINT "QRCodeRegistered_userid_fkey";
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
 
--- AlterTable
-ALTER TABLE "User" ADD COLUMN     "attendedEventIds" JSONB,
-ADD COLUMN     "event_qr_code" VARCHAR(255);
+-- CreateTable
+CREATE TABLE "ApplicationResponse" (
+    "id" VARCHAR(36) NOT NULL,
+    "userid" TEXT NOT NULL,
+    "q1" VARCHAR(1000) NOT NULL,
+    "q2" VARCHAR(1000) NOT NULL,
 
--- DropTable
-DROP TABLE "QRCodeRegistered";
+    CONSTRAINT "ApplicationResponse_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "UserAuth" (
+    "id" VARCHAR(36) NOT NULL,
+    "email" VARCHAR(100) NOT NULL,
+    "password" VARCHAR(60) NOT NULL,
+    "resetToken" VARCHAR(255),
+    "tokenExpiration" TIMESTAMP(3),
+
+    CONSTRAINT "UserAuth_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "ScannerUserAuth" (
@@ -91,6 +130,18 @@ CREATE TABLE "_JudgePairTeams" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_event_qr_code_key" ON "User"("event_qr_code");
+
+-- CreateIndex
+CREATE INDEX "ApplicationResponse_userid_idx" ON "ApplicationResponse"("userid");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "UserAuth_email_key" ON "UserAuth"("email");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "ScannerUserAuth_email_key" ON "ScannerUserAuth"("email");
 
 -- CreateIndex
@@ -120,8 +171,8 @@ CREATE UNIQUE INDEX "_JudgePairTeams_AB_unique" ON "_JudgePairTeams"("A", "B");
 -- CreateIndex
 CREATE INDEX "_JudgePairTeams_B_index" ON "_JudgePairTeams"("B");
 
--- CreateIndex
-CREATE UNIQUE INDEX "User_event_qr_code_key" ON "User"("event_qr_code");
+-- AddForeignKey
+ALTER TABLE "ApplicationResponse" ADD CONSTRAINT "ApplicationResponse_userid_fkey" FOREIGN KEY ("userid") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "EventParticipation" ADD CONSTRAINT "EventParticipation_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -146,3 +197,4 @@ ALTER TABLE "_JudgePairTeams" ADD CONSTRAINT "_JudgePairTeams_A_fkey" FOREIGN KE
 
 -- AddForeignKey
 ALTER TABLE "_JudgePairTeams" ADD CONSTRAINT "_JudgePairTeams_B_fkey" FOREIGN KEY ("B") REFERENCES "Project"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
