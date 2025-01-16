@@ -39,6 +39,7 @@ const EditProject = () => {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm<ProjectFormData>({
     resolver: zodResolver(projectSchema),
   });
@@ -67,7 +68,9 @@ const EditProject = () => {
   const getProjectInviteLink = async () => {
     try {
       // Fetch current user's project_id from the database
-      const response = await fetch("/api/projects/project-id?user_id=" + userId);
+      const response = await fetch(
+        "/api/projects/project-id?user_id=" + userId
+      );
       const data = await response.json();
 
       let projectId = data.project_id;
@@ -103,6 +106,7 @@ const EditProject = () => {
   useEffect(() => {
     if (projectId) {
       refreshTeamList();
+      fetchProjectData(projectId);
     }
   }, [projectId]);
 
@@ -127,6 +131,28 @@ const EditProject = () => {
       // toast.success("Team list refreshed!");
     } catch (error) {
       toast.error("Failed to refresh team list");
+    }
+  };
+
+  const fetchProjectData = async (projectId: string) => {
+    try {
+      const response = await fetch(`/api/projects?project_id=${projectId}`);
+      if (!response.ok) return;
+
+      const projectData = await response.json();
+
+      // Set form values
+      setValue("name", projectData.name);
+      setValue("description", projectData.description);
+      setValue("devpostLink", projectData.devpostLink);
+
+      // Update project state
+      setProject({
+        submitted: true, // If there is a project, it must be submitted
+        tracks: projectData.tracks || [],
+      });
+    } catch (error) {
+      console.error("Failed to fetch project data:", error);
     }
   };
 
