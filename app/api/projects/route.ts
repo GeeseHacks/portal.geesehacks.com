@@ -63,3 +63,55 @@ export async function POST(request: Request) {
 
   return NextResponse.json(project);
 }
+
+// Get the project ID for a given user_id
+// URL: /api/projects?project_id=123
+
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const projectId = searchParams.get("project_id");
+  console.log("Project ID: ", projectId);
+
+  if (!projectId) {
+    return NextResponse.json(
+      { error: "project_id is required" },
+      { status: 400 }
+    );
+  }
+
+  try {
+    const project = await prisma.project.findUnique({
+      where: { id: projectId },
+      include: {
+        categories: {
+          include: {
+            category: true,
+          },
+        },
+      },
+    });
+
+    if (!project) {
+      console.log("Project not found");
+      return NextResponse.json(
+        { error: "Project not found" },
+        { status: 404 }
+      );
+    }
+
+    // Transform the data to match the expected format
+    return NextResponse.json({
+      name: project.name,
+      description: project.description,
+      devpostLink: project.devpostLink,
+      tracks: project.categories.map(pc => pc.category.name),
+    });
+
+  } catch (error) {
+    console.error("Failed to fetch project:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch project" },
+      { status: 500 }
+    );
+  }
+}
