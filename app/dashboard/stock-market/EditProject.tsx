@@ -29,7 +29,7 @@ interface TeamMember {
   net_worth: number;
 }
 
-const AVAILABLE_TRACKS = ["Sunlife", "TeejLab", "CS-CAN"] as const;
+const AVAILABLE_TRACKS = ["Sun Life", "TeejLab", "CS-CAN"] as const;
 
 const EditProject = () => {
   const { data: session } = useSession();
@@ -67,7 +67,7 @@ const EditProject = () => {
   const getProjectInviteLink = async () => {
     try {
       // Fetch current user's project_id from the database
-      const response = await fetch("/api/users/teams?id=" + userId);
+      const response = await fetch("/api/projects/project-id?user_id=" + userId);
       const data = await response.json();
 
       let projectId = data.project_id;
@@ -78,7 +78,7 @@ const EditProject = () => {
         projectId = uuidv4();
 
         // Save the new project_id to the database
-        await fetch("/api/users/teams", {
+        await fetch("/api/projects/project-id", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -131,6 +131,7 @@ const EditProject = () => {
   };
 
   const onSubmit = async (data: ProjectFormData) => {
+    if (!projectId) return;
     try {
       // Calculate total team net worth
       const totalNetWorth = teamMembers.reduce(
@@ -140,38 +141,25 @@ const EditProject = () => {
 
       console.log(data);
       // Create the main project first
-      const projectResponse = await fetch("/api/projects", {
+      const response = await fetch("/api/projects", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          projectId: projectId,
           ...data,
           totalTeamNetWorth: totalNetWorth,
-          tracks: project.tracks, // The selected tracks
+          tracks: project.tracks,
         }),
       });
 
-      const savedProject = await projectResponse.json();
-      const projectId = savedProject.id;
-
-      // Create entries for each selected track
-      // const trackPromises = project.tracks?.map(async (track) => {
-      //   const endpoint = `/api/projects/tracks/${track.toLowerCase()}`;
-      //   return fetch(endpoint, {
-      //     method: "POST",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //     body: JSON.stringify({
-      //       projectId: projectId,
-      //     }),
-      //   });
-      // });
-
-      // if (trackPromises) {
-      //   await Promise.all(trackPromises);
-      // }
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        throw new Error(
+          errorData?.message || `HTTP error! status: ${response.status}`
+        );
+      }
 
       toast.success("Project saved successfully!");
     } catch (error) {
@@ -256,9 +244,11 @@ const EditProject = () => {
         <CardHeader>
           <div className="flex justify-between items-center">
             <div>
-              <CardTitle>Project Information</CardTitle>
+              <CardTitle className="pb-1">Project Information</CardTitle>
               <CardDescription>
-                Fill out the details about your project
+                Fill out the details about your project.
+                <br />
+                You can edit your project up until the submission deadline
               </CardDescription>
             </div>
             <Badge variant={project?.submitted ? "default" : "destructive"}>
