@@ -20,24 +20,32 @@ import { options } from "../utils/formAssets/formAssets";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { redirect, RedirectType } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
 const RegistrationForm: React.FC = () => {
   const { data: session } = useSession();
-  const [applied, setApplied] = useState(false);
+  const router = useRouter();
+  const [closed, setClosed] = useState(false);
   const [countryOptions, setCountryOptions] = useState<{ label: string; value: string }[]>([]);
   const [schoolOptions, setSchoolOptions] = useState<{ label: string; value: string }[]>([]);
 
   useEffect(() => {
     const fetchStatus = async () => {
-      try {
-        const response = await fetch('/api/users/status');
-        const data = await response.json();
-        if (data.status === "APPLIED") {
-          setApplied(true);
-        }
-      } catch (err) {
-        console.error("Error loading application status: ", err);
+      // try {
+      //   const response = await fetch('/api/users/status');
+      //   const data = await response.json();
+      //   if (data.status === "APPLIED") {
+      //     setApplied(true);
+      //   }
+      // } catch (err) {
+      //   console.error("Error loading application status: ", err);
+      // }
+
+      // if time is after 2025-01-11, 00:00, EST, close application
+      const currentTime = new Date();
+      const closeTime = new Date("2025-01-11T05:00:00Z");
+      if (currentTime > closeTime) {
+        setClosed(true);
       }
     };
     fetchStatus();
@@ -57,11 +65,13 @@ const RegistrationForm: React.FC = () => {
 
   const onSubmit: SubmitHandler<formSchemaType> = async (data) => {
     try {
-      formSubmission(data, session)
+      await formSubmission(data, session);
       reset();
 
-      // NOT YET IMPLEMENTED: navigate to dashboard page after form submission
-      // redirect("/dashboard", RedirectType.replace);
+      // Delay 1 second before navigating to dashboard page after form submission
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 1000);
       
     } catch (error) {
       console.error("Error during form submission: ", error);
@@ -84,7 +94,7 @@ const RegistrationForm: React.FC = () => {
   return (
     <div className="max-w-5xl mx-auto p-8 text-white">
       {/* <div>{session && <h1>{JSON.stringify(session.user)}</h1>}</div>  */}
-      {applied ? <h1 className="text-white text-4xl font-bold my-6">You have already applied! 🎉</h1> :
+      {closed ? <h1 className="text-white text-4xl font-bold my-6">Application closed! 🎉</h1> :
         <><h1 className="text-white text-4xl font-bold my-6">Hacker Information 🌟 </h1>
           <hr className="border-white mb-12" />
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -226,7 +236,7 @@ const RegistrationForm: React.FC = () => {
               />
               <InputField
                 id="additionalLinks"
-                label="Additional Links"
+                label="Refferal Provided By"
                 registerOptions={register("additionalLinks")}
                 placeholder=""
                 error={errors.additionalLinks}
