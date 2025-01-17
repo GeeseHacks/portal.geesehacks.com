@@ -29,8 +29,8 @@ export default function TeamInvitePage() {
   const userId = session?.user?.id;
 
   useEffect(() => {
-    const teamId = searchParams.get("id");
-    if (!teamId) {
+    const projectId = searchParams.get("id");
+    if (!projectId) {
       setError("Invalid invite link");
       setLoading(false);
       return;
@@ -39,7 +39,7 @@ export default function TeamInvitePage() {
     const verifyInvite = async () => {
       try {
         // Fetch team members
-        const teamListResponse = await fetch("/api/users/teams/team-list?team_id=" + teamId);
+        const teamListResponse = await fetch("/api/users/teams/team-list?project_id=" + projectId);
         const teamListData = await teamListResponse.json();
         setTeamMembers(teamListData);
         setLoading(false);
