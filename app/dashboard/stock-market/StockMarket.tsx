@@ -22,10 +22,10 @@ const chartData = [
 ];
 
 const categories = [
-  { name: "General", component: <LeaderBoard /> },
-  { name: "Category 1", component: <LeaderBoard /> },
-  { name: "Category 2", component: <LeaderBoard /> },
-  { name: "Category 3", component: <LeaderBoard /> },
+  { name: "General", component: <LeaderBoard category={"General"}/> },
+  { name: "Sun Life", component: <LeaderBoard category={"Sun Life"}/> },
+  { name: "TeejLab", component: <LeaderBoard category={"TeejLab"}/> },
+  { name: "CS-CAN", component: <LeaderBoard category={"CS-CAN"}/> },
   { name: "My Project", component: <StockGraph teamName = "myproject"/> },
 ];
 

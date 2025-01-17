@@ -36,12 +36,12 @@ interface Team {
   change: string;
 }
 
-const LeaderBoard = () => {
+const LeaderBoard = ({category}: {category:string}) => {
   const [teamsData, setTeams] = useState<Team[]>([]);
   
   useEffect(() => {
     const fetchTeams = async () => {
-      const response = await fetch('/api/teamData');
+      const response = await fetch(`/api/teamData/${category}`);
       const data = await response.json();
       setTeams(data);
     };
