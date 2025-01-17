@@ -31,7 +31,7 @@ export async function GET(req: NextRequest, { params }: { params: { category: st
           take: 10,
         });
 
-        console.log("projects", projects)
+        // console.log("projects", projects)
     
         // Format the response
         const teamsData = projects.map((item, index) => ({
@@ -39,8 +39,9 @@ export async function GET(req: NextRequest, { params }: { params: { category: st
           name: item.project.name,
           value: `$${item.investmentAmount.toLocaleString()}`,
           change: "$50", // Placeholder for change
+          projectId: item.project.id
         }));
-        console.log(teamsData);
+        console.log("teamsData", teamsData);
         return NextResponse.json(teamsData);
       } catch (error) {
         console.error("Error fetching projects:", error);

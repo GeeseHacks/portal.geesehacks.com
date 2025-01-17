@@ -20,7 +20,6 @@ import {
 import { useState, useEffect } from "react";
 import StockGraph from "./StockGraph";
 
-
 // const teamsData = [
 //   { id: 1, name: "Team 1", value: "$1,000,000", change: "+50%" },
 //   { id: 2, name: "Team 2", value: "$1,000,000", change: "+50%" },
@@ -34,6 +33,7 @@ interface Team {
   name: string;
   value: string;
   change: string;
+  projectId: string;
 }
 
 const LeaderBoard = ({category}: {category:string}) => {
@@ -90,7 +90,7 @@ const LeaderBoard = ({category}: {category:string}) => {
                           Detailed graph data for {team.name}.
                         </DialogDescription>
                       </DialogHeader>
-                      <StockGraph teamName={team.name} />
+                      <StockGraph projId={team.projectId} />
                     </DialogContent>
                   </Dialog>
                 </TableCell>
