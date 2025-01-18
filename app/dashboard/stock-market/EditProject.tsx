@@ -56,6 +56,10 @@ const EditProject = () => {
     tracks: [],
   });
 
+  // Add loading states
+  const [isTeamLoading, setIsTeamLoading] = useState(true);
+  const [isProjectLoading, setIsProjectLoading] = useState(true);
+
   const toggleTrack = (track: string) => {
     setProject((prev) => ({
       ...prev,
@@ -121,38 +125,40 @@ const EditProject = () => {
 
   const refreshTeamList = async () => {
     try {
-      // Get current user's project_id first
+      setIsTeamLoading(true);
       const teamListResponse = await fetch(
         "/api/users/teams/team-list?project_id=" + projectId
       );
       const teamListData = await teamListResponse.json();
       console.log("Team list: ", teamListData);
       setTeamMembers(teamListData);
-      // toast.success("Team list refreshed!");
     } catch (error) {
       toast.error("Failed to refresh team list");
+    } finally {
+      setIsTeamLoading(false);
     }
   };
 
   const fetchProjectData = async (projectId: string) => {
     try {
+      setIsProjectLoading(true);
       const response = await fetch(`/api/projects?project_id=${projectId}`);
       if (!response.ok) return;
 
       const projectData = await response.json();
 
-      // Set form values
       setValue("name", projectData.name);
       setValue("description", projectData.description);
       setValue("devpostLink", projectData.devpostLink);
 
-      // Update project state
       setProject({
-        submitted: true, // If there is a project, it must be submitted
+        submitted: true,
         tracks: projectData.tracks || [],
       });
     } catch (error) {
       console.error("Failed to fetch project data:", error);
+    } finally {
+      setIsProjectLoading(false);
     }
   };
 
@@ -237,28 +243,34 @@ const EditProject = () => {
             </div>
 
             <div className="space-y-2">
-              <Label>My Team</Label>
+              <Label>My Team ({teamMembers.length}/4)</Label>
               <div className="space-y-3">
-                {teamMembers.map((member, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-2 border rounded-lg"
-                  >
-                    <div>
-                      <p className="font-medium">
-                        {member.firstname} {member.lastname}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {member.email}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">
-                        Net Worth: ${member.net_worth}
-                      </p>
-                    </div>
+                {isTeamLoading ? (
+                  <div className="text-sm text-muted-foreground">
+                    Loading team members...
                   </div>
-                ))}
+                ) : (
+                  teamMembers.map((member, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-2 border rounded-lg"
+                    >
+                      <div>
+                        <p className="font-medium">
+                          {member.firstname} {member.lastname}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {member.email}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">
+                          Net Worth: ${member.net_worth}
+                        </p>
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </div>
@@ -282,77 +294,87 @@ const EditProject = () => {
             </Badge>
           </div>
         </CardHeader>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        {isProjectLoading ? (
           <CardContent>
-            <div className="grid gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="name">Project Name</Label>
-                <Input
-                  id="name"
-                  {...register("name")}
-                  placeholder="Enter project name"
-                />
-                {errors.name && (
-                  <p className="text-red-500 text-sm">{errors.name.message}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="description">
-                  Short Description (under 200 characters)
-                </Label>
-                <Textarea
-                  id="description"
-                  {...register("description")}
-                  placeholder="Feel free to copy your Devpost elevator pitch"
-                  rows={3}
-                />
-                {errors.description && (
-                  <p className="text-red-500 text-sm">
-                    {errors.description.message}
-                  </p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="devpostLink">Devpost Link</Label>
-                <Input
-                  id="devpostLink"
-                  {...register("devpostLink")}
-                  placeholder="Paste the link to your Devpost submission"
-                />
-                {errors.devpostLink && (
-                  <p className="text-red-500 text-sm">
-                    {errors.devpostLink.message}
-                  </p>
-                )}
-              </div>
-              <div className="space-y-4">
-                <Label>Tracks</Label>
-                <div className="flex flex-row gap-6">
-                  {AVAILABLE_TRACKS.map((track) => (
-                    <div key={track} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={track.toLowerCase()}
-                        checked={project?.tracks?.includes(track)}
-                        onCheckedChange={() => toggleTrack(track)}
-                      />
-                      <Label
-                        htmlFor={track.toLowerCase()}
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        {track}
-                      </Label>
-                    </div>
-                  ))}
-                </div>
-              </div>
+            <div className="text-sm text-muted-foreground">
+              Loading project information...
             </div>
           </CardContent>
-          <CardFooter>
-            <Button type="submit" variant="default">
-              Save Project
-            </Button>
-          </CardFooter>
-        </form>
+        ) : (
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <CardContent>
+              <div className="grid gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Project Name</Label>
+                  <Input
+                    id="name"
+                    {...register("name")}
+                    placeholder="Enter project name"
+                  />
+                  {errors.name && (
+                    <p className="text-red-500 text-sm">
+                      {errors.name.message}
+                    </p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="description">
+                    Short Description (under 200 characters)
+                  </Label>
+                  <Textarea
+                    id="description"
+                    {...register("description")}
+                    placeholder="Feel free to copy your Devpost elevator pitch"
+                    rows={3}
+                  />
+                  {errors.description && (
+                    <p className="text-red-500 text-sm">
+                      {errors.description.message}
+                    </p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="devpostLink">Devpost Link</Label>
+                  <Input
+                    id="devpostLink"
+                    {...register("devpostLink")}
+                    placeholder="Paste the link to your Devpost submission"
+                  />
+                  {errors.devpostLink && (
+                    <p className="text-red-500 text-sm">
+                      {errors.devpostLink.message}
+                    </p>
+                  )}
+                </div>
+                <div className="space-y-4">
+                  <Label>Tracks</Label>
+                  <div className="flex flex-row gap-6">
+                    {AVAILABLE_TRACKS.map((track) => (
+                      <div key={track} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={track.toLowerCase()}
+                          checked={project?.tracks?.includes(track)}
+                          onCheckedChange={() => toggleTrack(track)}
+                        />
+                        <Label
+                          htmlFor={track.toLowerCase()}
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          {track}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button type="submit" variant="default">
+                Save Project
+              </Button>
+            </CardFooter>
+          </form>
+        )}
       </Card>
     </div>
   );

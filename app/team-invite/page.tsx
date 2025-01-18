@@ -27,6 +27,8 @@ export default function TeamInvitePage() {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const { data: session } = useSession();
   const userId = session?.user?.id;
+  const [isAlreadyMember, setIsAlreadyMember] = useState(false);
+  const [isTeamFull, setIsTeamFull] = useState(false);
 
   useEffect(() => {
     const projectId = searchParams.get("id");
@@ -39,9 +41,26 @@ export default function TeamInvitePage() {
     const verifyInvite = async () => {
       try {
         // Fetch team members
-        const teamListResponse = await fetch("/api/users/teams/team-list?project_id=" + projectId);
+        const teamListResponse = await fetch(
+          "/api/users/teams/team-list?project_id=" + projectId
+        );
         const teamListData = await teamListResponse.json();
         setTeamMembers(teamListData);
+
+        // Check if team is full
+        if (teamListData.length >= 4) {
+          setIsTeamFull(true);
+        }
+
+        // Check if current user is already in the team
+        const isUserInTeam = teamListData.some(
+          (member: TeamMember) => member.email === session?.user?.email
+        );
+
+        if (isUserInTeam) {
+          setIsAlreadyMember(true);
+        }
+
         setLoading(false);
       } catch (err) {
         setError("Failed to verify invite link");
@@ -50,15 +69,15 @@ export default function TeamInvitePage() {
     };
 
     verifyInvite();
-  }, [searchParams]);
+  }, [searchParams, session?.user?.email]);
 
   const handleAcceptInvite = async () => {
     const teamId = searchParams.get("id");
     try {
-      // Write team_id to this user's team_id column in the users table
-      const response = await fetch("/api/users/teams", {
+      // Write project_id to this user's project_id column in the users table
+      const response = await fetch("/api/projects/project-id", {
         method: "POST",
-        body: JSON.stringify({ user_id: userId, team_id: teamId }),
+        body: JSON.stringify({ user_id: userId, project_id: teamId }),
       });
       // Verify response
       if (response.ok) {
@@ -92,7 +111,7 @@ export default function TeamInvitePage() {
           ) : (
             <div className="space-y-4">
               <p>You've been invited to join a team!</p>
-              
+
               <div className="space-y-2">
                 <h3 className="font-medium">Current Team Members:</h3>
                 <div className="space-y-3">
@@ -116,9 +135,19 @@ export default function TeamInvitePage() {
             </div>
           )}
         </CardContent>
-        <CardFooter>
-          {!error && (
+        <CardFooter className="flex flex-col gap-2">
+          {!error && !isAlreadyMember && !isTeamFull && (
             <Button onClick={handleAcceptInvite}>Accept Invitation</Button>
+          )}
+          {isAlreadyMember && (
+            <p className="text-red-500">
+              You are already a member of this team
+            </p>
+          )}
+          {isTeamFull && (
+            <p className="text-red-500">
+              Team has reached the 4-member limit
+            </p>
           )}
         </CardFooter>
       </Card>
