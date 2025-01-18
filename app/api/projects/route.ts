@@ -35,13 +35,26 @@ export async function POST(request: Request) {
   });
 
   // Handle categories/tracks
-  if (data.tracks?.length > 0) {
+  if (data.tracks) {
+    // Ensure "General" track is included
+    const tracksWithGeneral = Array.from(new Set([...data.tracks, "General"]));
+
     await prisma.projectCategory.deleteMany({
       where: { projectId: projectId },
     });
 
+    // Find the General category first
+    const generalCategory = await prisma.category.findFirst({
+      where: { name: "General" },
+    });
+
+    if (!generalCategory) {
+      throw new Error('Category "General" does not exist');
+    }
+
+    // Create all categories including General
     await Promise.all(
-      data.tracks.map(async (trackName: string) => {
+      tracksWithGeneral.map(async (trackName: string) => {
         const existingCategory = await prisma.category.findFirst({
           where: { name: trackName },
         });
@@ -50,11 +63,17 @@ export async function POST(request: Request) {
           throw new Error(`Category "${trackName}" does not exist`);
         }
 
+        // Set investment amount for General track if totalTeamNetWorth is provided
+        const investmentAmount =
+          trackName === "General"
+            ? data.totalTeamNetWorth // Ensure non-negative value
+            : 0;
+
         return prisma.projectCategory.create({
           data: {
             projectId: projectId,
             categoryId: existingCategory.id,
-            investmentAmount: 0,
+            investmentAmount,
           },
         });
       })
@@ -64,7 +83,7 @@ export async function POST(request: Request) {
   return NextResponse.json(project);
 }
 
-// Get the project ID for a given user_id
+// Get the project for a given project_id
 // URL: /api/projects?project_id=123
 
 export async function GET(request: Request) {
@@ -93,10 +112,7 @@ export async function GET(request: Request) {
 
     if (!project) {
       console.log("Project not found");
-      return NextResponse.json(
-        { error: "Project not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Project not found" }, { status: 404 });
     }
 
     // Transform the data to match the expected format
@@ -104,9 +120,8 @@ export async function GET(request: Request) {
       name: project.name,
       description: project.description,
       devpostLink: project.devpostLink,
-      tracks: project.categories.map(pc => pc.category.name),
+      tracks: project.categories.map((pc) => pc.category.name),
     });
-
   } catch (error) {
     console.error("Failed to fetch project:", error);
     return NextResponse.json(
