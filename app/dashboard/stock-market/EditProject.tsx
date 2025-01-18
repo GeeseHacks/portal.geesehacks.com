@@ -66,6 +66,8 @@ const EditProject = () => {
   const [isTeamLoading, setIsTeamLoading] = useState(true);
   const [isProjectLoading, setIsProjectLoading] = useState(true);
 
+  const [isSubmissionsOpen, setIsSubmissionsOpen] = useState(true);
+
   const toggleTrack = (track: string) => {
     setProject((prev) => ({
       ...prev,
@@ -172,13 +174,21 @@ const EditProject = () => {
     if (!projectId) return;
     const loadingToast = toast.loading("Saving project...");
     try {
+      const flags = await fetch("/api/flags");
+      const flagsData = await flags.json();
+      if (!flagsData) {
+        throw new Error("Failed to fetch flags");
+      }
+      if (!flagsData.isProjectSubmissionsOpen) {
+        throw new Error("Project submissions are closed");
+      }
+
       // Calculate total team net worth
       const totalNetWorth = teamMembers.reduce(
         (sum, member) => sum + member.net_worth,
         0
       );
 
-      console.log(data);
       const response = await fetch("/api/projects", {
         method: "POST",
         headers: {
@@ -205,6 +215,21 @@ const EditProject = () => {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    const checkSubmissionStatus = async () => {
+      try {
+        const flags = await fetch("/api/flags");
+        const flagsData = await flags.json();
+        setIsSubmissionsOpen(flagsData?.isProjectSubmissionsOpen ?? false);
+      } catch (error) {
+        console.error("Failed to fetch submission status:", error);
+        setIsSubmissionsOpen(false);
+      }
+    };
+
+    checkSubmissionStatus();
+  }, []);
 
   return (
     <div className="space-y-6 pb-10">
@@ -328,6 +353,7 @@ const EditProject = () => {
                     id="name"
                     {...register("name")}
                     placeholder="Enter project name"
+                    disabled={!isSubmissionsOpen}
                   />
                   {errors.name && (
                     <p className="text-red-500 text-sm">
@@ -344,6 +370,7 @@ const EditProject = () => {
                     {...register("description")}
                     placeholder="Feel free to copy your Devpost elevator pitch"
                     rows={3}
+                    disabled={!isSubmissionsOpen}
                   />
                   {errors.description && (
                     <p className="text-red-500 text-sm">
@@ -357,6 +384,7 @@ const EditProject = () => {
                     id="devpostLink"
                     {...register("devpostLink")}
                     placeholder="Paste the link to your Devpost submission"
+                    disabled={!isSubmissionsOpen}
                   />
                   {errors.devpostLink && (
                     <p className="text-red-500 text-sm">
@@ -373,6 +401,7 @@ const EditProject = () => {
                           id={track.toLowerCase()}
                           checked={project?.tracks?.includes(track)}
                           onCheckedChange={() => toggleTrack(track)}
+                          disabled={!isSubmissionsOpen}
                         />
                         <Label
                           htmlFor={track.toLowerCase()}
@@ -387,8 +416,12 @@ const EditProject = () => {
               </div>
             </CardContent>
             <CardFooter>
-              <Button type="submit" variant="default">
-                Save Project
+              <Button
+                type="submit"
+                variant="default"
+                disabled={!isSubmissionsOpen}
+              >
+                {isSubmissionsOpen ? "Save Project" : "Submissions Closed!"}
               </Button>
             </CardFooter>
           </form>
