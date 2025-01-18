@@ -7,6 +7,5 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const project_id = searchParams.get("project_id");
   const users = await prisma.user.findMany({ where: { project_id } });
-  console.log("Users: ", users);
   return NextResponse.json(users);
 }
