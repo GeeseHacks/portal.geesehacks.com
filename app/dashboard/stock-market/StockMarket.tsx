@@ -7,26 +7,26 @@ import Image from "next/image";
 import LeaderBoard from "./LeaderBoard";
 import StockGraph from "./StockGraph";
 
-const chartData = [
-  { time: "11:00 AM", value: 186 },
-  { time: "11:15 AM", value: 305 },
-  { time: "11:30 AM", value: 305 },
-  { time: "11:45 AM", value: 305 },
-  { time: "12:00 PM", value: 237 },
-  { time: "12:15 PM", value: 237 },
-  { time: "12:30 PM", value: 73 },
-  { time: "12:45 PM", value: 237 },
-  { time: "1:00 PM", value: 209 },
-  { time: "1:15 PM", value: 209 },
-  { time: "1:30 PM", value: 214 },
-];
+// const chartData = [
+//   { time: "11:00 AM", value: 186 },
+//   { time: "11:15 AM", value: 305 },
+//   { time: "11:30 AM", value: 305 },
+//   { time: "11:45 AM", value: 305 },
+//   { time: "12:00 PM", value: 237 },
+//   { time: "12:15 PM", value: 237 },
+//   { time: "12:30 PM", value: 73 },
+//   { time: "12:45 PM", value: 237 },
+//   { time: "1:00 PM", value: 209 },
+//   { time: "1:15 PM", value: 209 },
+//   { time: "1:30 PM", value: 214 },
+// ];
 
 const categories = [
   { name: "General", component: <LeaderBoard category={"General"}/> },
   { name: "Sun Life", component: <LeaderBoard category={"Sun Life"}/> },
   { name: "TeejLab", component: <LeaderBoard category={"TeejLab"}/> },
   { name: "CS-CAN", component: <LeaderBoard category={"CS-CAN"}/> },
-  { name: "My Project", component: <StockGraph teamName = "myproject"/> },
+  { name: "My Project", component: <StockGraph projId = "a72d1d4e-6187-49be-b3e4-c7e47b9884b2"/> },
 ];
 
 const StockMarket: React.FC = () => {
