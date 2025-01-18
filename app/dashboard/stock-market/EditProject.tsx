@@ -17,10 +17,16 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { projectSchema, ProjectFormData } from "@/utils/projectSchema";
-import { Copy, RefreshCw } from "lucide-react";
+import { Copy, RefreshCw, HelpCircle } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { useSession } from "next-auth/react";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface TeamMember {
   firstname: string;
@@ -164,6 +170,7 @@ const EditProject = () => {
 
   const onSubmit = async (data: ProjectFormData) => {
     if (!projectId) return;
+    const loadingToast = toast.loading("Saving project...");
     try {
       // Calculate total team net worth
       const totalNetWorth = teamMembers.reduce(
@@ -172,7 +179,6 @@ const EditProject = () => {
       );
 
       console.log(data);
-      // Create the main project first
       const response = await fetch("/api/projects", {
         method: "POST",
         headers: {
@@ -193,9 +199,9 @@ const EditProject = () => {
         );
       }
 
-      toast.success("Project saved successfully!");
+      toast.success("Project saved successfully!", { id: loadingToast });
     } catch (error) {
-      toast.error("Failed to save project");
+      toast.error("Failed to save project", { id: loadingToast });
       console.error(error);
     }
   };
@@ -263,10 +269,22 @@ const EditProject = () => {
                           {member.email}
                         </p>
                       </div>
-                      <div>
+                      <div className="flex items-center gap-2">
                         <p className="text-sm text-muted-foreground">
                           Net Worth: ${member.net_worth}
                         </p>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <HelpCircle className="h-4 w-4 text-muted-foreground" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>
+                                Attend workshops to increase your net worth!
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       </div>
                     </div>
                   ))
