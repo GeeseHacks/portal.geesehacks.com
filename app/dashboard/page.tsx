@@ -160,7 +160,7 @@ const Home: React.FC = () => {
         {status === "ACCEPTED" && (
           <Dialog>
             <DialogTrigger asChild>
-              <Button className="w-32">RSVP Now!</Button>
+              <Button className="w-32 z-50">RSVP Now!</Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
