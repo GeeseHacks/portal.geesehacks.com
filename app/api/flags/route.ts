@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { google } from 'googleapis';
 
+// /api/flags
 export async function GET() {
   try {
 

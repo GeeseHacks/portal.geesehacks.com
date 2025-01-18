@@ -19,6 +19,8 @@ tags:
     description: QR Code registration related endpoints
   - name: stock-sim
     description: Stock simulator related endpoints
+  - name: flags
+    description: Feature flags configuration endpoints
 paths:
   /api/projects/project-list:
     get:
@@ -155,6 +157,44 @@ paths:
                   error:
                     type: string
                     example: "Failed to join team"
+  /api/flags:
+    get:
+      tags:
+        - flags
+      summary: Get feature flags from Google Sheets
+      description: Retrieves feature flags configuration from a Google Sheets document
+      responses:
+        '200':
+          description: Feature flags retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: boolean
+                example:
+                  isFeatureEnabled: true
+                  isRegistrationOpen: false
+        '404':
+          description: No flags data found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "No data found"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Error fetching data"
 components:
   schemas:
     UserAuth:
