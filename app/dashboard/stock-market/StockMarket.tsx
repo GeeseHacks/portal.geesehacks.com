@@ -6,6 +6,7 @@ import Image from "next/image";
 
 import LeaderBoard from "./LeaderBoard";
 import StockGraph from "./StockGraph";
+import EditProject from "./EditProject";
 
 // const chartData = [
 //   { time: "11:00 AM", value: 186 },
@@ -27,6 +28,7 @@ const categories = [
   { name: "TeejLab", component: <LeaderBoard category={"TeejLab"}/> },
   { name: "CS-CAN", component: <LeaderBoard category={"CS-CAN"}/> },
   { name: "My Project", component: <StockGraph projId = "a72d1d4e-6187-49be-b3e4-c7e47b9884b2"/> },
+  { name: "Add Project", component: <EditProject/> },
 ];
 
 const StockMarket: React.FC = () => {
@@ -47,7 +49,7 @@ const StockMarket: React.FC = () => {
           <h1 className="text-3xl md:text-4xl font-semibold">Stock Market</h1>
         </div>
         <p className="pb-7 text-md md:text-lg pt-3 text-gray-500">
-          Some description here
+          Manage your team's project and track performance!
         </p>
         <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 pb-8">
           {categories.map((category) => (
