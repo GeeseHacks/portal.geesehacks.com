@@ -34,7 +34,7 @@ export async function GET(req: NextRequest, { params }: { params: { projId: stri
 
     const timeNow = new Date();
     var startTime = new Date(timeNow);
-    startTime.setHours(startTime.getHours()-2);
+    startTime.setHours(startTime.getHours()-2); //Hardcoded value, should fix
 
     const chartData = investments.length
   ? investments.map((investment) => ({
