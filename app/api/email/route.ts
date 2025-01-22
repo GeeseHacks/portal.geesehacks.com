@@ -2,6 +2,7 @@ import QRCode from 'qrcode';
 import AcceptanceEmail from "@/components/emails/AcceptedTemplate";
 import { Resend } from "resend";
 import { render } from "@react-email/render";
+import HackerEmail from '@/components/emails/HackerPackageTemplate';
 
 const ADMIN_EMAILS = ['benny.wu.new@gmail.com', 'chd-james@skillinsight.ca', 'riri.hong@gmail.com'];
 
@@ -21,8 +22,8 @@ export async function POST(req: Request) {
       return {
         from: "no-reply@geesehacks.com",
         to: email, // Send to individual email
-        subject: "[ACTION REQUIRED] Congratulations on your acceptance to GeeseHacks 2025! 🎉",
-        react: AcceptanceEmail({ name: "", email: email, qrcode: qrCodeDataURL }), // Render as JSX
+        subject: "[IMPORTANT] Hacker Package (GeeseHacks 2025)",
+        react: HackerEmail({ name: "", email: email, qrcode: qrCodeDataURL }), // Render as JSX
       };
     })
   );
