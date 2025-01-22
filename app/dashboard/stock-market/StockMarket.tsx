@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SideNav from "../../../components/nav/SideNav";
 import Image from "next/image";
 
 import LeaderBoard from "./LeaderBoard";
 import StockGraph from "./StockGraph";
 import EditProject from "./EditProject";
+import { useSession } from "next-auth/react";
 
 // const chartData = [
 //   { time: "11:00 AM", value: 186 },
@@ -22,17 +23,47 @@ import EditProject from "./EditProject";
 //   { time: "1:30 PM", value: 214 },
 // ];
 
-const categories = [
-  { name: "General", component: <LeaderBoard category={"General"}/> },
-  { name: "Sun Life", component: <LeaderBoard category={"Sun Life"}/> },
-  { name: "TeejLab", component: <LeaderBoard category={"TeejLab"}/> },
-  { name: "CS-CAN", component: <LeaderBoard category={"CS-CAN"}/> },
-  { name: "My Project", component: <StockGraph projId = "a72d1d4e-6187-49be-b3e4-c7e47b9884b2"/> },
-  { name: "Add Project", component: <EditProject/> },
-];
+
+interface ProjResponse{
+  project_id: string;
+}
 
 const StockMarket: React.FC = () => {
   const [activeTab, setActiveTab] = useState("General");
+  const [projId, setProjId] = useState("");
+
+  const { data: session } = useSession();
+  const userId = session?.user?.id;
+
+  useEffect(() => {
+    if (!userId) {
+      return;
+    }
+
+    const fetchProjectId = async () => {
+      try {
+        const response = await fetch(`/api/projects/project-id?user_id=${userId}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch project ID");
+        }
+        const data: ProjResponse = await response.json();
+        setProjId(data.project_id);
+      } catch (err) {
+        console.log("Error with fetching correct projectID");
+      }
+    };
+
+    fetchProjectId();
+  }, [userId]);
+
+  const categories = [
+    { name: "General", component: <LeaderBoard category={"General"}/> },
+    { name: "Sun Life", component: <LeaderBoard category={"Sun Life"}/> },
+    { name: "TeejLab", component: <LeaderBoard category={"TeejLab"}/> },
+    { name: "CS-CAN", component: <LeaderBoard category={"CS-CAN"}/> },
+    { name: "My Project", component: <StockGraph projId = {projId}/> },
+    { name: "Add Project", component: <EditProject/> },
+  ];
 
   return (
     <div className="relative flex flex-col h-full">
