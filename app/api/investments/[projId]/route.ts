@@ -1,6 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@lib/prisma';
 
+function getDefaultChartData(startTime:Date, endTime:Date) {
+  const data = [];
+  let currentTime = new Date(startTime);
+
+  while (currentTime <= endTime) {
+    data.push({
+      time: currentTime.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+      }),
+      value: 0,
+    });
+
+    // Increment time by 30 minutes
+    currentTime.setMinutes(currentTime.getMinutes() + 30);
+  }
+
+  return data;
+}
+
 export async function GET(req: NextRequest, { params }: { params: { projId: string } }) {
   const { projId } = params;
 
@@ -12,19 +32,20 @@ export async function GET(req: NextRequest, { params }: { params: { projId: stri
       orderBy: { createdAt: 'asc' },
     });
 
-    console.log(investments)
+    const timeNow = new Date();
+    var startTime = new Date(timeNow);
+    startTime.setHours(startTime.getHours()-2); //Hardcoded value, should fix
 
-    let cumulativeValue = 0;
-    const chartData = investments.map((investment) => {
-      cumulativeValue += investment.projectValue;
-      return {
-        time: investment.createdAt.toLocaleTimeString('en-US', {
-                hour: '2-digit',
-                minute: '2-digit',
-              }),
-        value: cumulativeValue,
-      };
-    });
+    const chartData = investments.length
+  ? investments.map((investment) => ({
+      time: investment.createdAt.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+      }),
+      value: investment.projectValue,
+    }))
+  : getDefaultChartData(startTime, timeNow); // Example start and end times
+
 
     return NextResponse.json(chartData);
   } catch (error) {
