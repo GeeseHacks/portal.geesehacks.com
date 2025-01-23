@@ -4,7 +4,7 @@ import { Resend } from "resend";
 import { render } from "@react-email/render";
 import HackerEmail from '@/components/emails/HackerPackageTemplate';
 
-const ADMIN_EMAILS = ['benny.wu.new@gmail.com', 'chd-james@skillinsight.ca', 'riri.hong@gmail.com'];
+const ADMIN_EMAILS = ['benny.wu.new@gmail.com', 'chd-james@skillinsight.ca', 'riri.hong@gmail.com', 'a.zhong3528@gmail.com'];
 
 export async function POST(req: Request) {
 
