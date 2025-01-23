@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 
-const ADMIN_EMAILS = ['benny.wu.new@gmail.com', 'chd-james@skillinsight.ca', 'riri.hong@gmail.com']; // Admin check
+const ADMIN_EMAILS = ['benny.wu.new@gmail.com', 'chd-james@skillinsight.ca', 'riri.hong@gmail.com', 'a.zhong3528@gmail.com']; // Admin check
 
 export default function EmailSenderPage() {
   const [userEmail, setUserEmail] = useState('');
