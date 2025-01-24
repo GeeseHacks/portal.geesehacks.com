@@ -7,4 +7,5 @@ export type HackerEvent = {
   location: string;
   details: string;
   needsScanning?: boolean;
+  value?: number;
 };
