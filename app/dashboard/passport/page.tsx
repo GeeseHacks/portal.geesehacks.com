@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { HackerEvent } from "@utils/types/HackerEvent";
 // Removed: import HTMLFlipBook from "react-pageflip";
 import { useMediaQuery } from 'react-responsive';
+import useBetterMediaQuery from "@utils/betterMediaQuery";
 
 const PassportPage: React.FC = () => {
   const { data: session } = useSession();
@@ -13,7 +14,7 @@ const PassportPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   // Determine if the device is mobile
-  const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
+  const isMobile = useBetterMediaQuery('(max-width: 768px)' );
 
   // Track the current page index
   const [currentPage, setCurrentPage] = useState(0);
