@@ -81,7 +81,7 @@ async function recordInvestmentHistory(
   }
 }
 
-async function main() {
+async function backfillDatapoints() {
   try {
     while (true) {
       const now = new Date();
@@ -107,4 +107,4 @@ async function main() {
   }
 }
 
-main().catch(console.error);
+backfillDatapoints().catch(console.error);
