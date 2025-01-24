@@ -41,7 +41,7 @@ const Home: React.FC = () => {
     REJECTED: "Rejected",
     WAITLIST: "Waitlisted",
     NOT_APPLIED: "Not Applied",
-    APPLIED: "Applied",
+    APPLIED: "Waitlisted", // Classify all applied hackers as waitlisted since all acceptances have been sent out
     CONFIRMED: "RSVP Confirmed",
   };
 
@@ -121,8 +121,9 @@ const Home: React.FC = () => {
         "
       >
         {/* Status Image */}
+        {/* Use the rejected image if the status is applied */}
         <img
-          src={`/static/images/status-${status === "APPLIED" || status === "ACCEPTED" || status === "CONFIRMED" ? "submitted" : "notsubmitted"
+          src={`/static/images/status-${status === "ACCEPTED" || status === "CONFIRMED" ? "submitted" : "notsubmitted"
             }.png`}
           alt={status || "Loading"}
           className="absolute right-0 -top-10 z-0"
@@ -160,7 +161,7 @@ const Home: React.FC = () => {
         {status === "ACCEPTED" && (
           <Dialog>
             <DialogTrigger asChild>
-              <Button className="w-32">RSVP Now!</Button>
+              <Button className="w-32 z-50">RSVP Now!</Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>

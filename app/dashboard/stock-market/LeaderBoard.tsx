@@ -20,7 +20,6 @@ import {
 import { useState, useEffect } from "react";
 import StockGraph from "./StockGraph";
 
-
 // const teamsData = [
 //   { id: 1, name: "Team 1", value: "$1,000,000", change: "+50%" },
 //   { id: 2, name: "Team 2", value: "$1,000,000", change: "+50%" },
@@ -34,14 +33,15 @@ interface Team {
   name: string;
   value: string;
   change: string;
+  projectId: string;
 }
 
-const LeaderBoard = () => {
+const LeaderBoard = ({category}: {category:string}) => {
   const [teamsData, setTeams] = useState<Team[]>([]);
   
   useEffect(() => {
     const fetchTeams = async () => {
-      const response = await fetch('/api/teamData');
+      const response = await fetch(`/api/teamData/${category}`);
       const data = await response.json();
       setTeams(data);
     };
@@ -90,7 +90,7 @@ const LeaderBoard = () => {
                           Detailed graph data for {team.name}.
                         </DialogDescription>
                       </DialogHeader>
-                      <StockGraph teamName={team.name} />
+                      <StockGraph projId={team.projectId} />
                     </DialogContent>
                   </Dialog>
                 </TableCell>

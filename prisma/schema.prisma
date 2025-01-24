@@ -98,6 +98,8 @@ model JudgeProject {
   judgeId    Int
   projectId  String    @db.Uuid
 
+  amountInvested Int @default(0)
+
   judge      Judge          @relation(fields: [judgeId], references: [id], onDelete: Cascade)
   project    Project        @relation(fields: [projectId], references: [id], onDelete: Cascade)
 

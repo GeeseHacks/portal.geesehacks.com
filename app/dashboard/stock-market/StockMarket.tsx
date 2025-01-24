@@ -1,36 +1,69 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SideNav from "../../../components/nav/SideNav";
 import Image from "next/image";
 
 import LeaderBoard from "./LeaderBoard";
 import StockGraph from "./StockGraph";
+import EditProject from "./EditProject";
+import { useSession } from "next-auth/react";
 
-const chartData = [
-  { time: "11:00 AM", value: 186 },
-  { time: "11:15 AM", value: 305 },
-  { time: "11:30 AM", value: 305 },
-  { time: "11:45 AM", value: 305 },
-  { time: "12:00 PM", value: 237 },
-  { time: "12:15 PM", value: 237 },
-  { time: "12:30 PM", value: 73 },
-  { time: "12:45 PM", value: 237 },
-  { time: "1:00 PM", value: 209 },
-  { time: "1:15 PM", value: 209 },
-  { time: "1:30 PM", value: 214 },
-];
+// const chartData = [
+//   { time: "11:00 AM", value: 186 },
+//   { time: "11:15 AM", value: 305 },
+//   { time: "11:30 AM", value: 305 },
+//   { time: "11:45 AM", value: 305 },
+//   { time: "12:00 PM", value: 237 },
+//   { time: "12:15 PM", value: 237 },
+//   { time: "12:30 PM", value: 73 },
+//   { time: "12:45 PM", value: 237 },
+//   { time: "1:00 PM", value: 209 },
+//   { time: "1:15 PM", value: 209 },
+//   { time: "1:30 PM", value: 214 },
+// ];
 
-const categories = [
-  { name: "General", component: <LeaderBoard /> },
-  { name: "Category 1", component: <LeaderBoard /> },
-  { name: "Category 2", component: <LeaderBoard /> },
-  { name: "Category 3", component: <LeaderBoard /> },
-  { name: "My Project", component: <StockGraph teamName = "myproject"/> },
-];
+
+interface ProjResponse{
+  project_id: string;
+}
 
 const StockMarket: React.FC = () => {
   const [activeTab, setActiveTab] = useState("General");
+  const [projId, setProjId] = useState("");
+
+  const { data: session } = useSession();
+  const userId = session?.user?.id;
+
+  useEffect(() => {
+    if (!userId) {
+      return;
+    }
+
+    const fetchProjectId = async () => {
+      try {
+        const response = await fetch(`/api/projects/project-id?user_id=${userId}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch project ID");
+        }
+        const data: ProjResponse = await response.json();
+        setProjId(data.project_id);
+      } catch (err) {
+        console.log("Error with fetching correct projectID");
+      }
+    };
+
+    fetchProjectId();
+  }, [userId]);
+
+  const categories = [
+    { name: "General", component: <LeaderBoard category={"General"}/> },
+    { name: "Sun Life", component: <LeaderBoard category={"Sun Life"}/> },
+    { name: "TeejLab", component: <LeaderBoard category={"TeejLab"}/> },
+    { name: "CS-CAN", component: <LeaderBoard category={"CS-CAN"}/> },
+    { name: "My Project", component: <StockGraph projId = {projId}/> },
+    { name: "Add Project", component: <EditProject/> },
+  ];
 
   return (
     <div className="relative flex flex-col h-full">
@@ -47,7 +80,7 @@ const StockMarket: React.FC = () => {
           <h1 className="text-3xl md:text-4xl font-semibold">Stock Market</h1>
         </div>
         <p className="pb-7 text-md md:text-lg pt-3 text-gray-500">
-          Some description here
+          Manage your team's project and track performance!
         </p>
         <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 pb-8">
           {categories.map((category) => (

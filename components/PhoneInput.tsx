@@ -5,15 +5,23 @@ import * as RPNInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
 import { Button } from "@/components/ui/button";
 import {
-  Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
 } from "@/components/ui/command";
-import { Input, InputProps } from "@/components/ui/input";
+import { Input } from "@/components/ui/input";
 import {
-  Popover, PopoverContent, PopoverTrigger
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { UseFormRegisterReturn, FieldError } from "react-hook-form";
+import type { ComponentPropsWithRef } from "react";
 
 interface PhoneInputProps {
   id: string;
@@ -31,20 +39,23 @@ interface PhoneInputProps {
 
 const PhoneInput: React.ForwardRefExoticComponent<PhoneInputProps> =
   React.forwardRef<React.ElementRef<typeof RPNInput.default>, PhoneInputProps>(
-    ({
-      id,
-      label,
-      registerOptions,
-      placeholder,
-      type = "text",
-      error,
-      className,
-      onChange,
-      value,
-      disabled,
-      defaultCountry,
-      ...props
-    }, ref) => {
+    (
+      {
+        id,
+        label,
+        registerOptions,
+        placeholder,
+        type = "text",
+        error,
+        className,
+        onChange,
+        value,
+        disabled,
+        defaultCountry,
+        ...props
+      },
+      ref
+    ) => {
       return (
         <div className="col-span-1">
           <label className="block my-4 text-xl font-semibold" htmlFor={id}>
@@ -56,29 +67,37 @@ const PhoneInput: React.ForwardRefExoticComponent<PhoneInputProps> =
             flagComponent={FlagComponent}
             countrySelectComponent={CountrySelect}
             inputComponent={InputComponent}
-            onChange={(value) => onChange?.(value || ('' as RPNInput.Value))}
+            onChange={(value) => onChange?.(value || ("" as RPNInput.Value))}
             value={value}
             disabled={disabled}
             defaultCountry={defaultCountry}
             {...props}
           />
-          {error && <p role="alert" className="text-red-500 text-s italic mt-2">{error.message}</p>}
+          {error && (
+            <p role="alert" className="text-red-500 text-s italic mt-2">
+              {error.message}
+            </p>
+          )}
         </div>
       );
-    },
+    }
   );
 PhoneInput.displayName = "PhoneInput";
 
-const InputComponent = React.forwardRef<HTMLInputElement, InputProps & { registerOptions: UseFormRegisterReturn }>(
-  ({ className, registerOptions, ...props }, ref) => (
-    <Input
-      className={cn("rounded-e-lg rounded-s-none focus:border-transparent", className)}
-      {...props}
-      {...registerOptions} // Ensure that registerOptions are spread here
-      ref={ref}
-    />
-  ),
-);
+const InputComponent = React.forwardRef<
+  HTMLInputElement,
+  ComponentPropsWithRef<"input"> & { registerOptions: UseFormRegisterReturn }
+>(({ className, registerOptions, ...props }, ref) => (
+  <Input
+    className={cn(
+      "rounded-e-lg rounded-s-none focus:border-transparent",
+      className
+    )}
+    {...props}
+    {...registerOptions}
+    ref={ref}
+  />
+));
 InputComponent.displayName = "InputComponent";
 
 type CountrySelectOption = { label: string; value: RPNInput.Country };
@@ -100,7 +119,7 @@ const CountrySelect = ({
     (country: RPNInput.Country) => {
       onChange(country);
     },
-    [onChange],
+    [onChange]
   );
 
   return (
@@ -116,7 +135,7 @@ const CountrySelect = ({
           <ChevronsUpDown
             className={cn(
               "-mr-2 h-4 w-4 opacity-50",
-              disabled ? "hidden" : "opacity-100",
+              disabled ? "hidden" : "opacity-100"
             )}
           />
         </Button>
@@ -149,7 +168,7 @@ const CountrySelect = ({
                       <CheckIcon
                         className={cn(
                           "ml-auto h-4 w-4",
-                          option.value === value ? "opacity-100" : "opacity-0",
+                          option.value === value ? "opacity-100" : "opacity-0"
                         )}
                       />
                     </CommandItem>
