@@ -18,6 +18,7 @@ export async function POST(req: Request) {
   const resend = new Resend(process.env.RESEND_API_KEY);
 
   const emailList = await Promise.all(
+    // Comment to re-trigger deploy
     to.map(async (email: string) => {
       const qrCodeDataURL = await QRCode.toDataURL(email);
       return {
