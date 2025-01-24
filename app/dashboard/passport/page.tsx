@@ -4,13 +4,21 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { HackerEvent } from "@utils/types/HackerEvent";
 
+// 1) Import Just Another Hand from next/font/google
+import { Just_Another_Hand } from "next/font/google";
+
+// 2) Configure the font
+const justAnotherHand = Just_Another_Hand({
+  weight: "400",
+  subsets: ["latin"],
+});
+
 const PassportPage: React.FC = () => {
   const { data: session } = useSession();
   const [allEvents, setAllEvents] = useState<HackerEvent[]>([]);
   const [events, setEvents] = useState<HackerEvent[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Track the current page index (we'll always move by 1)
   const [currentPage, setCurrentPage] = useState(0);
 
   useEffect(() => {
@@ -44,7 +52,7 @@ const PassportPage: React.FC = () => {
           })
           .catch(error => {
             console.error("Error fetching events:", error);
-            setLoading(false); // Ensure loading stops even on error
+            setLoading(false);
           });
       })
       .catch(error => {
@@ -53,20 +61,14 @@ const PassportPage: React.FC = () => {
       });
   }, [session]);
 
-  // Define all pages of the passport
+  // Build your pages
   const allPages = [
     // Cover Page
     <div className="flex flex-col justify-center items-center bg-white text-center p-8 h-full">
-      <h2
-        className="text-4xl font-bold mb-4 mt-16 text-gray-800"
-        style={{ fontFamily: "Just Another Hand, cursive" }}
-      >
+      <h2 className={`${justAnotherHand.className} text-4xl font-bold mb-4 mt-16 text-gray-800`}>
         GeeseHacks
       </h2>
-      <h2
-        className="text-3xl font-bold mb-4 mt-2 text-gray-800"
-        style={{ fontFamily: "Just Another Hand, cursive" }}
-      >
+      <h2 className={`${justAnotherHand.className} text-3xl font-bold mb-4 mt-2 text-gray-800`}>
         2025
       </h2>
       <p className="text-gray-500 mt-24 font-semibold">Digital Passport</p>
@@ -87,18 +89,14 @@ const PassportPage: React.FC = () => {
             className="mx-auto mb-4"
             style={{ width: "60px", height: "60px" }}
           />
+
           {/* Event Title */}
-          <h2
-            className="text-2xl font-medium text-gray-800 mb-4"
-            style={{ fontFamily: "Just Another Hand, cursive" }}
-          >
+          <h2 className={`${justAnotherHand.className} text-2xl font-medium text-gray-800 mb-4`}>
             {event.name}
           </h2>
+
           {/* Event Details */}
-          <p
-            className="text-xl text-gray-600 mb-2"
-            style={{ fontFamily: "Just Another Hand, cursive" }}
-          >
+          <p className={`${justAnotherHand.className} text-xl text-gray-600 mb-2`}>
             {event.details}
           </p>
         </div>
@@ -117,50 +115,36 @@ const PassportPage: React.FC = () => {
               <div className="w-20 h-20 mb-10 border-4 border-dashed rounded-full flex items-center justify-center text-gray-400 my-4"></div>
             )}
           </div>
+
           {/* Footer */}
-          <p
-            className="text-xs text-gray-400 mt-2"
-            style={{ fontFamily: "Just Another Hand, cursive" }}
-          >
+          <p className={`${justAnotherHand.className} text-xs text-gray-400 mt-2`}>
             GeeseHacks Passport
           </p>
         </div>
       </div>
     )),
 
-    // Back Cover Pages
+    // Back Cover
     <div className="page flex flex-col justify-center items-center bg-gray-100 text-center p-8 h-full">
-      <p
-        className="text-gray-600 mt-32 text-3xl italic"
-        style={{ fontFamily: "Just Another Hand, cursive" }}
-      >
+      <p className={`${justAnotherHand.className} text-gray-600 mt-32 text-3xl italic`}>
         Thank you for participating!
       </p>
     </div>,
     <div className="page flex flex-col justify-center items-center bg-gray-100 text-center p-8 h-full">
-      <h2
-        className="text-xl font-bold mb-4 text-gray-800 mt-32"
-        style={{ fontFamily: "Just Another Hand, cursive" }}
-      >
+      <h2 className={`${justAnotherHand.className} text-xl font-bold mb-4 text-gray-800 mt-32`}>
         GeeseHacks 2024
       </h2>
-      <p
-        className="text-gray-500"
-        style={{ fontFamily: "Just Another Hand, cursive" }}
-      >
-        See you next year!
-      </p>
-    </div>
+      <p className={`${justAnotherHand.className} text-gray-500`}>See you next year!</p>
+    </div>,
   ];
 
-  // Handle Next Page
+  // Navigation
   const handleNext = () => {
     if (currentPage < allPages.length - 1) {
       setCurrentPage(currentPage + 1);
     }
   };
 
-  // Handle Previous Page
   const handlePrevious = () => {
     if (currentPage > 0) {
       setCurrentPage(currentPage - 1);
@@ -176,59 +160,49 @@ const PassportPage: React.FC = () => {
       </div>
 
       {/* Container */}
-        {loading ? (
-          <div>Loading...</div>
-        ) : (
-          <div className="w-full h-5/6 flex flex-col items-center justify-center">
-            {/* 
-              We'll always render two "slots." 
-              - On small screens, the second slot is hidden (hidden md:block).
-              - We lay them out in a column on small screens and a row on md+ screens.
-            */}
-            <div className="flex flex-col md:flex-row items-center justify-center">
-              {/* Left Page Slot */}
-              <div className="bg-gray-300 rounded-xl shadow-lg p-4 m-2 w-[300px] h-[400px] font-just-another-hand">
-                {allPages[currentPage]}
-              </div>
-
-              {/* Right Page Slot (hidden on small screens) */}
-              <div className="hidden md:block bg-gray-300 rounded-xl shadow-lg p-4 m-2 w-[300px] h-[400px] font-just-another-hand">
-                {/* If we go out of range, just render an empty placeholder */}
-                {allPages[currentPage + 1] || <div></div>}
-              </div>
+      {loading ? (
+        <div>Loading...</div>
+      ) : (
+        <div className="w-full h-5/6 flex flex-col items-center justify-center">
+          <div className="flex flex-col md:flex-row items-center justify-center">
+            {/* Left Page */}
+            <div className="bg-gray-300 rounded-xl shadow-lg p-4 m-2 w-[300px] h-[400px]">
+              {allPages[currentPage]}
             </div>
 
-            {/* Navigation Buttons */}
-            <div className="flex justify-center mt-4">
-              {/* Previous Button */}
-              <button
-                onClick={handlePrevious}
-                disabled={currentPage === 0}
-                className={`px-4 py-2 mx-2 rounded-lg bg-darkpurple text-white ${
-                  currentPage === 0
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-darkteal"
-                }`}
-              >
-                Previous
-              </button>
-
-              {/* Next Button */}
-              <button
-                onClick={handleNext}
-                disabled={currentPage >= allPages.length - 1}
-                className={`px-4 py-2 mx-2 rounded-lg bg-darkpurple text-white ${
-                  currentPage >= allPages.length - 1
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-darkteal"
-                }`}
-              >
-                Next
-              </button>
+            {/* Right Page (hidden on small screens) */}
+            <div className="hidden md:block bg-gray-300 rounded-xl shadow-lg p-4 m-2 w-[300px] h-[400px]">
+              {allPages[currentPage + 1] || <div></div>}
             </div>
           </div>
-        )}
-      
+
+          {/* Navigation Buttons */}
+          <div className="flex justify-center mt-4">
+            <button
+              onClick={handlePrevious}
+              disabled={currentPage === 0}
+              className={`px-4 py-2 mx-2 rounded-lg bg-darkpurple text-white ${
+                currentPage === 0
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:bg-darkteal"
+              }`}
+            >
+              Previous
+            </button>
+            <button
+              onClick={handleNext}
+              disabled={currentPage >= allPages.length - 1}
+              className={`px-4 py-2 mx-2 rounded-lg bg-darkpurple text-white ${
+                currentPage >= allPages.length - 1
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:bg-darkteal"
+              }`}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 };
