@@ -20,10 +20,10 @@ export default async function RootLayout({
       <head>
         <meta name="description" content="GeeseHacks, a hybrid hackathon and case competition, will be held from January 25-26, 2025. Participants are invited to create innovative projects or craft unique solutions for real-world challenges. Join us for a weekend of creativity, collaboration, and problem-solving!" />
         <link rel="icon" href="/favicon.ico" />
-        <link
+        {/* <link
           href="https://fonts.googleapis.com/css2?family=Just+Another+Hand&display=swap"
           rel="stylesheet"
-        />
+        /> */}
 
       </head>
       <body className={inter.className}>
