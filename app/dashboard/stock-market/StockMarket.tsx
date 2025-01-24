@@ -60,16 +60,30 @@ const StockMarket: React.FC = () => {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
+        // Fetch team data
         const response = await fetch(`/api/teamData/${activeTab}`);
         if (!response.ok) throw new Error("Failed to fetch teams");
         const data = await response.json();
 
-        // Enhance the team data with colors and dataKeys
+        // Get project IDs
+        const projectIds = data.map((team: Team) => team.projectId).join(",");
+
+        // Fetch historical data
+        const historyResponse = await fetch(
+          `/api/investments/teams?projectIds=${projectIds}`
+        );
+        if (!historyResponse.ok) throw new Error("Failed to fetch history");
+        const historyData = await historyResponse.json();
+
+        // Combine team data with history
         const enhancedData = data.map((team: Team, index: number) => ({
           ...team,
-          color: getTeamColor(index), // Function to return consistent colors
+          color: getTeamColor(index),
           dataKey: `team${index + 1}`,
+          history: historyData[team.projectId] || [],
         }));
+
+        console.log("enhancedData", enhancedData);
 
         setTeamsData(enhancedData);
       } catch (error) {
