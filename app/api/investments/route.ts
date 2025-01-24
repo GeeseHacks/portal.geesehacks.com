@@ -33,8 +33,13 @@ export async function GET(req: NextRequest) {
       take: 5,
     });
 
-    //Step 2:??
-    } catch(error){
-
-    }
+    // Step 2: Return the results
+    return NextResponse.json({ projects: topProjects });
+  } catch (error) {
+    console.error("Error fetching investments:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch investments" },
+      { status: 500 }
+    );
+  }
 }
