@@ -58,13 +58,13 @@ const PassportPage: React.FC = () => {
     // Cover Page
     <div className="flex flex-col justify-center items-center bg-white text-center p-8 h-full">
       <h2
-        className="text-5xl font-bold mb-4 mt-16 text-gray-800"
+        className="text-4xl font-bold mb-4 mt-16 text-gray-800"
         style={{ fontFamily: "Just Another Hand, cursive" }}
       >
         GeeseHacks
       </h2>
       <h2
-        className="text-4xl font-bold mb-4 mt-2 text-gray-800"
+        className="text-3xl font-bold mb-4 mt-2 text-gray-800"
         style={{ fontFamily: "Just Another Hand, cursive" }}
       >
         2025
@@ -85,18 +85,18 @@ const PassportPage: React.FC = () => {
             src={`/static/icons/${event.eventType.toLowerCase()}.svg`}
             alt={`${event.eventType} icon`}
             className="mx-auto mb-4"
-            style={{ width: "80px", height: "80px" }}
+            style={{ width: "60px", height: "60px" }}
           />
           {/* Event Title */}
           <h2
-            className="text-3xl font-medium text-gray-800 mb-4"
+            className="text-2xl font-medium text-gray-800 mb-4"
             style={{ fontFamily: "Just Another Hand, cursive" }}
           >
             {event.name}
           </h2>
           {/* Event Details */}
           <p
-            className="text-2xl text-gray-600 mb-2"
+            className="text-xl text-gray-600 mb-2"
             style={{ fontFamily: "Just Another Hand, cursive" }}
           >
             {event.details}
@@ -176,11 +176,10 @@ const PassportPage: React.FC = () => {
       </div>
 
       {/* Container */}
-      <div className="bg-gradient-to-r from-darkpurple to-darkteal p-2 lg:p-8 rounded-xl w-full h-full relative flex flex-col items-center justify-center overflow-hidden">
         {loading ? (
           <div>Loading...</div>
         ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center">
+          <div className="w-full h-5/6 flex flex-col items-center justify-center">
             {/* 
               We'll always render two "slots." 
               - On small screens, the second slot is hidden (hidden md:block).
@@ -188,12 +187,12 @@ const PassportPage: React.FC = () => {
             */}
             <div className="flex flex-col md:flex-row items-center justify-center">
               {/* Left Page Slot */}
-              <div className="bg-gray-300 rounded-xl shadow-lg p-4 m-2 w-[300px] h-[450px] font-just-another-hand">
+              <div className="bg-gray-300 rounded-xl shadow-lg p-4 m-2 w-[300px] h-[400px] font-just-another-hand">
                 {allPages[currentPage]}
               </div>
 
               {/* Right Page Slot (hidden on small screens) */}
-              <div className="hidden md:block bg-gray-300 rounded-xl shadow-lg p-4 m-2 w-[300px] h-[450px] font-just-another-hand">
+              <div className="hidden md:block bg-gray-300 rounded-xl shadow-lg p-4 m-2 w-[300px] h-[400px] font-just-another-hand">
                 {/* If we go out of range, just render an empty placeholder */}
                 {allPages[currentPage + 1] || <div></div>}
               </div>
@@ -229,7 +228,7 @@ const PassportPage: React.FC = () => {
             </div>
           </div>
         )}
-      </div>
+      
     </>
   );
 };
