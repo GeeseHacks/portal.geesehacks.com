@@ -50,7 +50,7 @@ const getContainerBgColor = (eventType: string) => {
 };
 
 const EventCard: React.FC<EventCardProps> = ({ event }) => {
-  const { name, startTime, endTime, location, details, eventType } = event;
+  const { name, startTime, endTime, location, details, eventType, value } = event;
   const eventColor = getEventColor(eventType);
   const containerBgColor = getContainerBgColor(eventType);
 
@@ -68,7 +68,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
 
       {/* Event details container with color shift */}
       <div
-        className={` bg-opacity-65 hover:bg-opacity-100 flex-grow p-4 rounded-r-lg text-white shadow-xl hover:shadow-2xl transition-shadow duration-200 ${containerBgColor}`}
+        className={`relative bg-opacity-65 hover:bg-opacity-100 flex-grow p-4 rounded-r-lg text-white shadow-xl hover:shadow-2xl transition-shadow duration-200 ${containerBgColor}`}
       >
         <p className="font-bold text-sm mb-1">{name}</p>
         <div className="flex justify-between text-xs">
@@ -79,6 +79,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
           {startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} -{' '}
           {endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </p>
+        <div className='my-3 absolute right-3 text-gray-500'>{`${value}`}</div>
       </div>
     </div>
   );
