@@ -17,13 +17,13 @@ export const sideNavLinks = [
     name: "Schedule",
     href: "/schedule",
     icon: "/static/icons/calendar.svg",
-    show: false,
+    show: true,
   },
   {
     name: "Passport",
     href: "/passport",
     icon: "/static/icons/passport.svg",
-    show: false,
+    show: true,
   },
   {
     name: "Stock Market",

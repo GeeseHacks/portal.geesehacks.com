@@ -204,6 +204,7 @@ const Home: React.FC = () => {
         )}
 
         {/* Apply Button */}
+
         {/* {status === "NOT_APPLIED" && (
           <div className="text-xs z-50 mt-1 mb-3 text-gray-400">
             If you've received an acceptance email, but you're seeing a Not
