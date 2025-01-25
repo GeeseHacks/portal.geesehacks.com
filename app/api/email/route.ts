@@ -22,7 +22,7 @@ export async function POST(req: Request) {
       return {
         from: "no-reply@geesehacks.com",
         to: email, // Send to individual email
-        subject: "[IMPORTANT] Hacker Package (GeeseHacks 2025)",
+        subject: "Thank you for applying to GeeseHacks 2025!",
         react: HackerEmail({ name: "", email: email, qrcode: qrCodeDataURL }), // Render as JSX
       };
     })

@@ -13,11 +13,12 @@ export async function GET() {
         private_key: process.env.GOOGLE_PRIVATE_KEY
       }
     });
+
     const sheets = google.sheets({ version: 'v4', auth });
     // Query data from Google Sheets
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: process.env.SHEET_ID,
-      range: 'Events!A2:H',
+      range: 'Events!A2:I',
     });
     const rows = response.data.values;
     if (!rows || rows.length === 0) {
@@ -33,6 +34,7 @@ export async function GET() {
       location: row[5],
       details: row[6] || '',
       needsScanning: row[7] === 'TRUE',
+      value: Number(row[8]),
     }));
     // Return the events data as JSON
     return NextResponse.json(events, { status: 200 });
