@@ -1,7 +1,4 @@
-const { PrismaClient } = require("@prisma/client");
-const { setTimeout: setTimeoutPromise } = require("timers/promises");
-
-const prisma = new PrismaClient();
+import prisma from "../../lib/prisma";
 
 const SCRIPT_JUDGE_ID = 6969;
 
