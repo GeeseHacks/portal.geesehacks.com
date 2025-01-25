@@ -45,6 +45,19 @@ const StockGraphTeams = ({ teamsData }: StockGraphTeamsProps) => {
   const [formattedData, setFormattedData] = useState<any[]>([]);
 
   useEffect(() => {
+    // Sort teams by value (descending order)
+    const sortedTeams = [...teamsData].sort(
+      (a, b) => parseFloat(b.value) - parseFloat(a.value)
+    );
+
+    // Create a mapping of team ID to placement name
+    const teamPlacementMap = new Map(
+      sortedTeams.map((team, index) => [
+        team.id,
+        `${index + 1}${getOrdinalSuffix(index + 1)} Place`,
+      ])
+    );
+
     // Group the data points by timestamp
     const timePoints = new Map();
 
@@ -55,14 +68,13 @@ const StockGraphTeams = ({ teamsData }: StockGraphTeamsProps) => {
         if (!timePoints.has(timeStr)) {
           timePoints.set(timeStr, {
             time: timeStr,
-            // Add a mapping of dataKey to team name
-            [`${team.dataKey}_name`]: team.name,
+            [`${team.dataKey}_name`]: teamPlacementMap.get(team.id),
           });
         }
 
         const point = timePoints.get(timeStr);
         point[team.dataKey] = dataPoint.value;
-        point[`${team.dataKey}_name`] = team.name; // Store team name in data
+        point[`${team.dataKey}_name`] = teamPlacementMap.get(team.id);
       });
     });
 
@@ -75,6 +87,16 @@ const StockGraphTeams = ({ teamsData }: StockGraphTeamsProps) => {
 
     setFormattedData(sortedData);
   }, [teamsData]);
+
+  // Helper function to get ordinal suffix
+  const getOrdinalSuffix = (num: number): string => {
+    const j = num % 10;
+    const k = num % 100;
+    if (j === 1 && k !== 11) return "st";
+    if (j === 2 && k !== 12) return "nd";
+    if (j === 3 && k !== 13) return "rd";
+    return "th";
+  };
 
   // Custom tooltip content component
   const CustomTooltip = ({ active, payload, label }: any) => {

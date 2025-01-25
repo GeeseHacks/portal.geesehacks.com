@@ -18,12 +18,10 @@ import {
 import { useState } from "react";
 import StockGraph from "./StockGraph";
 
-
 interface Team {
   id: number;
   name: string;
   value: string;
-  change: string;
   projectId: string;
 }
 
@@ -34,6 +32,26 @@ interface LeaderBoardProps {
 
 const LeaderBoard = ({ category, teamsData }: LeaderBoardProps) => {
   const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
+
+  // Define helper function first
+  const getOrdinalSuffix = (num: number): string => {
+    const j = num % 10;
+    const k = num % 100;
+    if (j === 1 && k !== 11) return "st";
+    if (j === 2 && k !== 12) return "nd";
+    if (j === 3 && k !== 13) return "rd";
+    return "th";
+  };
+
+  // Then use it in sorting and mapping
+  const sortedTeams = [...teamsData].sort(
+    (a, b) => parseFloat(b.value) - parseFloat(a.value)
+  );
+
+  const anonymizedTeams = sortedTeams.map((team, index) => ({
+    ...team,
+    name: `${index + 1}${getOrdinalSuffix(index + 1)} Place`,
+  }));
 
   const handleRowClick = (teamName: string) => {
     setSelectedTeam(teamName); // Set the selected team
@@ -48,53 +66,44 @@ const LeaderBoard = ({ category, teamsData }: LeaderBoardProps) => {
             <TableRow>
               <TableHead className="w-[100px] pb-4"></TableHead>
               <TableHead className="text-lg sm:text-xl font-bold text-white pb-4">
-                ID
+                Name
               </TableHead>
               <TableHead className="text-lg sm:text-xl font-bold text-white pb-4">
                 Value
               </TableHead>
-              <TableHead className="text-right text-lg sm:text-xl font-bold text-white pb-4">
-                % Change
-              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {teamsData.map((team) => (
-              <TableRow
-                key={team.id}
-                className="hover:bg-[#0E0823] cursor-pointer"
-              >
-                <TableCell className="text-[20px] text-[#D175FA] font-bold">
-                  {team.id}
-                </TableCell>
-                <TableCell>
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <button
-                        className="text-[20px] font-bold text-white underline"
-                        onClick={() => handleRowClick(team.name)}
-                      >
+            {anonymizedTeams.map((team) => (
+              <Dialog key={team.id}>
+                <DialogTrigger asChild>
+                  <TableRow
+                    className="hover:bg-[#0E0823] cursor-pointer"
+                    onClick={() => handleRowClick(team.name)}
+                  >
+                    <TableCell className="text-[20px] text-[#D175FA] font-bold">
+                      {team.id}
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-[20px] font-bold text-white">
                         {team.name}
-                      </button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>{team.name} Stock Graph</DialogTitle>
-                        <DialogDescription>
-                          Detailed graph data for {team.name}.
-                        </DialogDescription>
-                      </DialogHeader>
-                      <StockGraph projId={team.projectId} />
-                    </DialogContent>
-                  </Dialog>
-                </TableCell>
-                <TableCell className="text-[#F1D2FF] text-lg font-bold">
-                  {team.value}
-                </TableCell>
-                <TableCell className="text-right text-lg text-[#95F2FF] font-bold">
-                  {team.change}
-                </TableCell>
-              </TableRow>
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-[#F1D2FF] text-lg font-bold">
+                      {team.value}
+                    </TableCell>
+                  </TableRow>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>{team.name} Stock Graph</DialogTitle>
+                    <DialogDescription>
+                      Detailed graph data for {team.name}.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <StockGraph projId={team.projectId} />
+                </DialogContent>
+              </Dialog>
             ))}
           </TableBody>
         </Table>

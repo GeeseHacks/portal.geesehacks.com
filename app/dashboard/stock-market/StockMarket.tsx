@@ -160,52 +160,42 @@ const StockMarket: React.FC = () => {
 
         {/* Tabs (Below Category Selectors) */}
         <div className="flex-1">
-          <Tabs
-            defaultValue="leaderboard"
-            className="pb-8"
-            onValueChange={(value) => setCurrentView(value)}
-          >
-            <div className="flex flex-col gap-4">
-              <div className="flex items-center justify-between">
-                <TabsList className="h-10 bg-[#3E2B65]/50 p-1 rounded-xl">
-                  <TabsTrigger
-                    value="leaderboard"
-                    className="rounded-lg data-[state=active]:bg-[#3E2B65] data-[state=active]:text-[#D175FA] transition-all"
-                  >
-                    Leaderboard
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="stockGraphTeams"
-                    className="rounded-lg data-[state=active]:bg-[#3E2B65] data-[state=active]:text-[#D175FA] transition-all"
-                  >
-                    Graph
-                  </TabsTrigger>
-                </TabsList>
+          {activeTab === "General" ? (
+            <Tabs
+              defaultValue="leaderboard"
+              className="pb-8"
+              onValueChange={(value) => setCurrentView(value)}
+            >
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center justify-between">
+                  <TabsList className="h-10 bg-[#3E2B65]/50 p-1 rounded-xl">
+                    <TabsTrigger
+                      value="leaderboard"
+                      className="rounded-lg data-[state=active]:bg-[#3E2B65] data-[state=active]:text-[#D175FA] transition-all"
+                    >
+                      Leaderboard
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="stockGraphTeams"
+                      className="rounded-lg data-[state=active]:bg-[#3E2B65] data-[state=active]:text-[#D175FA] transition-all"
+                    >
+                      Graph
+                    </TabsTrigger>
+                  </TabsList>
+                </div>
 
-                {/* Legend */}
-                {currentView === "stockGraphTeams" && (
-                  <div className="flex items-center gap-4 text-sm">
-                    {teamsData.map((team) => (
-                      <div key={team.id} className="flex items-center gap-2">
-                        <div
-                          className="w-3 h-3 rounded-full"
-                          style={{ backgroundColor: team.color }}
-                        />
-                        <span>{team.name}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <TabsContent value="leaderboard">
+                  <LeaderBoard category={activeTab} teamsData={teamsData} />
+                </TabsContent>
+                <TabsContent value="stockGraphTeams">
+                  <StockGraphTeams teamsData={teamsData} />
+                </TabsContent>
               </div>
-
-              <TabsContent value="leaderboard">
-                <LeaderBoard category={activeTab} teamsData={teamsData} />
-              </TabsContent>
-              <TabsContent value="stockGraphTeams">
-                <StockGraphTeams teamsData={teamsData} />
-              </TabsContent>
-            </div>
-          </Tabs>
+            </Tabs>
+          ) : (
+            // Render the appropriate component directly for other tabs
+            categories.find((cat) => cat.name === activeTab)?.component
+          )}
         </div>
       </div>
     </div>
