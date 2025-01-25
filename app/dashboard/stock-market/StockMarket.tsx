@@ -1,36 +1,34 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import SideNav from "../../../components/nav/SideNav";
 import Image from "next/image";
 
 import LeaderBoard from "./LeaderBoard";
 import StockGraph from "./StockGraph";
 import EditProject from "./EditProject";
 import { useSession } from "next-auth/react";
+import StockGraphTeams from "./StockGraphTeams";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"; // Assuming this is where your ShadCN Tabs component is located
 
-// const chartData = [
-//   { time: "11:00 AM", value: 186 },
-//   { time: "11:15 AM", value: 305 },
-//   { time: "11:30 AM", value: 305 },
-//   { time: "11:45 AM", value: 305 },
-//   { time: "12:00 PM", value: 237 },
-//   { time: "12:15 PM", value: 237 },
-//   { time: "12:30 PM", value: 73 },
-//   { time: "12:45 PM", value: 237 },
-//   { time: "1:00 PM", value: 209 },
-//   { time: "1:15 PM", value: 209 },
-//   { time: "1:30 PM", value: 214 },
-// ];
-
-
-interface ProjResponse{
+interface ProjResponse {
   project_id: string;
+}
+
+interface Team {
+  id: number;
+  name: string;
+  value: string;
+  change: string;
+  projectId: string;
+  color: string; // Add color for the graph
+  dataKey: string; // Add dataKey for the graph (e.g., "team1", "team2")
 }
 
 const StockMarket: React.FC = () => {
   const [activeTab, setActiveTab] = useState("General");
+  const [currentView, setCurrentView] = useState("leaderboard");
   const [projId, setProjId] = useState("");
+  const [teamsData, setTeamsData] = useState<Team[]>([]);
 
   const { data: session } = useSession();
   const userId = session?.user?.id;
@@ -42,7 +40,9 @@ const StockMarket: React.FC = () => {
 
     const fetchProjectId = async () => {
       try {
-        const response = await fetch(`/api/projects/project-id?user_id=${userId}`);
+        const response = await fetch(
+          `/api/projects/project-id?user_id=${userId}`
+        );
         if (!response.ok) {
           throw new Error("Failed to fetch project ID");
         }
@@ -56,13 +56,68 @@ const StockMarket: React.FC = () => {
     fetchProjectId();
   }, [userId]);
 
+  // Fetch teams data
+  useEffect(() => {
+    const fetchTeams = async () => {
+      try {
+        // Fetch team data
+        const response = await fetch(`/api/teamData/${activeTab}`);
+        if (!response.ok) throw new Error("Failed to fetch teams");
+        const data = await response.json();
+
+        // Get project IDs
+        const projectIds = data.map((team: Team) => team.projectId).join(",");
+
+        // Fetch historical data
+        const historyResponse = await fetch(
+          `/api/investments/teams?projectIds=${projectIds}`
+        );
+        if (!historyResponse.ok) throw new Error("Failed to fetch history");
+        const historyData = await historyResponse.json();
+
+        // Combine team data with history
+        const enhancedData = data.map((team: Team, index: number) => ({
+          ...team,
+          color: getTeamColor(index),
+          dataKey: `team${index + 1}`,
+          history: historyData[team.projectId] || [],
+        }));
+
+        console.log("enhancedData", enhancedData);
+
+        setTeamsData(enhancedData);
+      } catch (error) {
+        console.error("Error fetching teams:", error);
+      }
+    };
+
+    fetchTeams();
+  }, [activeTab]);
+
+  const getTeamColor = (index: number): string => {
+    const colors = ["#e23670", "#2662d9", "#2eb88a", "#af57db", "#e88c31"];
+    return colors[index % colors.length];
+  };
+
   const categories = [
-    { name: "General", component: <LeaderBoard category={"General"}/> },
-    { name: "Sun Life", component: <LeaderBoard category={"Sun Life"}/> },
-    { name: "TeejLab", component: <LeaderBoard category={"TeejLab"}/> },
-    { name: "CS-CAN", component: <LeaderBoard category={"CS-CAN"}/> },
-    { name: "My Project", component: <StockGraph projId = {projId}/> },
-    { name: "Add Project", component: <EditProject/> },
+    {
+      name: "General",
+      component: <LeaderBoard category={"General"} teamsData={teamsData} />,
+    },
+    {
+      name: "Sun Life",
+      component: <LeaderBoard category={"Sun Life"} teamsData={teamsData} />,
+    },
+    {
+      name: "TeejLab",
+      component: <LeaderBoard category={"TeejLab"} teamsData={teamsData} />,
+    },
+    {
+      name: "CS-CAN",
+      component: <LeaderBoard category={"CS-CAN"} teamsData={teamsData} />,
+    },
+    { name: "My Project", component: <StockGraph projId={projId} /> },
+    { name: "Add Project", component: <EditProject /> },
   ];
 
   return (
@@ -70,6 +125,7 @@ const StockMarket: React.FC = () => {
       <div className="absolute -top-24 -left-36 w-[500px] h-[500px] rounded-full bg-[#7D14D0] opacity-10 blur-3xl z-[-10]"></div>
       <div className="absolute -bottom-20 -right-10 w-[500px] h-[500px] rounded-full bg-[#119FCC] opacity-10 blur-3xl z-[-10]"></div>
       <div className="px-7 lg:px-2 flex-1 flex flex-col">
+        {/* Header */}
         <div className="flex items-center space-x-4">
           <Image
             src="/static/icons/stock-market-title.png"
@@ -82,6 +138,8 @@ const StockMarket: React.FC = () => {
         <p className="pb-7 text-md md:text-lg pt-3 text-gray-500">
           Manage your team's project and track performance!
         </p>
+
+        {/* Category Selectors (Always Visible) */}
         <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 pb-8">
           {categories.map((category) => (
             <button
@@ -93,16 +151,50 @@ const StockMarket: React.FC = () => {
                   : "text-white"
               } px-4 py-2 rounded-lg`}
             >
-              <span className="text-md md:text-lg font-semibold">{category.name}</span>
+              <span className="text-md md:text-lg font-semibold">
+                {category.name}
+              </span>
             </button>
           ))}
         </div>
 
-        <div>
-          {categories.map((category) =>
-            activeTab === category.name ? (
-              <div key={category.name}>{category.component}</div>
-            ) : null
+        {/* Tabs (Below Category Selectors) */}
+        <div className="flex-1">
+          {activeTab === "General" ? (
+            <Tabs
+              defaultValue="leaderboard"
+              className="pb-8"
+              onValueChange={(value) => setCurrentView(value)}
+            >
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center justify-between">
+                  <TabsList className="h-10 bg-[#3E2B65]/50 p-1 rounded-xl">
+                    <TabsTrigger
+                      value="leaderboard"
+                      className="rounded-lg data-[state=active]:bg-[#3E2B65] data-[state=active]:text-[#D175FA] transition-all"
+                    >
+                      Leaderboard
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="stockGraphTeams"
+                      className="rounded-lg data-[state=active]:bg-[#3E2B65] data-[state=active]:text-[#D175FA] transition-all"
+                    >
+                      Graph
+                    </TabsTrigger>
+                  </TabsList>
+                </div>
+
+                <TabsContent value="leaderboard">
+                  <LeaderBoard category={activeTab} teamsData={teamsData} />
+                </TabsContent>
+                <TabsContent value="stockGraphTeams">
+                  <StockGraphTeams teamsData={teamsData} />
+                </TabsContent>
+              </div>
+            </Tabs>
+          ) : (
+            // Render the appropriate component directly for other tabs
+            categories.find((cat) => cat.name === activeTab)?.component
           )}
         </div>
       </div>

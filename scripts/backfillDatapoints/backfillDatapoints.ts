@@ -1,7 +1,5 @@
-const { PrismaClient } = require("@prisma/client");
-const { setTimeout: setTimeoutPromise } = require("timers/promises");
-
-const prisma = new PrismaClient();
+import prisma from "../../lib/prisma";
+import { setTimeout as setTimeoutPromise } from "timers/promises";
 
 const SCRIPT_JUDGE_ID = 6969;
 
@@ -81,7 +79,7 @@ async function recordInvestmentHistory(
   }
 }
 
-async function main() {
+async function backfillDatapoints() {
   try {
     while (true) {
       const now = new Date();
@@ -107,4 +105,4 @@ async function main() {
   }
 }
 
-main().catch(console.error);
+backfillDatapoints().catch(console.error);
