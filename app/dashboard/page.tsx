@@ -33,6 +33,7 @@ const Home: React.FC = () => {
   const [qrcodeDisabled, setQrcodeDisabled] = useState(true); // Change this when hackers are accepted
   const [isSubmitting, setIsSubmitting] = useState(false); // Add loading state for RSVP submission
   const [geeseCoinBalance, setGeeseCoinBalance] = useState(0);
+  const [showModal, setShowModal] = useState(false); // Modal control
   const { data: session } = useSession();
 
   type StatusType =
@@ -61,6 +62,11 @@ const Home: React.FC = () => {
         // Validate the status received from the API
         if (data.status && Object.keys(statusMapping).includes(data.status)) {
           setStatus(data.status as StatusType);
+          // Show modal if status is not CONFIRMED or ACCEPTED
+          if (!["CONFIRMED", "ACCEPTED"].includes(data.status)) {
+            alert(data.status);
+            setShowModal(true);
+          }
         } else {
           setError("Invalid application status received");
         }
@@ -123,6 +129,20 @@ const Home: React.FC = () => {
 
   return (
     <>
+      {/* Unclosable Modal */}
+      {showModal && (
+        <Dialog open>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Access Denied</DialogTitle>
+              <DialogDescription>
+                You do not have access to this page. Please contact support if you believe
+                this is an error.
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
+      )}
       <div>
         <h1 className="text-4xl mt-5 mb-2">Home</h1>
         <p className="text-gray-500">
@@ -184,7 +204,7 @@ const Home: React.FC = () => {
         )}
 
         {/* Apply Button */}
-        {status === "NOT_APPLIED" && (
+        {/* {status === "NOT_APPLIED" && (
           <div className="text-xs z-50 mt-1 mb-3 text-gray-400">
             If you've received an acceptance email, but you're seeing a Not
             Applied status, please follow the following steps before contacting
@@ -193,7 +213,7 @@ const Home: React.FC = () => {
             email sign-in using the email which you received the acceptance
             email from. We apologize for the inconvenience.
           </div>
-        )}
+        )} */}
 
         {/* RSVP Button */}
         {status === "ACCEPTED" && (
@@ -230,11 +250,10 @@ const Home: React.FC = () => {
         <Link
           href={qrcodeDisabled ? "#" : "/dashboard/qrcode"}
           className={`relative rounded-xl bg-gradient-to-r from-darkpurple to-darkteal p-8 lg:p-12 overflow-hidden transition-transform duration-300 
-      ${
-        qrcodeDisabled
-          ? "pointer-events-none opacity-50"
-          : "hover:scale-102 hover:drop-shadow-[0_0px_15px_rgba(48,133,159,0.5)]"
-      } h-48`}
+      ${qrcodeDisabled
+              ? "pointer-events-none opacity-50"
+              : "hover:scale-102 hover:drop-shadow-[0_0px_15px_rgba(48,133,159,0.5)]"
+            } h-48`}
         >
           <div className="">
             <img
@@ -251,11 +270,10 @@ const Home: React.FC = () => {
         <Link
           href={scheduleDisabled ? "#" : "/dashboard/schedule"}
           className={`relative rounded-xl bg-gradient-to-r from-darkpurple to-darkteal p-8 lg:p-12 overflow-hidden transition-transform duration-300 
-      ${
-        scheduleDisabled
-          ? "pointer-events-none opacity-50"
-          : "hover:scale-102 hover:drop-shadow-[0_0px_15px_rgba(48,133,159,0.5)]"
-      } h-48`}
+      ${scheduleDisabled
+              ? "pointer-events-none opacity-50"
+              : "hover:scale-102 hover:drop-shadow-[0_0px_15px_rgba(48,133,159,0.5)]"
+            } h-48`}
         >
           <img
             src="/static/images/ScheduleIcon.png"
