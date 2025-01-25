@@ -17,6 +17,13 @@ import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { HelpCircle } from "lucide-react";
 
 const Home: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -25,7 +32,8 @@ const Home: React.FC = () => {
   const [scheduleDisabled, setScheduleDisabled] = useState(true); // Change this when hackers are accepted
   const [qrcodeDisabled, setQrcodeDisabled] = useState(true); // Change this when hackers are accepted
   const [isSubmitting, setIsSubmitting] = useState(false); // Add loading state for RSVP submission
-
+  const [geeseCoinBalance, setGeeseCoinBalance] = useState(0);
+  const [showModal, setShowModal] = useState(false); // Modal control
   const { data: session } = useSession();
 
   type StatusType =
@@ -45,7 +53,6 @@ const Home: React.FC = () => {
     CONFIRMED: "RSVP Confirmed",
   };
 
-
   useEffect(() => {
     const fetchStatus = async () => {
       try {
@@ -55,6 +62,11 @@ const Home: React.FC = () => {
         // Validate the status received from the API
         if (data.status && Object.keys(statusMapping).includes(data.status)) {
           setStatus(data.status as StatusType);
+          // Show modal if status is not CONFIRMED or ACCEPTED
+          if (!["CONFIRMED", "ACCEPTED"].includes(data.status)) {
+            alert(data.status);
+            setShowModal(true);
+          }
         } else {
           setError("Invalid application status received");
         }
@@ -69,7 +81,22 @@ const Home: React.FC = () => {
       }
     };
 
+    const fetchGeeseCoinBalance = async () => {
+      const userId = session?.user?.id;
+      try {
+        const response = await fetch(`/api/users/${userId}`);
+        const data = await response.json();
+        console.log(data);
+        if (data.net_worth) {
+          setGeeseCoinBalance(data.net_worth);
+        }
+      } catch (err) {
+        console.error("Error loading geese coin balance");
+      }
+    };
+
     fetchStatus();
+    fetchGeeseCoinBalance();
   }, []);
 
   const onRSVP = async () => {
@@ -100,9 +127,22 @@ const Home: React.FC = () => {
     }
   };
 
-
   return (
     <>
+      {/* Unclosable Modal */}
+      {showModal && (
+        <Dialog open>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Access Denied</DialogTitle>
+              <DialogDescription>
+                You do not have access to this page. Please contact support if you believe
+                this is an error.
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
+      )}
       <div>
         <h1 className="text-4xl mt-5 mb-2">Home</h1>
         <p className="text-gray-500">
@@ -122,16 +162,31 @@ const Home: React.FC = () => {
       >
         {/* Status Image */}
         {/* Use the rejected image if the status is applied */}
+
         <img
-          src={`/static/images/status-${status === "ACCEPTED" || status === "CONFIRMED" ? "submitted" : "notsubmitted"
-            }.png`}
+          src={`/static/images/geesecoin.png`}
           alt={status || "Loading"}
-          className="absolute right-0 -top-10 z-0"
+          className="absolute right-10 -top-10 z-0 h-full"
         />
 
-        <h2 className="font-light text-lg drop-shadow-[0_0px_5px_rgba(0,0,0,0.5)]">
-          Application Status
-        </h2>
+        <div className="flex items-center gap-2">
+          <h2 className="text-xl font-semibold drop-shadow-[0_0px_5px_rgba(0,0,0,0.5)]">
+            GeeseCoin Balance
+          </h2>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <HelpCircle className="h-4 w-4 text-gray-300" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>GeeseCoins get added to your intial score during judging!</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+        <p className="text-gray-100">
+          Attend workshops to earn more GeeseCoins!
+        </p>
 
         {/* Status or Loading/Error Message */}
         {loading ? (
@@ -144,18 +199,21 @@ const Home: React.FC = () => {
           </h2>
         ) : (
           <h2 className="font-semibold text-4xl drop-shadow-[0_0px_10px_rgba(0,0,0,0.5)]">
-            {status
-              ? statusMapping[status] || "Unknown Status"
-              : "Status is null"}
+            ${geeseCoinBalance}
           </h2>
         )}
 
         {/* Apply Button */}
-        {status === "NOT_APPLIED" && (
+        {/* {status === "NOT_APPLIED" && (
           <div className="text-xs z-50 mt-1 mb-3 text-gray-400">
-            If you've received an acceptance email, but you're seeing a Not Applied status, please follow the following steps before contacting us. We recently re-enabled Google sign-in. You probably used email sign-in to submit your application. Try logging out and then using email sign-in using the email which you received the acceptance email from. We apologize for the inconvenience.
+            If you've received an acceptance email, but you're seeing a Not
+            Applied status, please follow the following steps before contacting
+            us. We recently re-enabled Google sign-in. You probably used email
+            sign-in to submit your application. Try logging out and then using
+            email sign-in using the email which you received the acceptance
+            email from. We apologize for the inconvenience.
           </div>
-        )}
+        )} */}
 
         {/* RSVP Button */}
         {status === "ACCEPTED" && (
@@ -182,9 +240,7 @@ const Home: React.FC = () => {
 
         {/* Message for Confirmed Status */}
         {status === "CONFIRMED" && (
-          <p className="text-green-500 font-bold">
-            See you soon!
-          </p>
+          <p className="text-green-500 font-bold">See you soon!</p>
         )}
       </div>
 
@@ -199,9 +255,12 @@ const Home: React.FC = () => {
               : "hover:scale-102 hover:drop-shadow-[0_0px_15px_rgba(48,133,159,0.5)]"
             } h-48`}
         >
-
           <div className="">
-            <img src="/static/images/CameraFrame.png" alt="QR Code" className="absolute right-10 bottom-8 z-0 scale-75" />
+            <img
+              src="/static/images/CameraFrame.png"
+              alt="QR Code"
+              className="absolute right-10 bottom-8 z-0 scale-75"
+            />
             <h2 className="text-[30px] font-semibold">QR Code</h2>
             <p className="text-white-500">Your ID at Geesehacks</p>
           </div>
