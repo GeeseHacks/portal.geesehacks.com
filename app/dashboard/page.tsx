@@ -239,10 +239,6 @@ const Home: React.FC = () => {
           </Dialog>
         )}
 
-        {/* Message for Confirmed Status */}
-        {status === "CONFIRMED" && (
-          <p className="text-green-500 font-bold">See you soon!</p>
-        )}
       </div>
 
       {/* Additional Cards */}
