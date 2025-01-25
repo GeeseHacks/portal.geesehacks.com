@@ -63,7 +63,7 @@ const Home: React.FC = () => {
         if (data.status && Object.keys(statusMapping).includes(data.status)) {
           setStatus(data.status as StatusType);
           // Show modal if status is not CONFIRMED or ACCEPTED
-          if (!["CONFIRMED", "ACCEPTED"].includes(data.status)) {
+          if (!["CONFIRMED"].includes(data.status)) {
             alert(data.status);
             setShowModal(true);
           }
@@ -71,7 +71,7 @@ const Home: React.FC = () => {
           setError("Invalid application status received");
         }
 
-        if (data.status === "CONFIRMED" || data.status === "ACCEPTED") {
+        if (data.status === "CONFIRMED") {
           setQrcodeDisabled(false);
         }
       } catch (err) {
@@ -201,42 +201,6 @@ const Home: React.FC = () => {
           <h2 className="font-semibold text-4xl drop-shadow-[0_0px_10px_rgba(0,0,0,0.5)]">
             ${geeseCoinBalance}
           </h2>
-        )}
-
-        {/* Apply Button */}
-
-        {/* {status === "NOT_APPLIED" && (
-          <div className="text-xs z-50 mt-1 mb-3 text-gray-400">
-            If you've received an acceptance email, but you're seeing a Not
-            Applied status, please follow the following steps before contacting
-            us. We recently re-enabled Google sign-in. You probably used email
-            sign-in to submit your application. Try logging out and then using
-            email sign-in using the email which you received the acceptance
-            email from. We apologize for the inconvenience.
-          </div>
-        )} */}
-
-        {/* RSVP Button */}
-        {status === "ACCEPTED" && (
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button className="w-32 z-50">RSVP Now!</Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>RSVP Confirmation</DialogTitle>
-                <DialogDescription>
-                  By clicking the RSVP button, you are agreeing to be
-                  photographed during the event.
-                </DialogDescription>
-              </DialogHeader>
-              <DialogFooter className="sm:justify-start space-x-4">
-                <Button onClick={onRSVP} disabled={isSubmitting}>
-                  RSVP
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
         )}
 
       </div>
