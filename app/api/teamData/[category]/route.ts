@@ -15,7 +15,7 @@ export async function GET(req: NextRequest, { params }: { params: { category: st
     }
 
     try {
-        // Fetch the top 10 projects by investmentAmount for the specified category
+        // Fetch the top 5 projects by investmentAmount for the specified category
         const projects = await prisma.projectCategory.findMany({
           where: {
             category: {
@@ -28,7 +28,7 @@ export async function GET(req: NextRequest, { params }: { params: { category: st
           orderBy: {
             investmentAmount: "desc",
           },
-          take: 10,
+          take: 5,
         });
 
         // console.log("projects", projects)
