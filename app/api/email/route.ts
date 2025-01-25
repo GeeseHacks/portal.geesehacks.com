@@ -3,6 +3,7 @@ import AcceptanceEmail from "@/components/emails/AcceptedTemplate";
 import { Resend } from "resend";
 import { render } from "@react-email/render";
 import HackerEmail from '@/components/emails/HackerPackageTemplate';
+import ThankYouEmail from '@/components/emails/RejectionTemplate';
 
 const ADMIN_EMAILS = ['benny.wu.new@gmail.com', 'chd-james@skillinsight.ca', 'riri.hong@gmail.com', 'a.zhong3528@gmail.com'];
 
@@ -17,13 +18,14 @@ export async function POST(req: Request) {
   const resend = new Resend(process.env.RESEND_API_KEY);
 
   const emailList = await Promise.all(
+    // Comment to re-trigger deploy
     to.map(async (email: string) => {
       const qrCodeDataURL = await QRCode.toDataURL(email);
       return {
         from: "no-reply@geesehacks.com",
         to: email, // Send to individual email
         subject: "Thank you for applying to GeeseHacks 2025!",
-        react: HackerEmail({ name: "", email: email, qrcode: qrCodeDataURL }), // Render as JSX
+        react: ThankYouEmail({ name: "", email: email, qrcode: qrCodeDataURL }), // Render as JSX
       };
     })
   );
