@@ -45,7 +45,7 @@ const RegistrationForm: React.FC = () => {
       const currentTime = new Date();
       const closeTime = new Date("2025-01-11T05:00:00Z");
       if (currentTime > closeTime) {
-        setClosed(true);
+        // setClosed(true);
       }
     };
     fetchStatus();
