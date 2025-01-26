@@ -116,7 +116,7 @@ const StockMarket: React.FC = () => {
       name: "CS-CAN",
       component: <LeaderBoard category={"CS-CAN"} teamsData={teamsData} />,
     },
-    { name: "My Project", component: <StockGraph projId={projId} /> },
+    // { name: "My Project", component: <StockGraph projId={projId} /> },
     { name: "Add Project", component: <EditProject /> },
   ];
 
