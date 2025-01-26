@@ -38,7 +38,8 @@ async function assignJudgesToProjects() {
       const isGeneralProject = project.categories.some((pc) =>
         pc.category.name.toLowerCase().includes('general')
       );
-      const numJudgesRequired = 2;
+      
+      const numJudgesRequired = Math.random() < 0.5 ? 2 : 3; //could either be judged 2 or 3 times
 
       // Add judges from the general track if not enough eligible judges are found
       if (eligibleJudges.length < numJudgesRequired) {
