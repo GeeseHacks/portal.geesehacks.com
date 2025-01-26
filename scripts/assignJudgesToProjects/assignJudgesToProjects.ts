@@ -1,4 +1,5 @@
-import prisma from "../../lib/prisma";
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
 
 async function assignJudgesToProjects() {
   try {
@@ -23,36 +24,47 @@ async function assignJudgesToProjects() {
         },
       },
     });
-     // Separate general track judges
-     const generalJudges = judges.filter((judge) =>
-      judge.categories.some((jc) => jc.category.name.toLowerCase() === 'general')
+    // Separate general track judges
+    const generalJudges = judges.filter((judge: any) =>
+      judge.categories.some(
+        (jc: any) => jc.category.name.toLowerCase() === "general"
+      )
     );
     for (const project of projects) {
-      const projectCategoryIds = project.categories.map((pc) => pc.categoryId);
+      const projectCategoryIds = project.categories.map(
+        (pc: any) => pc.categoryId
+      );
 
       // Filter judges who have at least one matching category with the project (if not enough judges for that category, pull from general category)
-      var eligibleJudges = judges.filter((judge) =>
-        judge.categories.some((jc) => (projectCategoryIds.includes(jc.categoryId)))
+      var eligibleJudges = judges.filter((judge: any) =>
+        judge.categories.some((jc: any) =>
+          projectCategoryIds.includes(jc.categoryId)
+        )
       );
 
-      const isGeneralProject = project.categories.some((pc) =>
-        pc.category.name.toLowerCase().includes('general')
+      const isGeneralProject = project.categories.some((pc: any) =>
+        pc.category.name.toLowerCase().includes("general")
       );
-      
+
       const numJudgesRequired = Math.random() < 0.5 ? 2 : 3; //could either be judged 2 or 3 times
 
       // Add judges from the general track if not enough eligible judges are found
       if (eligibleJudges.length < numJudgesRequired) {
         const additionalJudges = generalJudges.filter(
-          (judge) => !eligibleJudges.some((ej) => ej.id === judge.id)
+          (judge: any) => !eligibleJudges.some((ej: any) => ej.id === judge.id)
         );
         eligibleJudges = eligibleJudges.concat(
-          additionalJudges.slice(0, numJudgesRequired - eligibleJudges.length)
+          additionalJudges.slice(
+            0,
+            numJudgesRequired - eligibleJudges.length
+          )
         );
       }
 
       // Randomly select 2–3 judges from the eligible pool
-      const assignedJudges = eligibleJudges.sort(() => Math.random() - 0.5).slice(0, 3);
+      const assignedJudges = eligibleJudges
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 3);
 
       for (const judge of assignedJudges) {
         // Assign the judge to the project if not already assigned
