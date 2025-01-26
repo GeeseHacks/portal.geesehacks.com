@@ -1,79 +1,88 @@
-import prisma from "../../lib/prisma";
-import { setTimeout as setTimeoutPromise } from "timers/promises";
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
+const { setTimeout: setTimeoutPromise } = require("timers/promises");
 
 const SCRIPT_JUDGE_ID = 6969;
 
-async function getCurrentProjectValues(): Promise<
-  Map<string, Map<string, number>>
-> {
-  // Map of category name to project values
-  const categoryMaps = new Map<string, Map<string, number>>();
-
+async function getCurrentProjectValues(): Promise<Map<string, number>> {
   try {
-    // Get all categories
-    const categories = await prisma.category.findMany();
+    const projectMap = new Map<string, number>();
 
-    // For each category, get all projects and their values
-    for (const category of categories) {
-      const projectMap = new Map<string, number>();
+    const projectCategories = await prisma.projectCategory.findMany({
+      where: {
+        categoryId: 5,
+      },
+      include: {
+        project: true,
+      },
+    });
 
-      const projectCategories = await prisma.projectCategory.findMany({
-        where: {
-          categoryId: category.id,
-        },
-        include: {
-          project: true,
-        },
-      });
-
-      // Store project values in map
-      for (const pc of projectCategories) {
-        projectMap.set(pc.projectId, pc.investmentAmount);
-      }
-
-      categoryMaps.set(category.name, projectMap);
+    // Store project values in map
+    for (const pc of projectCategories) {
+      projectMap.set(pc.projectId, pc.investmentAmount);
     }
 
-    return categoryMaps;
+    return projectMap;
   } catch (error) {
     console.error("Error getting project values:", error);
     return new Map();
   }
 }
 
-async function recordInvestmentHistory(
-  categoryMaps: Map<string, Map<string, number>>
-) {
+async function recordInvestmentHistory(categoryMaps: Map<string, number>) {
+  // Round current time to nearest minute
   const now = new Date();
+  now.setSeconds(0, 0); // Set seconds and milliseconds to 0
 
   try {
-    // For each category
-    categoryMaps.forEach((projectMap, categoryName) => {
-      projectMap.forEach(async (value, projectId) => {
-        // Check if entry exists for current timestamp
-        const existingEntry = await prisma.investmentHistory.findFirst({
+    const promises = Array.from(categoryMaps.entries()).map(
+      async ([projectId, investmentValue]) => {
+        // Get the latest entry for this project
+        const latestEntry = await prisma.investmentHistory.findFirst({
           where: {
             projectId: projectId,
-            createdAt: {
-              gte: new Date(now.getTime() - 5000), // Within last 5 seconds
-              lte: now,
-            },
+          },
+          orderBy: {
+            createdAt: "desc",
           },
         });
 
-        // If no entry exists, create one
-        if (!existingEntry) {
+        // If no entry exists at all, create the first one
+        if (!latestEntry) {
           await prisma.investmentHistory.create({
             data: {
-              projectValue: value,
+              projectValue: investmentValue,
+              projectId: projectId,
+              judgeId: SCRIPT_JUDGE_ID,
+              createdAt: now,
+            },
+          });
+          return;
+        }
+
+        // Round the latest entry time to nearest minute for comparison
+        const latestEntryTime = new Date(latestEntry.createdAt);
+        latestEntryTime.setSeconds(0, 0);
+
+        // Check if the latest entry is older than 5 minutes
+        const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
+        if (latestEntryTime <= fiveMinutesAgo) {
+          // Create new entry with updated timestamp
+          await prisma.investmentHistory.create({
+            data: {
+              projectValue: investmentValue,
               projectId: projectId,
               judgeId: SCRIPT_JUDGE_ID,
               createdAt: now,
             },
           });
         }
-      });
-    });
+        // If latest entry is within the last 5 minutes, do nothing
+      }
+    );
+
+    // Wait for all operations to complete
+    await Promise.all(promises);
   } catch (error) {
     console.error("Error recording investment history:", error);
   }
@@ -83,17 +92,21 @@ async function backfillDatapoints() {
   try {
     while (true) {
       const now = new Date();
-      const minutesToNext = 5 - (now.getMinutes() % 5);
-      var msToNext =
-        minutesToNext * 60 * 1000 -
-        (now.getSeconds() * 1000 + now.getMilliseconds());
-      // Debug only
-      msToNext = 5000;
+      // Round down to the last 5-minute mark
+      const lastInterval = new Date(
+        Math.floor(now.getTime() / (5 * 60 * 1000)) * (5 * 60 * 1000)
+      );
+      // Add 5 minutes to get the next interval
+      const nextInterval = new Date(lastInterval.getTime() + 5 * 60 * 1000);
+      // Calculate milliseconds until next interval
+      const msToNext = nextInterval.getTime() - now.getTime();
+
       console.log(
-        `Waiting ${minutesToNext} minutes and ${Math.floor((msToNext / 1000) % 60)} seconds until next recording...`
+        `Waiting ${Math.floor(msToNext / 60000)} minutes and ${Math.floor((msToNext / 1000) % 60)} seconds until next recording (${nextInterval.toISOString()})...`
       );
       await setTimeoutPromise(msToNext);
 
+      // Record exactly at the interval time
       console.log("Recording datapoints...");
       const categoryMaps = await getCurrentProjectValues();
       await recordInvestmentHistory(categoryMaps);
